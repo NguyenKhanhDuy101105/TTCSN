@@ -13,6 +13,9 @@ import PageLogin from "./pages/PageLogin"
 import UserPage from "./pages/UserPage";
 import SpecialtyPage from "./pages/SpecialtyPage"
 import RemotePage from "./pages/RemotePage";
+import ForgotPassword from "./components/User/ForgotPassword";
+import AuthOTP from "./components/User/AuthOTP";
+import AuthChangePass from "./components/User/AuthChangePass";
 function App() {
   return (
     <BrowserRouter>
@@ -26,6 +29,9 @@ function App() {
         <Route path="/userpage" element={<UserPage />} />
         <Route path="/specialtypage" element={<SpecialtyPage />} />
         <Route path="/remotepage" element={<RemotePage />} />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/authotp" element={<AuthOTP />} />
+        <Route path="/authchangepass" element={<AuthChangePass />} />
         // Admin
         <Route path="/admin" element={<AdminPage />}>
           <Route index element={<Dashboard />} />

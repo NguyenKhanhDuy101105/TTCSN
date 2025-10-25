@@ -137,7 +137,7 @@ const LoginForm = ({ setIsLogin }) => {
                     <p>
                         <Link to="/" className='text-[14px] cursor-pointer text-blue-400'>Quay lại trang chủ</Link>
                         <span className='mx-1 text-gray-300'>/</span>
-                        <Link to="" className='text-[14px] cursor-pointer text-blue-400'>Quên mật khẩu?</Link>
+                        <Link to="/forgotpassword" className='text-[14px] cursor-pointer text-blue-400'>Quên mật khẩu?</Link>
                     </p>
                 </div>
 
