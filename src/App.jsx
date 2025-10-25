@@ -10,8 +10,9 @@ import SpecialtiesPage from "./components/Admin/ChuyenKhoa/SpecialtiesPage"
 import DoctorsPage from "./components/Admin/BacSi/DoctorsPage"
 import ServicesPage from "./components/Admin/DichVu/ServicesPage";
 import PageLogin from "./pages/PageLogin"
-
-
+import UserPage from "./pages/UserPage";
+import SpecialtyPage from "./pages/SpecialtyPage"
+import RemotePage from "./pages/RemotePage";
 function App() {
   return (
     <BrowserRouter>
@@ -22,7 +23,9 @@ function App() {
         <Route path="/athopitalpage" element={<AtHopitalPage />} />
         <Route path="/athealthlife" element={<HealthLifePage />} />
         <Route path="/loginpage" element={<PageLogin />} />
-
+        <Route path="/userpage" element={<UserPage />} />
+        <Route path="/specialtypage" element={<SpecialtyPage />} />
+        <Route path="/remotepage" element={<RemotePage />} />
         // Admin
         <Route path="/admin" element={<AdminPage />}>
           <Route index element={<Dashboard />} />

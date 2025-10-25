@@ -85,7 +85,8 @@ const ListSpecialty = () => {
                     </div>
                 )}
             </ul>
-            <Link className='rounded-2xl bg-[#daf3f7] text-blue-500 py-3 px-4 inline-block
+            <Link to="/specialtypage"
+                className='rounded-2xl bg-[#daf3f7] text-blue-500 py-3 px-4 inline-block
             absolute top-0 right-0 cursor-pointer
             '>
                 <p className='font-semibold text-[20px]'>Xem thêm</p>

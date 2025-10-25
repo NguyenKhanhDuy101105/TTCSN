@@ -25,6 +25,10 @@ const HeaderMain = ({ check }) => {
         return () => clearInterval(interval);
     }, [text.length]);
 
+    // const handleLogout = () => {
+
+    // }
+
     return (
         <>
             <div className="w-screen bg-[#ecfffb] fixed top-0 right-0 left-0 z-10 lg:pb-0 pb-10">
@@ -64,10 +68,12 @@ const HeaderMain = ({ check }) => {
                     )}
 
                     <ul className="flex gap-5  items-center justify-self-end ml-auto">
-                        <li className="flex items-center gap-1">
+                        <Link to="/userpage"
+                            state={{ indexPage: 1 }}
+                            className="flex items-center gap-1">
                             <i class="fa-solid fa-clock-rotate-left text-[#45c3d1] text-[20px]"></i>
                             <span className='text-[18px] font-semibold text-[#45c3d1] cursor-pointer'>Lịch hẹn</span>
-                        </li>
+                        </Link>
                         <li onMouseEnter={() => setMount(true)}
                             onMouseLeave={() => setMount(false)}
                             className="flex items-center gap-1">
@@ -93,7 +99,24 @@ const HeaderMain = ({ check }) => {
                     </div>
 
                     <div onMouseEnter={() => setMount(true)}
-                        className='absolute w-[140px] h-[30px] top-[55px] right-0'></div>
+                        className='absolute w-[140px] h-[30px] top-[55px] right-0'>
+                    </div>
+
+                    {/* <div onMouseLeave={() => setMount(false)}
+                        className={`${mount ? "block" : "hidden"}  absolute bg-white rounded-lg top-18 right-0 flex flex-col z-12`}>
+                        <Link to="/userpage"
+                            state={{ isLogin: true }}
+                            className="text-[18px] font-medium text-[#45c3d1] 
+                            cursor-pointer px-5 py-2 hover:bg-gray-200 rounded-tr-lg rounded-tl-lg border-b border-gray-200">
+                            Xem thông tin
+                        </Link>
+                        <Link onClick={handleLogout}
+                            state={{ isLogin: false }}
+                            className="text-[18px] font-medium text-[#45c3d1] 
+                        cursor-pointer px-5 py-2  hover:bg-gray-200 rounded-br-lg rounded-bl-lg">
+                            Đăng xuất
+                        </Link>
+                    </div> */}
                 </div>
             </div >
         </>

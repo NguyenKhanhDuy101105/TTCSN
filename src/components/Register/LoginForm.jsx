@@ -69,7 +69,7 @@ const LoginForm = ({ setIsLogin }) => {
 
                     setIsLogin(true);
                     setTimeout(() => {
-                        navigate("/homepage");
+                        navigate("/");
                     }, 2000)
                 }
             } catch (error) {

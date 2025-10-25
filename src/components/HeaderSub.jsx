@@ -13,9 +13,9 @@ const HeaderSub = () => {
                     </Link>
 
                     <ul className='flex gap-8 ml-5'>
-                        <Link to="" className='text-[12px]'>
+                        <Link to="/specialtypage" className='text-[12px]'>
                             <h3 className='font-semibold'>Chuyên khoa</h3>
-                            <p>Tìm bác sĩ chuyên khoa</p>
+                            <p>Tìm chuyên khoa</p>
                         </Link>
                         <Link to="" className='text-[12px]'>
                             <h3 className='font-semibold'>Cơ sở y tế</h3>
