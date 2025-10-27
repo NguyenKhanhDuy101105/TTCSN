@@ -48,7 +48,7 @@ const SpecialtyPage = () => {
     return (
         <div>
             <HeaderSub />
-            <div className='pt-[100px] max-w-[1300px] mx-auto'>
+            <div className=' max-w-[1300px] mx-auto'>
                 <p className='pt-5'>
                     <Link to="/" className='text-blue-400'><i class="fa-solid fa-house"></i></Link>
                     <span className='mx-1.5 text-blue-400'>/</span>

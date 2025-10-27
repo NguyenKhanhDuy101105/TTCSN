@@ -80,7 +80,7 @@ const LoginForm = ({ setIsLogin }) => {
     })
 
     return (
-        <div className='max-w-[650px] mx-auto py-5 mt-40 border border-gray-200 shadow-2xl rounded-lg'>
+        <div className='max-w-[650px] mx-auto py-5 mt-5 border border-gray-200 shadow-2xl rounded-lg'>
             <h2 className='text-center font-bold text-[24px] mb-3'>Đăng nhập</h2>
             <ToastContainer />
             <form onSubmit={formik.handleSubmit} className='w-full mx-auto flex flex-col items-center gap-y-6'>

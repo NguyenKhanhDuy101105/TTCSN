@@ -113,7 +113,7 @@ const RegisterForm = ({ setIsLogin }) => {
     })
 
     return (
-        <div className='max-w-[600px] mx-auto py-5 mt-30 border border-gray-200 shadow-2xl rounded-lg '>
+        <div className='max-w-[600px] mx-auto py-5 mt-5 border border-gray-200 shadow-2xl rounded-lg '>
             <h2 className='text-center font-bold text-[24px] mb-3'>Đăng ký</h2>
             <ToastContainer />
             <form onSubmit={formik.handleSubmit} className='w-full mx-auto flex flex-col items-center' >
@@ -127,7 +127,7 @@ const RegisterForm = ({ setIsLogin }) => {
                     className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
                 />
                 {formik.touched.fullName && formik.errors.fullName && (
-                    <p className='text-red-500 text-sm w-[90%]'>{formik.errors.fullName}</p>
+                    <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.fullName}</p>
                 )}
 
                 <input
@@ -140,7 +140,7 @@ const RegisterForm = ({ setIsLogin }) => {
                     className="border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3"
                 />
                 {formik.touched.phoneNumber && formik.errors.phoneNumber && (
-                    <p className="text-red-500 text-sm w-[90%]">{formik.errors.phoneNumber}</p>
+                    <p className="text-red-500 text-sm w-[90%] pb-2">{formik.errors.phoneNumber}</p>
                 )}
 
                 <input
@@ -153,7 +153,7 @@ const RegisterForm = ({ setIsLogin }) => {
                     className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
                 />
                 {formik.touched.address && formik.errors.address && (
-                    <p className='text-red-500 text-sm w-[90%]'>{formik.errors.address}</p>
+                    <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.address}</p>
                 )}
 
                 <div className="flex self-start gap-5 w-[90%] mx-auto mb-3">
@@ -195,7 +195,7 @@ const RegisterForm = ({ setIsLogin }) => {
                     className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
                 />
                 {formik.touched.dob && formik.errors.dob && (
-                    <p className='text-red-500 text-sm w-[90%]'>{formik.errors.dob}</p>
+                    <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.dob}</p>
                 )}
 
                 <input
@@ -208,7 +208,7 @@ const RegisterForm = ({ setIsLogin }) => {
                     className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
                 />
                 {formik.touched.email && formik.errors.email && (
-                    <p className='text-red-500 text-sm w-[90%]'>{formik.errors.email}</p>
+                    <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.email}</p>
                 )}
 
                 <input
@@ -221,7 +221,7 @@ const RegisterForm = ({ setIsLogin }) => {
                     className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
                 />
                 {formik.touched.password && formik.errors.password && (
-                    <p className='text-red-500 text-sm w-[90%]'>{formik.errors.password}</p>
+                    <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.password}</p>
                 )}
 
                 <div className='flex w-[90%] justify-between items-center mx-auto mt-4'>

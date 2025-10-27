@@ -17,7 +17,7 @@ const UserPage = () => {
     return (
         <>
             <HeaderSub />
-            <div className='max-w-[1300px] mx-auto mt-[120px] flex gap-5'>
+            <div className='max-w-[1300px] mx-auto mt-5 flex gap-5'>
                 <div className='w-[20%] flex flex-col gap-y-2 border-r pr-0.5 border-gray-200'>
                     <Link className={`${indexPage == 0 ? "border-[#bb4d00] bg-[#f2edea] text-amber-800" : "border-gray-400"} py-3 px-4 border-l-4 hover:bg-gray-100 rounded-[4px] font-medium`}
                         onClick={() => setIndexPage(0)}>Thông tin tài khoản</Link>
