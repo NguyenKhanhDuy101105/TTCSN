@@ -18,6 +18,12 @@ import AuthOTP from "./components/User/AuthOTP";
 import AuthChangePass from "./components/User/AuthChangePass";
 import DoctorPage from "./pages/DoctorPage";
 import Medical_Page from "./pages/Medical_Page";
+import HealthPackageList from "./components/HealthPackageList";
+import CoXuongKhopPage from "./pages/Specialties/CoXuongKhopPage";
+import Doctor from "./components/Doctor/Doctor";
+import SpecialtyDetailPage from "./pages/SpecialtyDetailPage";
+import AppointmentBooking from "./components/AppointmentBooking";
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 function App() {
   return (
     <BrowserRouter>
@@ -36,8 +42,23 @@ function App() {
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/authotp" element={<AuthOTP />} />
         <Route path="/authchangepass" element={<AuthChangePass />} />
+
+        // small page
+        <Route path="/cxkpage" element={<CoXuongKhopPage />} />
+        <Route path="/doctor/:id" element={<Doctor />} />
+        <Route path="/chuyenkhoa/:slug" element={<SpecialtyDetailPage />} />
+        <Route path="/dat-lich" element={<AppointmentBooking />} />
+
+
         // Admin
-        <Route path="/admin" element={<AdminPage />}>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedAdminRoute>
+              <AdminPage />
+            </ProtectedAdminRoute>
+          }
+        >
           <Route index element={<Dashboard />} />
           <Route path="medical" element={<MedicalPage />} />
           <Route path="specialties" element={<SpecialtiesPage />} />

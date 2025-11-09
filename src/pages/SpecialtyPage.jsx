@@ -14,36 +14,41 @@ const SpecialtyPage = () => {
         {
             id: 1,
             name: "Cơ xương khớp",
+            slug: "co-xuong-khop",
             image: s1,
-            path: "/coxuongkhop",
         },
         {
             id: 2,
             name: "Thần kinh",
+            slug: "than-kinh",
             image: s2,
         },
         {
             id: 3,
             name: "Tiêu hóa",
+            slug: "tieu-hoa",
             image: s3,
         },
         {
             id: 4,
             name: "Tim mạch",
+            slug: "tim-mach",
             image: s4,
         },
         {
             id: 5,
             name: "Tai Mũi Họng",
+            slug: "tai-mui-hong",
             image: s5,
         },
         {
             id: 6,
             name: "Cột sống",
+            slug: "cot-song",
             image: s6,
         },
-
     ]
+
 
     return (
         <div>
@@ -56,7 +61,8 @@ const SpecialtyPage = () => {
                 </p>
                 <ul className='flex flex-wrap gap-x-5 gap-y-5 pt-5'>
                     {list.map(e => (
-                        <Link to={e.path}>
+                        <Link key={e.id}
+                            to={`/chuyenkhoa/${e.slug}`}>
                             <img className='w-[310px] h-[161px]'
                                 src={e.image}
                                 alt="" />

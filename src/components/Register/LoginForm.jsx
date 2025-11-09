@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import logo from '../../assets/icons/google.svg'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, useNavigate } from 'react-router-dom';
-
-const LoginForm = ({ setIsLogin }) => {
+import { AuthContext } from '../AuthContext';
+import { Eye, EyeOff } from 'lucide-react'
+const LoginForm = ({ setShowLoginForm }) => {
     const navigate = useNavigate();
-
+    const { setIsLogin, setUser } = React.useContext(AuthContext);
+    const [showPassword, setShowPassword] = useState(true)
     const notifySuccess = () => {
         toast.success("Đăng nhập thành công!", {
             position: "top-right",
@@ -59,18 +61,34 @@ const LoginForm = ({ setIsLogin }) => {
                     const errorData = await response.json();
                     console.error("Đăng nhập thất bại:", errorData.message);
                     notifyError();
-
+                    return;
                 } else {
                     const data = await response.json();
                     notifySuccess();
                     console.log("Server trả về:", data);
-
-                    localStorage.setItem("user", JSON.stringify(data));
-
+                    localStorage.setItem("accessToken", data.accessToken);
+                    localStorage.setItem("refreshToken", data.refreshToken);
+                    localStorage.setItem("email", data.email);
+                    localStorage.setItem("hoTen", data.hoTen);
+                    localStorage.setItem("vaiTro", data.vaiTro);
+                    localStorage.setItem("user", JSON.stringify({
+                        email: data.email,
+                        fullName: data.fullName
+                    }));
                     setIsLogin(true);
+                    setUser(data);
+                    setShowLoginForm(true);
                     setTimeout(() => {
-                        navigate("/");
-                    }, 2000)
+                        if (data.vaiTro === "Admin") {
+                            navigate("/admin");
+                        }
+                        else if (data.vaiTro === "BacSi") {
+                            navigate("/bacsi");
+                        }
+                        else {
+                            navigate("/");
+                        }
+                    }, 2000);
                 }
             } catch (error) {
                 console.error("Lỗi khi gọi API:", error);
@@ -102,11 +120,11 @@ const LoginForm = ({ setIsLogin }) => {
                 </div>
 
 
-                <div className='w-[90%]'>
+                <div className='w-[90%] relative'>
                     <input
                         id='password'
                         name='password'
-                        type='password'
+                        type={showPassword ? "password" : "text"}
                         placeholder='Nhập mật khẩu'
                         value={formik.values.password}
                         onChange={formik.handleChange}
@@ -116,6 +134,12 @@ const LoginForm = ({ setIsLogin }) => {
                     {formik.touched.password && formik.errors.password && (
                         <p className='text-red-500 text-sm mt-3'>{formik.errors.password}</p>
                     )}
+                    <span
+                        className='absolute right-3 top-3 cursor-pointer text-gray-600'
+                        onClick={() => setShowPassword(!showPassword)}
+                    >
+                        {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+                    </span>
                 </div>
 
 
@@ -131,7 +155,7 @@ const LoginForm = ({ setIsLogin }) => {
 
                 <div className='flex flex-col w-[90%] justify-between items-center mx-auto gap-y-3'>
                     <p className='text-[14px]'>
-                        Bạn chưa có tài khoản? <span onClick={() => setIsLogin(false)}
+                        Bạn chưa có tài khoản? <span onClick={() => setShowLoginForm(false)}
                             className='text-blue-400  cursor-pointer'>Đăng ký ngay</span>
                     </p>
                     <p>

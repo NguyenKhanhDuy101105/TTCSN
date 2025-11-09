@@ -10,7 +10,7 @@ import Deal from '../components/Deal'
 import ListDoctor from '../components/ListDoctor'
 import Remote from '../components/Remote'
 import Suggest from '../components/Suggest'
-
+import HealthPackageList from '../components/HealthPackageList'
 const Home = () => {
     return (
         <div className=''>
@@ -20,6 +20,7 @@ const Home = () => {
             <Service />
             <ListSpecialty />
             <Medical />
+            <HealthPackageList />
             <Deal />
             <ListDoctor />
             <Remote />

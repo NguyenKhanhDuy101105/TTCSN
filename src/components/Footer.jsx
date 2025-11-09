@@ -8,19 +8,19 @@ const Footer = () => {
     return (
         <div className='bg-[#efefef] mt-10 py-5 px-5 lg:px-0'>
             <div className='max-w-[1300px] mx-auto relative flex gap-5'>
-                <div className='w-[500px]'>
+                <div div className='w-[500px]' >
                     <h3 className='font-bold mb-2'>Công ty Cổ phần Công nghệ HealthCare</h3>
                     <div className='flex mb-3 items-center'>
                         <FiMapPin className="size-10" />
-                        <p className='ml-3 text-[14px]'>Lô B4/D21, Khu đô thị mới Cầu Giấy, Phường Dịch Vọng Hậu, Quận Cầu Giấy, Thành phố Hà Nội, Việt Nam</p>
+                        <p className='ml-3 text-[14px]'>Thôn Nguyên Xá, Phường Minh Khai, Quận Bắc Từ Liêm, Thành phố Hà Nội, Việt Nam</p>
                     </div>
                     <div className='flex mb-3 items-center'>
                         <FiShield className="size-6" />
-                        <p className='ml-3 text-[14px]'>ĐKKD số. 0106790291. Sở KHĐT Hà Nội cấp ngày 16/03/2015</p>
+                        <p className='ml-3 text-[14px]'>ĐKKD số. 0123456789. Sở KHĐT Hà Nội cấp ngày 15/8/2025</p>
                     </div>
                     <div className='flex mb-3 items-center'>
                         <FiPhoneCall className="size-6" />
-                        <p className='ml-3 text-[14px] '><span className='underline'>024-7301-2468</span> (7h - 18h)</p>
+                        <p className='ml-3 text-[14px] '><span className='underline'>098-1234-567</span> (7h - 18h)</p>
                     </div>
                     <div className='flex mb-2'>
                         <FiMail className="size-6" />
@@ -29,9 +29,9 @@ const Footer = () => {
                     <h3 className='font-bold mb-2'>Văn phòng tại Hà Nội</h3>
                     <div className='flex mb-3 items-center'>
                         <FiMapPin className="size-6" />
-                        <p className='ml-3 text-[14px]'>B4/D21, Cầu Giấy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội, Việt Nam</p>
+                        <p className='ml-3 text-[14px]'>B4/D21, Nguyên Xá, Minh Khai, Bắc Từ Liêm, Hà Nội, Việt Nam</p>
                     </div>
-                </div>
+                </div >
                 <div className='w-[250px]'>
                     <ul className='flex flex-col'>
                         <Link to="/" className="flex items-center gap-1 mb-1.5">
@@ -45,7 +45,6 @@ const Footer = () => {
                         <Link className='mb-2 text-[#0fdaf5] font-medium'>Tuyển dụng</Link>
                         <Link className='mb-2 text-[#0fdaf5] font-medium'>Điều khoản sử dụng</Link>
                         <Link className='mb-2 text-[#0fdaf5] font-medium'>Câu hỏi thường gặp</Link>
-                        <Link className='mb-2 text-[#0fdaf5] font-medium'>Sức khỏe doanh nghiệp</Link>
                     </ul>
                 </div>
                 <div className=''>
@@ -72,8 +71,8 @@ const Footer = () => {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
 

@@ -4,24 +4,28 @@ import HeaderSub from "../components/HeaderSub"
 import Footer from "../components/Footer"
 import RegisterForm from '../components/Register/RegisterForm'
 import LoginForm from '../components/Register/LoginForm'
+import RegisterPage from '../components/Register/RegisterPage'
 const PageLogin = () => {
     const location = useLocation();
-    const [isLogin, setIsLogin] = useState(true);
-
+    const [showLoginForm, setShowLoginForm] = useState(true);
 
     useEffect(() => {
         if (location.state && typeof location.state.isLogin === 'boolean') {
-            setIsLogin(location.state.isLogin);
+            setShowLoginForm(location.state.isLogin);
         }
     }, [location.state]);
 
     return (
         <div>
             <HeaderSub />
-            {isLogin ? <LoginForm setIsLogin={setIsLogin} /> : <RegisterForm setIsLogin={setIsLogin} />}
+            {showLoginForm ? (
+                <LoginForm setShowLoginForm={setShowLoginForm} />
+            ) : (
+                <RegisterPage setShowLoginForm={setShowLoginForm} />
+            )}
             <Footer />
         </div>
     )
 }
 
-export default PageLogin
+export default PageLogin;

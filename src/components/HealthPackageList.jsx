@@ -1,16 +1,30 @@
 import React, { useState } from 'react'
 import { Link } from "react-router-dom";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
-import m1 from "../assets/images/medical/bachmai.png"
-
-const Medical = () => {
+import h1 from "../assets/images/healthpackage/h1.png"
+import h2 from "../assets/images/healthpackage/h2.png"
+const HealthPackageList = () => {
     const list = [
         {
             id: 1,
-            name: "Bệnh viện Bạch Mai Hà Nội",
-            image: m1,
+            name: "Gói khám sức khỏe tổng quát cơ bản cho Nam",
+            image: h1,
         },
-
+        {
+            id: 2,
+            name: "Gói khám sức khỏe tổng quát cơ bản cho Nữ",
+            image: h1,
+        },
+        {
+            id: 3,
+            name: "Gói khám sức khỏe tiền hôn nhân cho Nam",
+            image: h2,
+        },
+        {
+            id: 4,
+            name: "Gói khám sức khỏe tiền hôn nhân cho Nữ",
+            image: h2,
+        },
     ]
     const [indexStart, setIndexStart] = useState(0)
     const itemsPerPage = 3
@@ -30,13 +44,13 @@ const Medical = () => {
     };
     return (
         <div className='max-w-[1300px] mx-auto mt-15 relative px-5 lg:px-0'>
-            <h2 className='text-[24px] font-semibold mb-10'>Cơ sở y tế</h2>
+            <h2 className='text-[24px] font-semibold mb-10'>Gói khám</h2>
             <ul className='flex gap-12 relative'>
                 {listCurrent.map((item, index) => (
-                    <Link key={index} className='w-1/3 text-center rounded-2xl border border-gray-200 p-5'>
-                        <img className='w-[280px] h-[170px] mx-auto rounded-2xl'
+                    <Link key={index} className='w-1/3 text-center rounded-2xl border border-gray-200 py-5'>
+                        <img className='w-[350px] h-[216px] mx-auto rounded-2xl'
                             src={item.image} alt="anh" />
-                        <h3 className='font-semibold text-[18px] mt-6'>{item.name}</h3>
+                        <h3 className='font-semibold text-[18px] mt-3 px-5'>{item.name}</h3>
                     </Link>
                 ))}
                 {indexStart + itemsPerPage < list.length && (
@@ -56,7 +70,8 @@ const Medical = () => {
                     </div>
                 )}
             </ul>
-            <Link className='rounded-2xl bg-[#daf3f7] text-blue-500 py-3 px-4 inline-block
+            <Link to="/specialtypage"
+                className='rounded-2xl bg-[#daf3f7] text-blue-500 py-3 px-4 inline-block
             absolute top-0 right-0 cursor-pointer
             '>
                 <p className='font-semibold text-[20px]'>Xem thêm</p>
@@ -66,4 +81,4 @@ const Medical = () => {
     )
 }
 
-export default Medical
+export default HealthPackageList

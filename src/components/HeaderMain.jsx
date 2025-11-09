@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect, useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { AuthContext } from './AuthContext';
 const HeaderMain = ({ check }) => {
+    const navigate = useNavigate();
+    const { isLogin, setIsLogin, user, setUser } = useContext(AuthContext);
     const text = ["Tìm chuyên khoa", "Tìm bệnh viện", "Tìm phòng khám", "Tìm bác sĩ", "Tìm gói khám tổng quát"]
     const [indexFind, setIndexFind] = useState(0)
     const [select, setSelected] = useState(`${check}`)
@@ -25,9 +28,14 @@ const HeaderMain = ({ check }) => {
         return () => clearInterval(interval);
     }, [text.length]);
 
-    // const handleLogout = () => {
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setIsLogin(false);
+        setUser(null);
+        navigate("/loginpage");
+    }
 
-    // }
 
     return (
         <>
@@ -78,45 +86,52 @@ const HeaderMain = ({ check }) => {
                             onMouseLeave={() => setMount(false)}
                             className="flex items-center gap-1">
                             <i className="fa-solid fa-circle-user text-[#45c3d1] text-[20px]"></i>
-                            <p className="text-[18px] font-semibold text-[#45c3d1] cursor-pointer">Tài khoản</p>
+                            <p className="text-[18px] font-semibold text-[#45c3d1] cursor-pointer max-w-[120px] truncate overflow-hidden whitespace-nowrap">
+                                {isLogin ? user.hoTen : "Tài khoản"}
+                            </p>
                         </li>
                     </ul>
-
-                    <div onMouseLeave={() => setMount(false)}
-                        className={`${mount ? "block" : "hidden"}  absolute bg-white rounded-lg top-18 right-0 flex flex-col z-11`}>
-                        <Link to="/loginpage"
-                            state={{ isLogin: true }}
-                            className="text-[18px] font-medium text-[#45c3d1] 
+                    {isLogin ?
+                        <>
+                            <div onMouseLeave={() => setMount(false)}
+                                className={`${mount ? "block" : "hidden"}  absolute bg-white rounded-lg top-18 right-0 flex flex-col z-12`}>
+                                <Link to="/userpage"
+                                    state={{ isLogin: true }}
+                                    className="text-[18px] font-medium text-[#45c3d1] 
                             cursor-pointer px-5 py-2 hover:bg-gray-200 rounded-tr-lg rounded-tl-lg border-b border-gray-200">
-                            Đăng nhập
-                        </Link>
-                        <Link to="/loginpage"
-                            state={{ isLogin: false }}
-                            className="text-[18px] font-medium text-[#45c3d1] 
+                                    Xem thông tin
+                                </Link>
+                                <button onClick={handleLogout}
+                                    state={{ isLogin: false }}
+                                    className="text-[18px] font-medium text-[#45c3d1] text-start
                         cursor-pointer px-5 py-2  hover:bg-gray-200 rounded-br-lg rounded-bl-lg">
-                            Đăng ký
-                        </Link>
-                    </div>
+                                    Đăng xuất
+                                </button>
+                            </div>
+                        </> :
+                        <>
+                            <div onMouseLeave={() => setMount(false)}
+                                className={`${mount ? "block" : "hidden"}  absolute bg-white rounded-lg top-18 right-0 flex flex-col z-11`}>
+                                <Link to="/loginpage"
+                                    state={{ isLogin: true }}
+                                    className="text-[18px] font-medium text-[#45c3d1] 
+                            cursor-pointer px-5 py-2 hover:bg-gray-200 rounded-tr-lg rounded-tl-lg border-b border-gray-200">
+                                    Đăng nhập
+                                </Link>
+                                <Link to="/loginpage"
+                                    state={{ isLogin: false }}
+                                    className="text-[18px] font-medium text-[#45c3d1] 
+                        cursor-pointer px-5 py-2  hover:bg-gray-200 rounded-br-lg rounded-bl-lg">
+                                    Đăng ký
+                                </Link>
+                            </div>
+                        </>}
 
                     <div onMouseEnter={() => setMount(true)}
                         className='absolute w-[140px] h-[30px] top-[55px] right-0'>
                     </div>
 
-                    {/* <div onMouseLeave={() => setMount(false)}
-                        className={`${mount ? "block" : "hidden"}  absolute bg-white rounded-lg top-18 right-0 flex flex-col z-12`}>
-                        <Link to="/userpage"
-                            state={{ isLogin: true }}
-                            className="text-[18px] font-medium text-[#45c3d1] 
-                            cursor-pointer px-5 py-2 hover:bg-gray-200 rounded-tr-lg rounded-tl-lg border-b border-gray-200">
-                            Xem thông tin
-                        </Link>
-                        <Link onClick={handleLogout}
-                            state={{ isLogin: false }}
-                            className="text-[18px] font-medium text-[#45c3d1] 
-                        cursor-pointer px-5 py-2  hover:bg-gray-200 rounded-br-lg rounded-bl-lg">
-                            Đăng xuất
-                        </Link>
-                    </div> */}
+
                 </div>
             </div >
         </>

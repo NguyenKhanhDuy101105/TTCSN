@@ -4,7 +4,7 @@ const HeaderSub = () => {
 
     return (
         <>
-            <div className="w-screen bg-[#ecfffb]">
+            <div className="w-full bg-[#ecfffb]">
                 <div className="w-full max-w-[1300px] h-[100px] bg-[#ecfffb] mx-auto flex items-center relative px-5 lg:px-0">
 
                     <Link to="/" className="flex items-center gap-1 mr-3">

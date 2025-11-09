@@ -32,7 +32,7 @@ const ChangePassword = () => {
 
     return (
         <div className='max-w-xl border rounded-[12px] border-gray-300 shadow-md'>
-            <h2 className='bg-amber-700 text-white rounded-t-[12px] px-5 py-2 font-bold text-[24px]'>
+            <h2 className='bg-[#70b8e8] text-white rounded-t-[12px] px-5 py-2 font-bold text-[24px]'>
                 Đổi mật khẩu
             </h2>
 
@@ -111,7 +111,7 @@ const ChangePassword = () => {
                 <div className='flex gap-x-3 justify-start'>
                     <button
                         type='submit'
-                        className='px-4 py-2 cursor-pointer bg-[#bb4d00] rounded-[8px] text-white font-medium'
+                        className='px-4 py-2 cursor-pointer bg-sky-500 hover:bg-sky-600 rounded-[8px] text-white font-medium'
                     >
                         Xác nhận
                     </button>

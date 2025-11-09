@@ -11,7 +11,7 @@ const Schedule = () => {
 
     return (
         <div className='border rounded-[12px] border-gray-300 shadow-md'>
-            <h2 className='bg-amber-700 text-white rounded-t-[12px] px-5 py-2 font-bold text-[24px]'>Lịch khám</h2>
+            <h2 className='bg-[#70b8e8] text-white rounded-t-[12px] px-5 py-2 font-bold text-[24px]'>Lịch khám</h2>
             <div className='p-5'>
                 <ul>
                     <li className='flex gap-x-5'>
