@@ -2,25 +2,25 @@ import React from 'react';
 import DoctorInfo from './DoctorInfor';
 import DoctorPackage from './DoctorPackage';
 import { Link } from 'react-router-dom'
-const DoctorDetail = ({ data }) => {
-    console.log(data);
+import DoctorClinicInfo from "./DoctorClinicInfo";
+const DoctorDetail = ({ doctor, cosoyte }) => {
+    console.log(doctor);
     return (
         <div className="flex border border-gray-300 rounded-lg shadow-md overflow-hidden mb-5">
             <Link
-                to={`/doctor/${data.id}`}
-                state={{ doctor: data }}
+                to={`/doctor/${doctor.bacSiID}`}
+                state={{ cosoyte: cosoyte }}
                 className="no-underline w-1/2"
             >
                 <div className="cursor-pointer">
-                    <DoctorInfo doctor={data.doctor} />
+                    <DoctorInfo doctor={doctor} />
+                </div>
+                <div className='ml-5'>
+                    <DoctorClinicInfo doctor={doctor} cosoyte={cosoyte} />
                 </div>
             </Link>
             <DoctorPackage className="w-1/2"
-                doctor={data}
-                schedule={data.schedule}
-                clinic={data.clinic}
-                price={data.price}
-                insurance={data.insurance}
+                doctor={doctor}
             />
         </div>
     );

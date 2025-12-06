@@ -21,7 +21,7 @@ const PageLogin = () => {
             {showLoginForm ? (
                 <LoginForm setShowLoginForm={setShowLoginForm} />
             ) : (
-                <RegisterPage setShowLoginForm={setShowLoginForm} />
+                <RegisterForm setShowLoginForm={setShowLoginForm} />
             )}
             <Footer />
         </div>

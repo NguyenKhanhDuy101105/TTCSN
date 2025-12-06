@@ -1,38 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Toolbar from "../ChuyenKhoa/Toolbar.jsx";
 import SpecialtiesTableWithPagination from "../ChuyenKhoa/SpecialtiesTableWithPagination.jsx";
 import SpecialtiesForm from "../ChuyenKhoa/SpecialtiesForm.jsx";
 import SpecialtiesViewModal from "../ChuyenKhoa/SpecialtiesViewModal.jsx";
 import DeleteSpecialtyModal from "../ChuyenKhoa/DeleteSpecialtyModal.jsx";
-import { specialties } from "./SpecialtiesData.js"; // dữ liệu chuyên khoa
-import { data as medicalData } from "../CoSoYTe/MedicalData.js"; // dữ liệu cơ sở y tế
+import {
+    getAllSpecialties,
+    createSpecialty,
+    updateSpecialty,
+    deleteSpecialty,
+} from "./chuyenkhoaAPI.js";
 
 const SpecialtiesPage = () => {
-    const [specialtiesData, setSpecialtiesData] = useState(specialties);
+    const [specialtiesData, setSpecialtiesData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
-    // state quản lý modal
+    // state modal
     const [selectedItem, setSelectedItem] = useState(null);
     const [openForm, setOpenForm] = useState(false);
     const [openView, setOpenView] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
-
-    // --- Join dữ liệu chuyên khoa với cơ sở y tế ---
-    const joinedData = specialtiesData.map((item) => {
-        const medical = medicalData.find((m) => m.id === item.medicalId);
-        return {
-            ...item,
-            medical: medical || null, // gắn object đầy đủ để hiển thị
+    const token = localStorage.getItem("accessToken");
+    // --- Lấy dữ liệu từ API khi component mount ---
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await getAllSpecialties();
+                console.log(data)
+                setSpecialtiesData(data);
+            } catch (err) {
+                console.error("Lỗi tải danh sách chuyên khoa:", err);
+            }
         };
-    });
+        fetchData();
+    }, []);
 
     // --- Tìm kiếm ---
-    const filteredData = joinedData.filter(
-        (item) =>
-            item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.desc.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.medical?.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredData = specialtiesData.filter((item) => {
+        if (!searchTerm) return true;
+        const term = searchTerm.toLowerCase();
+        return (
+            item.tenChuyenKhoa.toLowerCase().includes(term) ||
+            item.moTa.toLowerCase().includes(term)
+        );
+    });
 
     // --- Thêm mới ---
     const handleAdd = () => {
@@ -58,25 +69,48 @@ const SpecialtiesPage = () => {
         setOpenDelete(true);
     };
 
-    const confirmDelete = () => {
-        setSpecialtiesData((prev) => prev.filter((s) => s.id !== selectedItem.id));
-        setOpenDelete(false);
-        setSelectedItem(null);
+    const confirmDelete = async () => {
+        try {
+
+            await deleteSpecialty(selectedItem.chuyenKhoaID, token);
+            setSpecialtiesData((prev) =>
+                prev.filter((s) => s.chuyenKhoaID !== selectedItem.chuyenKhoaID)
+            );
+        } catch (err) {
+            console.error("Lỗi xóa chuyên khoa:", err);
+        } finally {
+            setOpenDelete(false);
+            setSelectedItem(null);
+        }
     };
 
     // --- Lưu (thêm / sửa) ---
-    const handleSave = (newItem) => {
-        if (selectedItem) {
-            // sửa
-            setSpecialtiesData((prev) =>
-                prev.map((s) => (s.id === selectedItem.id ? { ...newItem, id: selectedItem.id } : s))
-            );
-        } else {
-            // thêm
-            setSpecialtiesData((prev) => [...prev, { ...newItem, id: Date.now() }]);
+    const handleSave = async (newItem) => {
+        try {
+
+            if (selectedItem) {
+                // Sửa
+                const updated = await updateSpecialty(
+                    selectedItem.chuyenKhoaID,
+                    newItem,
+                    token,
+                );
+                setSpecialtiesData((prev) =>
+                    prev.map((s) =>
+                        s.chuyenKhoaID === selectedItem.chuyenKhoaID ? updated : s
+                    )
+                );
+            } else {
+
+                const created = await createSpecialty(newItem, token);
+                setSpecialtiesData((prev) => [...prev, created]);
+            }
+        } catch (err) {
+            console.error("Lỗi lưu chuyên khoa:", err);
+        } finally {
+            setOpenForm(false);
+            setSelectedItem(null);
         }
-        setOpenForm(false);
-        setSelectedItem(null);
     };
 
     return (
@@ -84,7 +118,7 @@ const SpecialtiesPage = () => {
             <Toolbar onSearch={setSearchTerm} onAdd={handleAdd} content={"chuyên khoa"} />
 
             <SpecialtiesTableWithPagination
-                items={filteredData}   // bảng có đủ cả medical info
+                items={filteredData}
                 onView={handleView}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
@@ -110,7 +144,6 @@ const SpecialtiesPage = () => {
             {openForm && (
                 <SpecialtiesForm
                     editingSpecialty={selectedItem}
-                    medicalOptions={medicalData}
                     onSave={handleSave}
                     onClose={() => {
                         setOpenForm(false);

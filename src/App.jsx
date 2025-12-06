@@ -19,11 +19,18 @@ import AuthChangePass from "./components/User/AuthChangePass";
 import DoctorPage from "./pages/DoctorPage";
 import Medical_Page from "./pages/Medical_Page";
 import HealthPackageList from "./components/HealthPackageList";
-import CoXuongKhopPage from "./pages/Specialties/CoXuongKhopPage";
 import Doctor from "./components/Doctor/Doctor";
 import SpecialtyDetailPage from "./pages/SpecialtyDetailPage";
 import AppointmentBooking from "./components/AppointmentBooking";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
+import ProtectedDoctorRoute from "./components/ProtectedDoctorRoute";
+import DoctorManagerPage from "./components/DoctorManager/DoctorManagerPage";
+import DoctorInfor from "./components/DoctorManager/Infor/DoctorInfor";
+import ScheduleDoctorPage from "./components/DoctorManager/Schedule/ScheduleDoctorPage";
+import CustomerBookingPage from "./components/DoctorManager/Appointment/CustomerBookingPage";
+import EmailVerification from "./components/Register/EmailVerification.jsx";
+import SearchInfor from "./pages/SearchInfor.jsx"
+import TrinhDoPage from "./components/Admin/TrinhDo/TrinhDoPage.jsx";
 function App() {
   return (
     <BrowserRouter>
@@ -42,13 +49,28 @@ function App() {
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/authotp" element={<AuthOTP />} />
         <Route path="/authchangepass" element={<AuthChangePass />} />
-
+        <Route path="/emailverification" element={<EmailVerification />} />
+        <Route path="/search" element={<SearchInfor />} />
         // small page
-        <Route path="/cxkpage" element={<CoXuongKhopPage />} />
         <Route path="/doctor/:id" element={<Doctor />} />
-        <Route path="/chuyenkhoa/:slug" element={<SpecialtyDetailPage />} />
+        <Route path="/chuyenkhoa/:id" element={<SpecialtyDetailPage />} />
         <Route path="/dat-lich" element={<AppointmentBooking />} />
 
+        // Doctor
+        <Route
+          path="/bacsi"
+          element={
+            <ProtectedDoctorRoute>
+              <DoctorManagerPage />
+            </ProtectedDoctorRoute>
+          }
+        >
+          <Route index element={<DoctorInfor />} />
+          <Route path="infor" element={<DoctorInfor />} />
+          <Route path="schedule" element={<ScheduleDoctorPage />} />
+          <Route path="appointment" element={<CustomerBookingPage />} />
+          <Route path="meetings" element={<CustomerBookingPage />} />
+        </Route>
 
         // Admin
         <Route
@@ -65,6 +87,7 @@ function App() {
           <Route path="doctors" element={<DoctorsPage />} />
           <Route path="services" element={<ServicesPage />} />
           <Route path="appointments" element={<Dashboard />} />
+          <Route path="degree" element={<TrinhDoPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

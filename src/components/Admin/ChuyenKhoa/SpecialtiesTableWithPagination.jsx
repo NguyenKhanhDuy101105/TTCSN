@@ -5,7 +5,7 @@ import ReactPaginate from "react-paginate";
 export default function SpecialtiesTableWithPagination({ items, onView, onEdit, onDelete }) {
     const [pageNumber, setPageNumber] = useState(0);
 
-    const itemsPerPage = 5;
+    const itemsPerPage = 6;
     const pagesVisited = pageNumber * itemsPerPage;
 
     const currentItems = items.slice(pagesVisited, pagesVisited + itemsPerPage);
@@ -22,38 +22,27 @@ export default function SpecialtiesTableWithPagination({ items, onView, onEdit, 
                     <thead className="bg-gray-100 text-sm font-semibold text-gray-700">
                         <tr>
                             <th className="p-4">TÊN CHUYÊN KHOA</th>
-                            <th className="p-4">CƠ SỞ Y TẾ</th>
                             <th className="p-4">MÔ TẢ</th>
-                            <th className="p-4">ĐỊA CHỈ</th>
-                            <th className="p-4">SỐ ĐIỆN THOẠI</th>
                             <th className="p-4 text-center">THAO TÁC</th>
                         </tr>
                     </thead>
+
                     <tbody className="divide-y divide-gray-100">
                         {items.length === 0 ? (
                             <tr>
-                                <td colSpan="6" className="text-center py-6 text-gray-500">
+                                <td colSpan="3" className="text-center py-6 text-gray-500">
                                     Không tìm thấy chuyên khoa nào
                                 </td>
                             </tr>
                         ) : (
                             currentItems.map((item, index) => (
-
                                 <tr
                                     key={pagesVisited + index}
                                     className="hover:bg-[#fdf8f5] transition"
                                 >
-                                    <td className="p-4 font-medium text-gray-800">{item.name}</td>
-                                    <td className="p-4 text-gray-600">
-                                        {item.medical?.name || "Không có"}
-                                    </td>
-                                    <td className="p-4 text-gray-600">{item.desc}</td>
-                                    <td className="p-4 text-gray-600">
-                                        {item.medical?.address || "Chưa có"}
-                                    </td>
-                                    <td className="p-4 text-gray-600">
-                                        {item.medical?.phoneNumber || "Chưa có"}
-                                    </td>
+                                    <td className="p-4 font-medium text-gray-800">{item.tenChuyenKhoa}</td>
+                                    <td className="p-4 text-gray-600">{item.moTa}</td>
+
                                     <td className="p-4 text-center">
                                         <div className="flex justify-center gap-3">
                                             <button
@@ -62,12 +51,14 @@ export default function SpecialtiesTableWithPagination({ items, onView, onEdit, 
                                             >
                                                 <Eye size={18} />
                                             </button>
+
                                             <button
                                                 onClick={() => onEdit(pagesVisited + index)}
                                                 className="text-[#ad7555] hover:text-[#945f46] transition cursor-pointer"
                                             >
                                                 <Edit size={18} />
                                             </button>
+
                                             <button
                                                 onClick={() => onDelete(pagesVisited + index)}
                                                 className="text-red-500 hover:text-red-700 transition cursor-pointer"
@@ -83,7 +74,7 @@ export default function SpecialtiesTableWithPagination({ items, onView, onEdit, 
                 </table>
             </div>
 
-            {/* thanh phân trang */}
+            {/* Thanh phân trang */}
             {pageCount > 1 && (
                 <div className="flex justify-end">
                     <ReactPaginate

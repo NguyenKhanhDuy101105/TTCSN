@@ -7,14 +7,13 @@ const AccountInfor = () => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        const user = JSON.parse(localStorage.getItem("user"));
-        const email = user?.email;
+        const token = localStorage.getItem("accessToken");
 
-        fetch(`http://localhost:8080/api/auth/user?email=${email}`, {
+        fetch("http://localhost:8080/api/auth/me", {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
             },
         })
             .then(response => {
@@ -24,9 +23,9 @@ const AccountInfor = () => {
             .then(data => setUser(data))
             .catch(error => {
                 console.error("Lỗi khi gọi API:", error);
-                alert("Có lỗi xảy ra, vui lòng thử lại!");
             });
     }, []);
+
 
     if (!user) return <p>Đang tải thông tin...</p>;
 
@@ -39,10 +38,10 @@ const AccountInfor = () => {
                 <div className='pt-5 text-center flex flex-col items-center'>
                     <img
                         className='rounded-[50%] size-[120px]'
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsCc5E-o4z6uPnn8qn_ITbrlxdJ5kdmbztmg&s"
+                        src={user.avatarUrl || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsCc5E-o4z6uPnn8qn_ITbrlxdJ5kdmbztmg&s"}
                         alt="avatar"
                     />
-                    <p className='font-semibold mt-2'>{user.fullName}</p>
+                    <p className='font-semibold mt-2'>{user.hoTen}</p>
                 </div>
                 <div className='flex-1 py-5 ml-5'>
                     {isEditing

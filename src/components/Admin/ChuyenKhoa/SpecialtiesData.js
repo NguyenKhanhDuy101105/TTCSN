@@ -1,62 +1,74 @@
-import khoa1 from "../../../assets/images/specialty/s1.png";
-import khoa2 from "../../../assets/images/specialty/s2.png";
-
 const specialties = [
   {
-    id: "Khoa1",
-    name: "Cơ Xương Khớp",
-    desc: "Bác sĩ Cơ Xương Khớp giỏi",
-    image: khoa1,
-    medicalId: 1, // thuộc Trung Tâm Y Khoa Việt Đức
+    chuyenKhoaID: 1,
+    tenChuyenKhoa: "Cơ xương khớp",
+    moTa: "Chuyên khoa điều trị xương khớp",
+    anhDaiDien:
+      "https://cdn.bookingcare.vn/fo/w640/2023/12/26/101627-co-xuong-khop.png",
+    thuTuHienThi: 1,
   },
   {
-    id: "Khoa2",
-    name: "Thần Kinh",
-    desc: "Chẩn đoán và điều trị các bệnh về thần kinh",
-    image: khoa2,
-    medicalId: 2, // thuộc Bệnh Viện Bạch Mai
+    chuyenKhoaID: 2,
+    tenChuyenKhoa: "Thần kinh",
+    moTa: "Khám và điều trị thần kinh",
+    anhDaiDien:
+      "https://cdn.bookingcare.vn/fo/w640/2023/12/26/101739-than-kinh.png",
+    thuTuHienThi: 2,
   },
   {
-    id: "Khoa3",
-    name: "Tiêu Hóa",
-    desc: "Khám và điều trị các bệnh về tiêu hóa",
-    image: khoa1,
-    medicalId: 3, // Phòng Khám Đa Khoa Hoàn Mỹ
+    chuyenKhoaID: 3,
+    tenChuyenKhoa: "Tiêu hóa",
+    moTa: "Chẩn đoán tiêu hóa",
+    anhDaiDien:
+      "https://cdn.bookingcare.vn/fo/w640/2023/12/26/101713-tieu-hoa.png",
+    thuTuHienThi: 3,
   },
   {
-    id: "Khoa4",
-    name: "Tim Mạch",
-    desc: "Khám và điều trị các bệnh về tim mạch",
-    image: khoa2,
-    medicalId: 5, // Bệnh Viện Trung Ương Huế
+    chuyenKhoaID: 4,
+    tenChuyenKhoa: "Tim mạch",
+    moTa: "Chuyên khoa tim mạch",
+    anhDaiDien:
+      "https://cdn.bookingcare.vn/fo/w640/2023/12/26/101713-tim-mach.png",
+    thuTuHienThi: 4,
   },
   {
-    id: "Khoa5",
-    name: "Hô Hấp",
-    desc: "Khám và điều trị các bệnh về hô hấp",
-    image: khoa1,
-    medicalId: 9, // Bệnh Viện Chợ Rẫy
+    chuyenKhoaID: 5,
+    tenChuyenKhoa: "Tai Mũi Họng",
+    moTa: "Khám tai mũi họng",
+    anhDaiDien:
+      "https://cdn.bookingcare.vn/fo/w640/2023/12/26/101713-tai-mui-hong.png",
+    thuTuHienThi: 5,
   },
   {
-    id: "Khoa6",
-    name: "Da Liễu",
-    desc: "Chăm sóc và điều trị các bệnh về da",
-    image: khoa2,
-    medicalId: 17, // Bệnh Viện Da Liễu Hà Nội
+    chuyenKhoaID: 6,
+    tenChuyenKhoa: "Cột sống",
+    moTa: "Điều trị cột sống",
+    anhDaiDien:
+      "https://cdn.bookingcare.vn/fo/w640/2023/12/26/101627-cot-song.png",
+    thuTuHienThi: 6,
   },
   {
-    id: "Khoa7",
-    name: "Nhi Khoa",
-    desc: "Khám và điều trị bệnh cho trẻ em",
-    image: khoa1,
-    medicalId: 13, // Bệnh Viện Nhi Trung Ương
+    chuyenKhoaID: 7,
+    tenChuyenKhoa: "Da liễu",
+    moTa: "Điều trị da liễu",
+    anhDaiDien:
+      "https://cdn.bookingcare.vn/fo/w640/2023/12/26/101638-da-lieu.png",
+    thuTuHienThi: 7,
   },
   {
-    id: "Khoa8",
-    name: "Nhi Khoa",
-    desc: "Khám và điều trị bệnh cho trẻ em",
-    image: khoa1,
-    medicalId: 13, // Bệnh Viện Nhi Trung Ương
+    chuyenKhoaID: 8,
+    tenChuyenKhoa: "Hô hấp",
+    moTa: "Điều trị hô hấp",
+    anhDaiDien:
+      "https://cdn.bookingcare.vn/fo/w640/2023/12/26/101638-ho-hap-phoi.png",
+    thuTuHienThi: 8,
+  },
+  {
+    chuyenKhoaID: 9,
+    tenChuyenKhoa: "Mắt",
+    moTa: "Điều trị về mắt",
+    anhDaiDien: "https://cdn.bookingcare.vn/fo/w640/2023/12/26/101638-mat.png",
+    thuTuHienThi: 9,
   },
 ];
 

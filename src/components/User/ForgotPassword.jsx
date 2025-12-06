@@ -1,11 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import HeaderSub from '../HeaderSub'
 import Footer from '../Footer'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import axios from 'axios'
+
 const ForgotPassword = () => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
+
     const formik = useFormik({
         initialValues: {
             email: "",
@@ -16,23 +21,46 @@ const ForgotPassword = () => {
                 .required('Vui lòng nhập email'),
         }),
         validateOnChange: true,
-        onSubmit: (values) => {
-            console.log("Email gửi OTP:", values.email);
+        onSubmit: async (values) => {
+            setLoading(true);
+            setError(null);
 
-            navigate("/authotp", { state: { email: values.email } });
+            try {
+                const token = localStorage.getItem("token"); // nếu API cần token
+                const res = await axios.post(
+                    `http://localhost:8080/api/auth/forgot-password?email=${encodeURIComponent(values.email)}`,
+                    {},
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            Accept: "*/*",
+                        },
+                    }
+                );
+
+                console.log("Kết quả API:", res.data);
+                // Chuyển sang trang nhập OTP
+                navigate("/authotp", { state: { email: values.email } });
+
+            } catch (err) {
+                console.error("Lỗi khi gửi email:", err);
+                setError(err.response?.data?.message || "Có lỗi xảy ra, thử lại sau!");
+            } finally {
+                setLoading(false);
+            }
         },
     })
 
     return (
         <>
             <HeaderSub />
-            <div className='max-w-[650px] mx-auto py-5 mt-40 border border-gray-200 shadow-2xl rounded-lg'>
+            <div className='w-full max-w-[450px] sm:max-w-[550px] md:max-w-[650px] mx-auto py-5 mt-10 border border-gray-200 shadow-2xl rounded-lg'>
                 <h2 className='text-center font-bold text-[24px] mb-3'>Quên mật khẩu</h2>
                 <div className="w-[90%] mb-2 p-3 bg-green-200 text-green-800 rounded mx-auto ">
                     Vui lòng nhập email để cập nhật lại mật khẩu
                 </div>
+                {error && <div className="w-[90%] mb-2 p-3 bg-red-200 text-red-800 rounded mx-auto">{error}</div>}
                 <form onSubmit={formik.handleSubmit} className='w-full mx-auto flex flex-col items-center gap-y-6'>
-
                     <div className='w-[90%]'>
                         <input
                             id='email'
@@ -51,14 +79,13 @@ const ForgotPassword = () => {
                     <div className='flex w-[90%] justify-between items-center mx-auto'>
                         <button
                             type='submit'
-                            className='bg-amber-700 text-white font-bold rounded-lg px-4 py-2 cursor-pointer w-full hover:bg-amber-800 transition-all'
+                            disabled={loading}
+                            className='bg-amber-700 text-white font-bold rounded-lg px-4 py-2 cursor-pointer w-full hover:bg-amber-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed'
                         >
-                            Gửi để nhận mã OTP
+                            {loading ? "Đang gửi..." : "Gửi để nhận mã OTP"}
                         </button>
                     </div>
-
                 </form>
-
             </div>
             <Footer />
         </>

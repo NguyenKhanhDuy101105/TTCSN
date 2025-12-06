@@ -1,31 +1,18 @@
-import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import HeaderSub from "./HeaderSub";
 import Footer from "./Footer";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AppointmentBooking = () => {
     const location = useLocation();
-    const doctorFromNav = location.state?.doctor;
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        if (doctorFromNav) {
-            localStorage.setItem("selectedDoctor", JSON.stringify(doctorFromNav));
-        }
-    }, [doctorFromNav]);
-
-    const doctor =
-        doctorFromNav || JSON.parse(localStorage.getItem("selectedDoctor"));
-
-    const user = JSON.parse(localStorage.getItem("user")) || {
-        name: "",
-        gender: "",
-        phone: "",
-        email: "",
-        birthYear: "",
-        address: "",
-    };
+    const { doctor, date, time, ca } = location.state || {};
+    const localUser = JSON.parse(localStorage.getItem("user")) || {};
 
     const validationSchema = Yup.object({
         name: Yup.string().required("Vui lòng nhập họ và tên"),
@@ -36,29 +23,89 @@ const AppointmentBooking = () => {
             .email("Email không hợp lệ")
             .required("Vui lòng nhập email"),
         birthYear: Yup.number()
-            .min(1900, "Năm sinh không hợp lệ")
-            .max(new Date().getFullYear(), "Năm sinh không hợp lệ")
+            .typeError("Năm sinh phải là số")
             .required("Vui lòng nhập năm sinh"),
         address: Yup.string().required("Vui lòng nhập địa chỉ"),
         reason: Yup.string().required("Vui lòng nhập lý do khám"),
     });
 
-    // ✅ Formik setup
+    const notifySuccess = () => {
+        toast.success("Đặt lịch thành công!", {
+            position: "top-right",
+            autoClose: 3000,
+        });
+    };
+
+    const notifyError = () => {
+        toast.error("Đặt lịch thất bại!", {
+            position: "top-right",
+            autoClose: 3000,
+        });
+    };
+
+    const formatCurrency = (value) => {
+        if (!value) return "0";
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    };
+
     const formik = useFormik({
         initialValues: {
-            name: user.name,
-            gender: user.gender || "Nam",
-            phone: user.phone,
-            email: user.email,
-            birthYear: user.birthYear,
-            address: user.address,
+            name: localUser.hoTen || "",
+            gender: localUser.gioiTinh === 1 ? "Nam" : "Nữ",
+            phone: localUser.soDienThoai || "",
+            email: localUser.email || "",
+            birthYear: localUser.ngaySinh?.slice(0, 4) || "",
+            address: localUser.diaChi || "",
             reason: "",
+            payment: "TIEN_MAT",
         },
         validationSchema,
         onSubmit: (values) => {
-            console.log("Dữ liệu đặt lịch:", values);
-            alert("✅ Đặt lịch khám thành công!");
-        },
+            const token = localStorage.getItem("accessToken");
+
+            if (!token) {
+                toast.error("Bạn cần đăng nhập để đặt lịch!");
+                return setTimeout(() => navigate("/loginpage"), 1000);
+            }
+
+            const body = {
+                bacSiID: doctor?.bacSiID,
+                ngayKham: date?.slice(0, 10),
+                ca: ca,
+                gioKham: time,
+                lyDoKham: values.reason,
+                ghiChu: "",
+                phuongThucThanhToan: values.payment,
+                tienSuBenh: "",
+                thuocDangDung: "",
+                diUng: "",
+                onlinePayment: values.payment !== "TIEN_MAT"
+            };
+
+
+            console.log("📌 Body gửi lên:", body);
+
+            fetch("http://localhost:8080/api/bookings", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(body),
+            })
+                .then((res) => {
+                    if (!res.ok) throw new Error();
+                    return res.json();
+                })
+                .then(() => {
+                    notifySuccess();
+                    setTimeout(() => navigate("/"), 1000);
+                })
+                .catch(() => {
+                    notifyError();
+                });
+        }
+
     });
 
     return (
@@ -66,161 +113,166 @@ const AppointmentBooking = () => {
             <HeaderSub />
 
             <div className="max-w-5xl mx-auto bg-white mt-6 p-6 rounded-2xl shadow-sm grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Cột trái: thông tin bác sĩ */}
-                <div className="border-r border-gray-100 pr-6">
+
+                {/* BÁC SĨ */}
+                <div className="border-r border-gray-300 pr-6">
                     <div className="flex items-center gap-4">
                         <img
-                            src={doctor?.avatar}
-                            alt={doctor?.name}
-                            className="w-24 h-24 rounded-full object-cover"
+                            src={doctor?.avatarUrl}
+                            className="w-24 h-24 rounded-full object-cover border border-gray-300"
                         />
                         <div>
-                            <h2 className="text-lg font-semibold text-sky-700">
-                                {doctor?.name}
-                            </h2>
-                            <p className="text-gray-600 text-sm">{doctor?.specialty}</p>
-                            <p className="text-gray-500 text-sm">{doctor?.clinic}</p>
+                            <h2 className="text-lg font-semibold text-sky-700">{doctor?.hoTen}</h2>
+                            <p className="text-gray-600 text-sm font-medium">{doctor?.moTaTrinhDo}</p>
+                            <p className="text-gray-600 text-sm font-medium">{doctor?.tenChuyenKhoa}</p>
                         </div>
                     </div>
 
                     <div className="mt-4 text-sm text-gray-600">
-                        <p>
-                            <span className="font-semibold text-sky-700">Thời gian: </span>
-                            {doctor?.schedule || "13:30 - 14:00, Thứ 4, 05/11/2025"}
-                        </p>
-                        <p>
-                            <span className="font-semibold text-sky-700">Địa điểm: </span>
-                            {doctor?.address || "Phòng khám XYZ, Hà Nội"}
-                        </p>
+                        <p><strong>Thời gian:</strong> <span className="font-semibold ml-0.5">{time}, {date}</span></p>
+                        <p><strong>Ca:</strong> <span className="font-semibold ml-0.5">{ca}</span></p>
+                        <p><strong>Địa điểm:</strong> <span className="font-semibold">78 Giải Phóng, Đống Đa, Hà Nội</span></p>
                     </div>
 
-                    <div className="mt-6 p-4 bg-sky-50 rounded-lg text-sky-700">
-                        <p className="font-semibold">Giá khám: {doctor?.price || "500.000đ"}</p>
+                    <div className="mt-6 p-4 bg-sky-50 rounded-lg text-sky-700 border border-gray-300">
+                        <p className="font-semibold">
+                            Giá khám: {formatCurrency(doctor?.giaKham || 500000)} vnđ
+                        </p>
                         <p className="text-sm text-gray-600">Phí đặt lịch: Miễn phí</p>
                         <p className="font-bold mt-2 text-lg text-right">
-                            Tổng cộng: {doctor?.price || "500.000đ"}
+                            Tổng cộng: {formatCurrency(doctor?.giaKham || 500000)} vnđ
                         </p>
+
                     </div>
                 </div>
 
-                {/* Cột phải: form đặt lịch */}
-                <form onSubmit={formik.handleSubmit} className="space-y-4 text-sm text-gray-700">
+                {/* FORM */}
+                <form onSubmit={formik.handleSubmit} className="space-y-4 text-sm">
+
                     <h3 className="font-semibold text-lg text-sky-700 mb-2">
                         Thông tin người đặt lịch
                     </h3>
 
-                    {/* Họ tên */}
                     <input
                         type="text"
                         name="name"
+                        className="w-full border border-gray-300 p-2 rounded-lg"
                         placeholder="Họ và tên"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:border-sky-400 focus:ring-sky-300"
                         {...formik.getFieldProps("name")}
                     />
+
                     {formik.touched.name && formik.errors.name && (
                         <p className="text-red-500 text-xs">{formik.errors.name}</p>
                     )}
 
-                    {/* Giới tính */}
                     <div className="flex gap-4">
                         <label className="flex items-center gap-1">
-                            <input
-                                type="radio"
-                                name="gender"
-                                value="Nam"
+                            <input type="radio" name="gender" value="Nam"
                                 checked={formik.values.gender === "Nam"}
-                                onChange={formik.handleChange}
-                            />
-                            Nam
+                                onChange={formik.handleChange} /> Nam
                         </label>
                         <label className="flex items-center gap-1">
-                            <input
-                                type="radio"
-                                name="gender"
-                                value="Nữ"
+                            <input type="radio" name="gender" value="Nữ"
                                 checked={formik.values.gender === "Nữ"}
-                                onChange={formik.handleChange}
-                            />
-                            Nữ
+                                onChange={formik.handleChange} /> Nữ
                         </label>
                     </div>
 
-                    {/* Số điện thoại */}
                     <input
                         type="text"
                         name="phone"
+                        className="w-full border border-gray-300 p-2 rounded-lg"
                         placeholder="Số điện thoại"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:border-sky-400"
                         {...formik.getFieldProps("phone")}
                     />
+
                     {formik.touched.phone && formik.errors.phone && (
                         <p className="text-red-500 text-xs">{formik.errors.phone}</p>
                     )}
 
-                    {/* Email */}
                     <input
                         type="email"
                         name="email"
+                        className="w-full border border-gray-300 p-2 rounded-lg"
                         placeholder="Email"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:border-sky-400"
                         {...formik.getFieldProps("email")}
                     />
                     {formik.touched.email && formik.errors.email && (
                         <p className="text-red-500 text-xs">{formik.errors.email}</p>
                     )}
 
-                    {/* Năm sinh */}
                     <input
                         type="number"
                         name="birthYear"
+                        className="w-full border border-gray-300 p-2 rounded-lg"
                         placeholder="Năm sinh"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:border-sky-400"
                         {...formik.getFieldProps("birthYear")}
                     />
+
                     {formik.touched.birthYear && formik.errors.birthYear && (
                         <p className="text-red-500 text-xs">{formik.errors.birthYear}</p>
                     )}
 
-                    {/* Địa chỉ */}
                     <input
                         type="text"
                         name="address"
-                        placeholder="Địa chỉ (Ví dụ: 123 Nguyễn Trãi, Thanh Xuân, Hà Nội)"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:border-sky-400"
+                        className="w-full border border-gray-300 p-2 rounded-lg"
+                        placeholder="Địa chỉ"
                         {...formik.getFieldProps("address")}
                     />
                     {formik.touched.address && formik.errors.address && (
                         <p className="text-red-500 text-xs">{formik.errors.address}</p>
                     )}
 
-                    {/* Lý do khám */}
                     <textarea
                         name="reason"
+                        className="w-full border border-gray-300 p-2 rounded-lg"
                         placeholder="Lý do khám"
-                        className="w-full border border-gray-300 rounded-lg p-2 h-16 focus:border-sky-400"
                         {...formik.getFieldProps("reason")}
-                    ></textarea>
+                    />
                     {formik.touched.reason && formik.errors.reason && (
                         <p className="text-red-500 text-xs">{formik.errors.reason}</p>
                     )}
 
-                    {/* Ghi chú và nút xác nhận */}
-                    <div className="pt-2 border-t border-gray-200">
-                        <p className="text-gray-600 text-xs mb-3">
-                            <strong>Lưu ý:</strong> Vui lòng kiểm tra kỹ thông tin trước khi
-                            xác nhận đặt khám.
-                        </p>
-                        <button
-                            type="submit"
-                            className="w-full bg-sky-500 hover:bg-sky-600 text-white py-2 rounded-lg font-semibold"
-                        >
-                            Xác nhận đặt khám
-                        </button>
+                    {/* Payment */}
+                    <div className="mt-2">
+                        <p className="font-medium mb-1">Phương thức thanh toán:</p>
+
+                        <label className="block">
+                            <input
+                                type="radio"
+                                name="payment"
+                                value="TIEN_MAT"
+                                checked={formik.values.payment === "TIEN_MAT"}
+                                onChange={formik.handleChange}
+                            />{" "}
+                            Tiền mặt
+                        </label>
+
+                        <label className="block">
+                            <input
+                                type="radio"
+                                name="payment"
+                                value="VNPAY"
+                                checked={formik.values.payment === "VNPAY"}
+                                onChange={formik.handleChange}
+                            />{" "}
+                            VNPay
+                        </label>
                     </div>
+
+
+                    <button
+                        type="submit"
+                        className="w-full bg-sky-500 hover:bg-sky-600 text-white py-2 rounded-lg font-semibold mt-4"
+                    >
+                        Xác nhận đặt khám
+                    </button>
                 </form>
             </div>
 
             <Footer />
+            <ToastContainer />
         </div>
     );
 };

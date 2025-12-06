@@ -1,71 +1,40 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { Link } from "react-router-dom";
-import bs1 from "../assets/images/doctor/bs1.png"
-import bs2 from "../assets/images/doctor/bs2.png"
-import bs3 from "../assets/images/doctor/bs3.png"
-import bs4 from "../assets/images/doctor/bs4.png"
-import bs5 from "../assets/images/doctor/bs5.png"
-import bs6 from "../assets/images/doctor/bs6.png"
-import bs7 from "../assets/images/doctor/bs7.png"
-import bs8 from "../assets/images/doctor/bs8.png"
-import nen from "../assets/images/doctor/nen.png"
+import nen from "../assets/images/doctor/nen.png";
+import axios from "axios";
+
 const ListDoctor = () => {
-    const listDoctor = [
-        {
-            id: 1,
-            name: "Bác sĩ CK II Nguyễn Văn Quýnh",
-            img: bs1,
-            specialty: "Tim mạch",
-        },
-        {
-            id: 2,
-            name: "Bác sĩ Nguyễn Thị Hoài An",
-            img: bs2,
-            specialty: "Tai Mũi Họng,Nhi khoa",
-        },
-        {
-            id: 3,
-            name: "Bác sĩ Trần Thị Mai Thy",
-            img: bs3,
-            specialty: "Thần kinh",
-        },
-        {
-            id: 4,
-            name: "Bác sĩ CKII Nguyễn Tiến Lãng",
-            img: bs4,
-            specialty: "Tiểu đường - Nội tiết",
-        },
-        {
-            id: 5,
-            name: "Bác sĩ Chuyên khoa II Võ Văn Mẫn",
-            img: bs5,
-            specialty: "Cơ Xương Khớp",
-        },
-        {
-            id: 6,
-            name: "Giáo sư, Tiến sĩ Hà Văn Quyết",
-            img: bs6,
-            specialty: "Tiêu hóa",
-        },
-        {
-            id: 7,
-            name: "Bác sĩ Chuyên khoa II Lê Hồng Anh",
-            img: bs7,
-            specialty: "Hô hấp - Phổi",
-        },
-        {
-            id: 8,
-            name: "Tiến sĩ, Bác sĩ Phạm Chí Lăng",
-            img: bs8,
-            specialty: "Cơ Xương Khớp",
-        },
 
-    ]
-    const [indexStart, setIndexStart] = useState(0)
-    const itemsPerPage = 4
+    const [listDoctor, setListDoctor] = useState([]);
+    const [indexStart, setIndexStart] = useState(0);
+    const itemsPerPage = 4;
 
-    const listCurrent = listDoctor.slice(indexStart, indexStart + itemsPerPage)
+    // ==== CALL API top 10 bác sĩ kinh nghiệm cao nhất ====
+    useEffect(() => {
+        const fetchDoctors = async () => {
+            try {
+                const token = localStorage.getItem("token");
+
+                const res = await axios.get(
+                    "http://localhost:8080/api/doctors/top-experienced",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    }
+                );
+
+                setListDoctor(res.data);  // Lưu dữ liệu API vào state
+            } catch (error) {
+                console.error("Lỗi tải danh sách bác sĩ:", error);
+            }
+        };
+
+        fetchDoctors();
+    }, []);
+
+    const listCurrent = listDoctor.slice(indexStart, indexStart + itemsPerPage);
 
     const handleNext = () => {
         if (indexStart + itemsPerPage < listDoctor.length) {
@@ -78,42 +47,52 @@ const ListDoctor = () => {
             setIndexStart(indexStart - itemsPerPage);
         }
     };
+
     return (
-        <div className='mt-8 py-5 px-5 lg:px-0' style={{ backgroundImage: `url(${nen})` }}>
-            <div className='max-w-[1300px] mx-auto relative'>
-                <h2 className='text-[24px] font-semibold mb-10'>Bác sĩ nổi bật</h2>
-                <ul className='flex gap-10'>
-                    {listCurrent.map((item, index) => (
-                        <Link className='text-center w-1/4' key={index} >
-                            <img src={item.img} alt="" className='size-55 rounded-full mx-auto' />
-                            <h3 className='my-2 text-[18px] font-bold'>{item.name}</h3>
-                            <p className='text-[18px] text-gray-500'>{item.specialty}</p>
-                        </Link>
-                    ))}
+        <div className='mt-8 py-5 px-5 lg:px-0' style={{ backgroundImage: `url(${nen})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+            <div className="relative max-w-[1300px] mx-auto">
+                <h2 className='text-[24px] md:text-[28px] font-semibold mb-10'>Bác sĩ nổi bật</h2>
+
+                <div className="relative">
+                    <ul className='flex gap-4 md:gap-10 flex-wrap justify-between'>
+                        {listCurrent.map((item) => (
+                            <Link to={`/doctor/${item.bacSiID}`} key={item.bacSiID} className='text-center flex-1 min-w-[140px] max-w-[220px]'>
+                                <div className='w-[120px] sm:w-[140px] md:w-[160px] lg:w-[180px] aspect-square mx-auto rounded-full overflow-hidden'>
+                                    <img
+                                        src={item.avatarUrl || "https://via.placeholder.com/150"}
+                                        alt={item.hoTen}
+                                        className='w-full h-full object-cover'
+                                    />
+                                </div>
+                                <h3 className='my-2 text-[14px] sm:text-[16px] md:text-[18px] font-bold'>{item.hoTen}</h3>
+                                <p className='text-[12px] sm:text-[14px] md:text-[16px] text-gray-500'>{item.tenChuyenKhoa}</p>
+                                <p className='text-[12px] sm:text-[16px] md:text-[17px] text-gray-600'>{item.tenTrinhDo}</p>
+                            </Link>
+                        ))}
+                    </ul>
+
                     {indexStart + itemsPerPage < listDoctor.length && (
                         <div onClick={handleNext}
-                            className='size-10 border border-blue-300 rounded-[8px] 
-                                    flex justify-center items-center bg-white cursor-pointer
-                                    absolute -right-5 top-1/2 -translate-y-1/2 z-9'>
-                            <IoIosArrowForward className='size-[24px] text-blue-600' />
+                            className='w-10 h-10 border border-blue-300 rounded-lg 
+                                flex justify-center items-center bg-white cursor-pointer
+                                absolute right-[-14px] md:right-0  z-10 bottom-40'>
+                            <IoIosArrowForward className='text-blue-600 text-xl md:text-2xl' />
                         </div>
                     )}
                     {indexStart > 0 && (
                         <div onClick={handlePrev}
-                            className='size-10 border border-blue-300 rounded-[8px] 
-                                    flex justify-center items-center bg-white cursor-pointer
-                                    absolute -left-5 top-1/2 -translate-y-1/2 z-9'>
-                            <IoIosArrowBack className='size-[24px] text-blue-600' />
+                            className='w-10 h-10 border border-blue-300 rounded-lg 
+                                flex justify-center items-center bg-white cursor-pointer
+                                absolute left-[-14px] md:left-0 bottom-40 z-10'>
+                            <IoIosArrowBack className='text-blue-600 text-xl md:text-2xl' />
                         </div>
                     )}
-                </ul>
-                <Link to="/doctorpage"
-                    className='rounded-2xl bg-[#daf3f7] text-blue-500 py-3 px-4 inline-block
-            absolute top-0 right-0 cursor-pointer'>
-                    <p className='font-semibold text-[20px]'>Xem thêm</p>
+                </div>
+
+                <Link to="/doctorpage" className='rounded-2xl bg-[#daf3f7] text-blue-500 py-2 px-3 md:py-3 md:px-4 inline-block absolute top-0 right-0 cursor-pointer mr-5 md:mr-0'>
+                    <p className='font-semibold text-[16px] md:text-[20px]'>Xem thêm</p>
                 </Link>
             </div>
-
         </div>
     )
 }

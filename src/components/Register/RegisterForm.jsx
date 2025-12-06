@@ -3,11 +3,13 @@ import React from 'react'
 import * as Yup from "yup"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useNavigate } from "react-router-dom";
 const RegisterForm = ({ setShowLoginForm }) => {
 
+    const navigate = useNavigate();
+
     const notifySuccess = () => {
-        toast.success("Đăng ký thành công!", {
+        toast.success("Đăng ký thành công vui lòng xác thực email", {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: false,
@@ -49,8 +51,8 @@ const RegisterForm = ({ setShowLoginForm }) => {
 
             dob: Yup.string()
                 .matches(
-                    /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/,
-                    "Ngày sinh không hợp lệ (dd/MM/yyyy)"
+                    /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/,
+                    "Ngày sinh không hợp lệ (dd-MM-yyyy)"
                 )
                 .required("Vui lòng nhập ngày sinh"),
 
@@ -70,16 +72,20 @@ const RegisterForm = ({ setShowLoginForm }) => {
         }),
         onSubmit: async (values) => {
 
+            const convertDate = (dateStr) => {
+                const [day, month, year] = dateStr.split("-");
+                return `${year}-${month}-${day}`;
+            };
 
             const dataToSend = {
-                fullName: values.fullName,
+                hoTen: values.fullName,
+                email: values.email,
+                password: values.password,
                 soDienThoai: values.phoneNumber,
                 diaChi: values.address,
-                gioiTinh: values.gender,
-                ngaySinh: values.dob,
-                email: values.email,
-                password: values.password
-            }
+                ngaySinh: convertDate(values.dob),
+                gioiTinh: values.gender
+            };
 
             try {
                 const response = await fetch("http://localhost:8080/api/auth/register", {
@@ -88,22 +94,30 @@ const RegisterForm = ({ setShowLoginForm }) => {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify(dataToSend)
-
                 });
-                console.log(values)
+
+
+
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error("Đăng ký thất bại:", errorData.message);
+                    console.log("Status:", response.status);
+                    console.log("Error:", await response.text());
                     notifyError();
                 } else {
                     const data = await response.json();
                     console.log("Server trả về:", data);
                     notifySuccess();
+
                     setTimeout(() => {
-                        setShowLoginForm(true);
-                    }, 2000)
+                        navigate("/emailverification", {
+                            state: { email: values.email }
+                        });
+                    }, 2000);
                 }
             } catch (error) {
+                console.log("Payload gửi đi:", dataToSend);
+                // console.log("Response status:", response.status);
                 console.error("Lỗi khi gọi API:", error);
                 alert("Có lỗi xảy ra, vui lòng thử lại!");
             }
@@ -113,124 +127,129 @@ const RegisterForm = ({ setShowLoginForm }) => {
     })
 
     return (
-        <div className=''>
-            <h2 className='text-center font-bold text-[24px] mb-3'>Đăng ký tài khoản người dùng</h2>
-            <ToastContainer />
-            <form onSubmit={formik.handleSubmit} className='w-full mx-auto flex flex-col items-center' >
-                <input
-                    name='fullName'
-                    type="text"
-                    placeholder='Nhập họ và tên'
-                    value={formik.values.fullName}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
-                />
-                {formik.touched.fullName && formik.errors.fullName && (
-                    <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.fullName}</p>
-                )}
-
-                <input
-                    name="phoneNumber"
-                    type="text"
-                    placeholder="Nhập số điện thoại"
-                    value={formik.values.phoneNumber}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className="border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3"
-                />
-                {formik.touched.phoneNumber && formik.errors.phoneNumber && (
-                    <p className="text-red-500 text-sm w-[90%] pb-2">{formik.errors.phoneNumber}</p>
-                )}
-
-                <input
-                    name="address"
-                    type="text"
-                    placeholder='Nhập địa chỉ'
-                    value={formik.values.address}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
-                />
-                {formik.touched.address && formik.errors.address && (
-                    <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.address}</p>
-                )}
-
-                <div className="flex self-start gap-5 w-[90%] mx-auto mb-3">
-                    <label className="flex items-center gap-2 cursor-pointer">
+        <>
+            <div className={`w-full max-w-[450px] sm:max-w-[550px] md:max-w-[650px] mx-auto pt-5 pb-10  mt-5 border border-gray-200 shadow-2xl rounded-lg`}>
+                <div className=''>
+                    <h2 className='text-center font-bold text-[24px] mb-3'>Đăng ký tài khoản người dùng</h2>
+                    <ToastContainer />
+                    <form onSubmit={formik.handleSubmit} className='w-full mx-auto flex flex-col items-center' >
                         <input
-                            type="radio"
-                            name="gender"
-                            value={1}
-                            checked={formik.values.gender === 1}
-                            onChange={(e) => formik.setFieldValue("gender", Number(e.target.value))}
+                            name='fullName'
+                            type="text"
+                            placeholder='Nhập họ và tên'
+                            value={formik.values.fullName}
+                            onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
+                            className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
                         />
-                        <span>Nam</span>
-                    </label>
+                        {formik.touched.fullName && formik.errors.fullName && (
+                            <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.fullName}</p>
+                        )}
 
-                    <label className="flex items-center gap-2 cursor-pointer">
                         <input
-                            type="radio"
-                            name="gender"
-                            value={0}
-                            checked={formik.values.gender === 0}
-                            onChange={(e) => formik.setFieldValue("gender", Number(e.target.value))}
+                            name="phoneNumber"
+                            type="text"
+                            placeholder="Nhập số điện thoại"
+                            value={formik.values.phoneNumber}
+                            onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
+                            className="border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3"
                         />
-                        <span>Nữ</span>
-                    </label>
+                        {formik.touched.phoneNumber && formik.errors.phoneNumber && (
+                            <p className="text-red-500 text-sm w-[90%] pb-2">{formik.errors.phoneNumber}</p>
+                        )}
+
+                        <input
+                            name="address"
+                            type="text"
+                            placeholder='Nhập địa chỉ'
+                            value={formik.values.address}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
+                        />
+                        {formik.touched.address && formik.errors.address && (
+                            <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.address}</p>
+                        )}
+
+                        <div className="flex self-start gap-5 w-[90%] mx-auto mb-3">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="gender"
+                                    value={1}
+                                    checked={formik.values.gender === 1}
+                                    onChange={(e) => formik.setFieldValue("gender", Number(e.target.value))}
+                                    onBlur={formik.handleBlur}
+                                />
+                                <span>Nam</span>
+                            </label>
+
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="gender"
+                                    value={0}
+                                    checked={formik.values.gender === 0}
+                                    onChange={(e) => formik.setFieldValue("gender", Number(e.target.value))}
+                                    onBlur={formik.handleBlur}
+                                />
+                                <span>Nữ</span>
+                            </label>
+                        </div>
+                        {formik.touched.gender && formik.errors.gender && (
+                            <p className='text-red-500 text-sm w-[90%] mb-3'>{formik.errors.gender}</p>
+                        )}
+
+                        <input
+                            name="dob"
+                            type="text"
+                            placeholder='dd-MM-yyyy'
+                            value={formik.values.dob}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
+                        />
+                        {formik.touched.dob && formik.errors.dob && (
+                            <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.dob}</p>
+                        )}
+
+                        <input
+                            name='email'
+                            type="email"
+                            placeholder='Nhập email'
+                            value={formik.values.email}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
+                        />
+                        {formik.touched.email && formik.errors.email && (
+                            <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.email}</p>
+                        )}
+
+                        <input
+                            name='password'
+                            type="password"
+                            placeholder='Nhập mật khẩu'
+                            value={formik.values.password}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
+                        />
+                        {formik.touched.password && formik.errors.password && (
+                            <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.password}</p>
+                        )}
+
+                        <div className='flex w-[90%] justify-between items-center mx-auto mt-4'>
+                            <p onClick={() => setShowLoginForm(true)}
+                                className='text-[14px] text-blue-400 cursor-pointer'>Quay lại đăng nhập</p>
+                            <button type='submit' className='bg-amber-700 text-white font-bold rounded-lg px-4 py-2 cursor-pointer'>Đăng ký</button>
+                        </div>
+                    </form>
                 </div>
-                {formik.touched.gender && formik.errors.gender && (
-                    <p className='text-red-500 text-sm w-[90%] mb-3'>{formik.errors.gender}</p>
-                )}
+            </div>
+        </>
 
-                <input
-                    name="dob"
-                    type="text"
-                    placeholder='dd/MM/yyyy'
-                    value={formik.values.dob}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
-                />
-                {formik.touched.dob && formik.errors.dob && (
-                    <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.dob}</p>
-                )}
-
-                <input
-                    name='email'
-                    type="email"
-                    placeholder='Nhập email'
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
-                />
-                {formik.touched.email && formik.errors.email && (
-                    <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.email}</p>
-                )}
-
-                <input
-                    name='password'
-                    type="password"
-                    placeholder='Nhập mật khẩu'
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className='border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3'
-                />
-                {formik.touched.password && formik.errors.password && (
-                    <p className='text-red-500 text-sm w-[90%] pb-2'>{formik.errors.password}</p>
-                )}
-
-                <div className='flex w-[90%] justify-between items-center mx-auto mt-4'>
-                    <p onClick={() => setShowLoginForm(true)}
-                        className='text-[14px] text-blue-400 cursor-pointer'>Quay lại đăng nhập</p>
-                    <button type='submit' className='bg-amber-700 text-white font-bold rounded-lg px-4 py-2 cursor-pointer'>Đăng ký</button>
-                </div>
-            </form>
-        </div>
     )
 }
 

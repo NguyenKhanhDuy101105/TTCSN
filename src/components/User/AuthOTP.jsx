@@ -48,6 +48,7 @@ const AuthOTP = ({ onSubmit, onResend }) => {
 
     const handleSubmit = () => {
         onSubmit(otp.join(""));
+        // call api xác thực OTP ở đây
     };
 
     const handleResend = () => {
@@ -59,7 +60,7 @@ const AuthOTP = ({ onSubmit, onResend }) => {
     return (
         <>
             <HeaderSub />
-            <div className='max-w-[650px] mx-auto py-5 mt-40 '>
+            <div className='w-full max-w-[450px] sm:max-w-[550px] md:max-w-[650px] mx-auto py-5 mt-10'>
                 <div className="bg-white p-8 rounded-2xl shadow-lg w-[400px] text-center mx-auto">
                     {/* Icon */}
                     <div className="flex justify-center mb-4">

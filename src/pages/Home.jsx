@@ -20,7 +20,6 @@ const Home = () => {
             <Service />
             <ListSpecialty />
             <Medical />
-            <HealthPackageList />
             <Deal />
             <ListDoctor />
             <Remote />

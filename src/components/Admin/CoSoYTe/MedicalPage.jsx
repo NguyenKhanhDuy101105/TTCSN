@@ -1,121 +1,87 @@
 import React, { useState } from "react";
-import Toolbar from "./Toolbar";
-import MedicalTableWithPagination from "./MedicalTableWithPagination.jsx";
+import { Eye, Edit } from "lucide-react";
 import MedicalForm from "./MedicalForm.jsx";
 import MedicalViewModal from "./MedicalViewModal.jsx";
-import DeleteMedicalModal from "./DeleteMedicalModal.jsx";
-import { data } from "./MedicalData.js";
 
 const MedicalPage = () => {
-    const [medicalData, setMedicalData] = useState(data);
-    const [searchTerm, setSearchTerm] = useState("");
+    const [medicalData, setMedicalData] = useState({
+        tenCoSo: "",
+        diaChi: "",
+        soDienThoai: "",
+        email: "",
+        moTa: "",
+        anhDaiDien: "",
+    });
 
-    // state quản lý modal
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [openForm, setOpenForm] = useState(false);
     const [openView, setOpenView] = useState(false);
-    const [openDelete, setOpenDelete] = useState(false);
-
-    // --- Tìm kiếm ---
-    const filteredData = medicalData.filter(
-        (item) =>
-            item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.address.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    // --- Thêm mới ---
-    const handleAdd = () => {
-        setSelectedItem(null);
-        setOpenForm(true);
-    };
-
-    // --- Xem chi tiết ---
-    const handleView = (index) => {
-        setSelectedItem(filteredData[index]);
-        setOpenView(true);
-    };
-
-    // --- Sửa ---
-    const handleEdit = (index) => {
-        setSelectedItem(filteredData[index]);
-        setOpenForm(true);
-    };
-
-    // --- Xóa ---
-    const handleDelete = (index) => {
-        setSelectedItem(filteredData[index]);
-        setOpenDelete(true);
-    };
-
-    const confirmDelete = () => {
-        setMedicalData((prev) => prev.filter((m) => m.id !== selectedItem.id));
-        setOpenDelete(false);
-        setSelectedItem(null);
-    };
-
-    // --- Lưu (thêm / sửa) ---
-    const handleSave = (newItem) => {
-        if (selectedItem) {
-            // sửa
-            setMedicalData((prev) =>
-                prev.map((m) => (m.id === selectedItem.id ? { ...newItem, id: selectedItem.id } : m))
-            );
-        } else {
-            // thêm
-            setMedicalData((prev) => [...prev, { ...newItem, id: Date.now() }]);
-        }
-        setOpenForm(false);
-        setSelectedItem(null);
-    };
+    const [openForm, setOpenForm] = useState(false);
 
     return (
-        <div>
-            <Toolbar onSearch={setSearchTerm} onAdd={handleAdd} />
+        <div className="border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
 
-            <MedicalTableWithPagination
-                items={filteredData}
-                onView={handleView}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-            />
+            {/* Bảng hiển thị */}
+            <table className="w-full bg-white">
+                <thead className="bg-gray-100 text-gray-700 border-b border-gray-300">
+                    <tr>
+                        <th className="p-4 ">Tên cơ sở</th>
+                        <th className="p-4 ">Địa chỉ</th>
+                        <th className="p-4">Số điện thoại</th>
+                        <th className="p-4">Email</th>
+                        <th className="p-4 text-center">Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr className="hover:bg-[#fdf8f5] transition">
+                        <td className="p-4 font-medium">{medicalData.tenCoSo}</td>
+                        <td className="p-4">{medicalData.diaChi}</td>
+                        <td className="p-4">{medicalData.soDienThoai}</td>
+                        <td className="p-4">{medicalData.email}</td>
+
+                        <td className="p-4 text-center">
+                            <div className="flex justify-center gap-3">
+
+                                <button
+                                    onClick={() => setOpenView(true)}
+                                    className="text-blue-500 hover:text-sky-700 transition"
+                                >
+                                    <Eye size={18} />
+                                </button>
+
+                                <button
+                                    onClick={() => setOpenForm(true)}
+                                    className="text-[#ad7555] hover:text-[#945f46] transition"
+                                >
+                                    <Edit size={18} />
+                                </button>
+
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
             {/* Modal xem chi tiết */}
-            {openView && selectedItem && (
+            {openView && (
                 <MedicalViewModal
-                    item={selectedItem}
-                    onClose={() => {
+                    item={medicalData}
+                    onClose={() => setOpenView(false)}
+                    onEdit={() => {
                         setOpenView(false);
-                        setSelectedItem(null);
-                    }}
-                    onEdit={(item) => {
-                        setOpenView(false);   // tắt modal chi tiết
-                        setSelectedItem(item); // set item cần sửa
-                        setOpenForm(true);     // mở modal form
+                        setOpenForm(true);
                     }}
                 />
             )}
 
-            {/* Modal form thêm / sửa */}
+            {/* Modal sửa */}
             {openForm && (
                 <MedicalForm
-                    editingMedical={selectedItem}
-                    onSave={handleSave}
-                    onClose={() => {
+                    editingMedical={medicalData}
+                    onSave={(newData) => {
+                        setMedicalData(newData);
                         setOpenForm(false);
-                        setSelectedItem(null);
                     }}
-                />
-            )}
-
-            {/* Modal xác nhận xóa */}
-            {openDelete && selectedItem && (
-                <DeleteMedicalModal
-                    item={selectedItem}
-                    onCancel={() => {
-                        setOpenDelete(false);
-                        setSelectedItem(null);
-                    }}
-                    onConfirm={confirmDelete}
+                    onClose={() => setOpenForm(false)}
                 />
             )}
         </div>

@@ -1,97 +1,86 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from "react-router-dom";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
-import s1 from "../assets/images/specialty/s1.png"
-import s2 from "../assets/images/specialty/s2.png"
-import s3 from "../assets/images/specialty/s3.png"
-import s4 from "../assets/images/specialty/s4.png"
-import s5 from "../assets/images/specialty/s5.png"
-import s6 from "../assets/images/specialty/s6.png"
 
 const ListSpecialty = () => {
-    const list = [
-        {
-            id: 1,
-            name: "Cơ xương khớp",
-            image: s1,
-        },
-        {
-            id: 2,
-            name: "Thần kinh",
-            image: s2,
-        },
-        {
-            id: 3,
-            name: "Tiêu hóa",
-            image: s3,
-        },
-        {
-            id: 4,
-            name: "Tim mạch",
-            image: s4,
-        },
-        {
-            id: 5,
-            name: "Tai Mũi Họng",
-            image: s5,
-        },
-        {
-            id: 6,
-            name: "Cột sống",
-            image: s6,
-        }
-    ]
+
+    const [listSpecialty, setListSpecialty] = useState([])
+    useEffect(() => {
+        fetch(`http://localhost:8080/api/specialties`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Lỗi lấy dữ liệu");
+                return response.json();
+            })
+            .then(data => {
+                setListSpecialty(data)
+            })
+            .catch(error => {
+                console.error("Lỗi khi gọi API:", error);
+                alert("Có lỗi xảy ra, vui lòng thử lại!");
+            });
+    }, [])
+
+
     const [indexStart, setIndexStart] = useState(0)
     const itemsPerPage = 3
-
-    const listCurrent = list.slice(indexStart, indexStart + itemsPerPage)
+    const listCurrent = listSpecialty.slice(indexStart, indexStart + itemsPerPage)
 
     const handleNext = () => {
-        if (indexStart + itemsPerPage < list.length) {
+        if (indexStart + itemsPerPage < listSpecialty.length) {
             setIndexStart(indexStart + itemsPerPage);
         }
     };
-
     const handlePrev = () => {
         if (indexStart - itemsPerPage >= 0) {
             setIndexStart(indexStart - itemsPerPage);
         }
     };
+
     return (
         <div className='max-w-[1300px] mx-auto mt-15 relative px-5 lg:px-0'>
-            <h2 className='text-[24px] font-semibold mb-10'>Chuyên khoa</h2>
-            <ul className='flex gap-12 relative'>
-                {listCurrent.map((item, index) => (
-                    <Link key={index} className='w-1/3 text-center rounded-2xl border border-gray-200 py-5'>
-                        <img className='w-[350px] h-[216px] mx-auto rounded-2xl'
-                            src={item.image} alt="anh" />
-                        <h3 className='font-semibold text-[18px] mt-3'>{item.name}</h3>
+            <h2 className='text-[24px] md:text-[28px] font-semibold mb-10'>Chuyên khoa</h2>
+            <ul className='flex gap-4 md:gap-12 relative'>
+                {listCurrent.map((item) => (
+                    <Link key={item.id} to={`/chuyenkhoa/${item.chuyenKhoaID}`} className='flex-1 text-center rounded-2xl border border-gray-200 py-3 md:py-5'>
+                        <img
+                            className='w-full h-[160px] md:h-[216px] object-cover mx-auto rounded-2xl'
+                            src={item.anhDaiDien} alt={item.tenChuyenKhoa}
+                        />
+                        <h3 className='font-semibold text-[14px] md:text-[18px] mt-2 md:mt-3'>{item.tenChuyenKhoa}</h3>
                     </Link>
                 ))}
-                {indexStart + itemsPerPage < list.length && (
-                    <div onClick={handleNext}
-                        className='size-10 border border-blue-300 rounded-[8px] 
-                flex justify-center items-center bg-white cursor-pointer
-                absolute -right-5 top-1/2 -translate-y-1/2 z-9'>
-                        <IoIosArrowForward className='size-[24px] text-blue-600' />
+
+
+                {indexStart + itemsPerPage < listSpecialty.length && (
+                    <div
+                        onClick={handleNext}
+                        className='w-10 h-10 border border-blue-300 rounded-lg flex justify-center items-center bg-white cursor-pointer absolute -right-5 top-1/2 -translate-y-1/2 z-10'
+                    >
+                        <IoIosArrowForward className='text-blue-600 text-xl md:text-2xl' />
                     </div>
                 )}
+
                 {indexStart > 0 && (
-                    <div onClick={handlePrev}
-                        className='size-10 border border-blue-300 rounded-[8px] 
-                flex justify-center items-center bg-white cursor-pointer
-                absolute -left-5 top-1/2 -translate-y-1/2 z-9'>
-                        <IoIosArrowBack className='size-[24px] text-blue-600' />
+                    <div
+                        onClick={handlePrev}
+                        className='w-10 h-10 border border-blue-300 rounded-lg flex justify-center items-center bg-white cursor-pointer absolute -left-5 top-1/2 -translate-y-1/2 z-10'
+                    >
+                        <IoIosArrowBack className='text-blue-600 text-xl md:text-2xl' />
                     </div>
                 )}
             </ul>
-            <Link to="/specialtypage"
-                className='rounded-2xl bg-[#daf3f7] text-blue-500 py-3 px-4 inline-block
-            absolute top-0 right-0 cursor-pointer
-            '>
-                <p className='font-semibold text-[20px]'>Xem thêm</p>
-            </Link>
 
+            <Link
+                to="/specialtypage"
+                className='rounded-2xl bg-[#daf3f7] text-blue-500 py-2 px-3 md:py-3 md:px-4 inline-block absolute top-0 right-0 cursor-pointer mr-5 md:mr-0'
+            >
+                <p className='font-semibold text-[16px] md:text-[20px]'>Xem thêm</p>
+            </Link>
         </div>
     )
 }

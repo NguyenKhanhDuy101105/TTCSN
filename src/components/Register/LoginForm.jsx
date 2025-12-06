@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import logo from '../../assets/icons/google.svg'
+// import logo from '../../assets/icons/google.svg'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { ToastContainer, toast } from 'react-toastify';
@@ -66,23 +66,28 @@ const LoginForm = ({ setShowLoginForm }) => {
                     const data = await response.json();
                     notifySuccess();
                     console.log("Server trả về:", data);
+
+                    // Lưu accessToken
                     localStorage.setItem("accessToken", data.accessToken);
-                    localStorage.setItem("refreshToken", data.refreshToken);
-                    localStorage.setItem("email", data.email);
-                    localStorage.setItem("hoTen", data.hoTen);
-                    localStorage.setItem("vaiTro", data.vaiTro);
-                    localStorage.setItem("user", JSON.stringify({
-                        email: data.email,
-                        fullName: data.fullName
-                    }));
+                    localStorage.setItem("expiresIn", data.expiresIn);
+
+                    // Lưu thông tin người dùng
+                    const user = data.userInfo;
+                    localStorage.setItem("user", JSON.stringify(user));
+                    localStorage.setItem("email", user.email);
+                    localStorage.setItem("hoTen", user.hoTen);
+                    localStorage.setItem("vaiTro", user.vaiTro);
+
+                    // Cập nhật context
+                    setUser(user);
                     setIsLogin(true);
-                    setUser(data);
+
                     setShowLoginForm(true);
                     setTimeout(() => {
-                        if (data.vaiTro === "Admin") {
+                        if (data.userInfo.vaiTro === "Admin") {
                             navigate("/admin");
                         }
-                        else if (data.vaiTro === "BacSi") {
+                        else if (data.userInfo.vaiTro === "BacSi") {
                             navigate("/bacsi");
                         }
                         else {
@@ -98,7 +103,7 @@ const LoginForm = ({ setShowLoginForm }) => {
     })
 
     return (
-        <div className='max-w-[650px] mx-auto py-5 mt-5 border border-gray-200 shadow-2xl rounded-lg'>
+        <div className='w-full max-w-[450px] sm:max-w-[550px] md:max-w-[650px] mx-auto py-5 mt-5 border border-gray-200 shadow-2xl rounded-lg px-4 sm:px-6'>
             <h2 className='text-center font-bold text-[24px] mb-3'>Đăng nhập</h2>
             <ToastContainer />
             <form onSubmit={formik.handleSubmit} className='w-full mx-auto flex flex-col items-center gap-y-6'>
@@ -165,7 +170,7 @@ const LoginForm = ({ setShowLoginForm }) => {
                     </p>
                 </div>
 
-                <div className='flex w-[90%] justify-between items-center mx-auto gap-3'>
+                {/* <div className='flex w-[90%] justify-between items-center mx-auto gap-3'>
                     <span className='bg-blue-700 text-white font-medium rounded-lg px-4 py-2 cursor-pointer w-[50%] flex gap-2 items-center justify-center'>
                         <i className='fa-brands fa-square-facebook'></i>
                         Đăng nhập bằng Facebook
@@ -174,7 +179,7 @@ const LoginForm = ({ setShowLoginForm }) => {
                         <img src={logo} alt='' className='size-5' />
                         Đăng nhập bằng Google
                     </span>
-                </div>
+                </div> */}
             </form>
         </div>
     )

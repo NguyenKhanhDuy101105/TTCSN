@@ -8,14 +8,26 @@ const AtHousePage = () => {
         <div>
             <HeaderMain check={"tainha"} />
 
-            <div className='w-full pt-[140px]'>
-                <div className=' max-w-[1300px] mx-auto'>
-                    <img src="https://cdn.bookingcare.vn/fo/2023/11/02/113503-dich-vu-cham-soc-suc-khoe-tai-nha.png"
+            <div className="w-full pt-[140px]">
+                <div className="max-w-[1300px] mx-auto px-4">
+                    <img
+                        src="https://cdn.bookingcare.vn/fo/2023/11/02/113503-dich-vu-cham-soc-suc-khoe-tai-nha.png"
                         alt="anhminhoa"
-                        className='rounded-3xl w-full object-cover h-[400px]'
+                        className="
+                rounded-3xl 
+                w-full 
+                object-cover 
+                h-[180px]       
+                sm:h-[240px]    
+                md:h-[300px]    
+                lg:h-[350px]    
+                xl:h-[400px] 
+                mt-5 lg:mt-0   
+            "
                     />
                 </div>
             </div>
+
 
             <Remote />
             <Ask />

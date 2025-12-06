@@ -1,10 +1,6 @@
 import React from "react";
-import { data as medicalData } from "../CoSoYTe/MedicalData"; // import danh sách cơ sở y tế
 
 export default function SpecialtiesViewModal({ item, onClose, onEdit }) {
-
-    const hospital = medicalData.find((i) => i.id === item.medicalId);
-
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
             <div className="bg-white p-8 rounded-3xl shadow-2xl w-[500px] animate-[fadeIn_0.25s_ease]">
@@ -15,35 +11,26 @@ export default function SpecialtiesViewModal({ item, onClose, onEdit }) {
                 {/* Thông tin chuyên khoa */}
                 <div className="space-y-3 text-gray-700 mb-6">
                     <p>
-                        <b>Mã chuyên khoa:</b> {item.id}
+                        <b>Mã chuyên khoa:</b> {item.chuyenKhoaID}
                     </p>
                     <p>
-                        <b>Tên chuyên khoa:</b> {item.name}
+                        <b>Tên chuyên khoa:</b> {item.tenChuyenKhoa}
                     </p>
                     <p>
-                        <b>Mô tả:</b> {item.desc}
+                        <b>Mô tả:</b> {item.moTa}
                     </p>
+                    {item.anhDaiDien && (
+                        <div className="mt-3">
+                            <img
+                                src={item.anhDaiDien}
+                                alt={item.tenChuyenKhoa}
+                                className="w-full h-40 object-contain rounded-md border"
+                            />
+                        </div>
+                    )}
                 </div>
 
-                {/* Thông tin cơ sở y tế */}
-                {hospital && (
-                    <div className="border-t pt-4 mt-4 text-gray-700">
-                        <h3 className="text-lg font-semibold mb-3">Thuộc cơ sở y tế</h3>
-                        <p>
-                            <b>Tên cơ sở y tế:</b> {hospital.name}
-                        </p>
-                        <p>
-                            <b>Địa chỉ:</b> {hospital.address}
-                        </p>
-                        <p>
-                            <b>Số điện thoại:</b> {hospital.phoneNumber}
-                        </p>
-                        <p>
-                            <b>Số bác sĩ:</b> {hospital.doctorCount}
-                        </p>
-                    </div>
-                )}
-
+                {/* Nút thao tác */}
                 <div className="flex justify-end mt-6 space-x-3">
                     <button
                         onClick={onClose}

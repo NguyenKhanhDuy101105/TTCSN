@@ -8,18 +8,33 @@ export default function MedicalViewModal({ item, onClose, onEdit }) {
                     Chi tiết cơ sở y tế
                 </h2>
 
-                <div className="space-y-4 text-gray-700">
+                {/* Ảnh đại diện */}
+                {item.anhDaiDien && (
+                    <div className="mb-4">
+                        <img
+                            src={item.anhDaiDien}
+                            alt="Ảnh cơ sở"
+                            className="w-full rounded-xl border shadow-sm"
+                        />
+                    </div>
+                )}
+
+                {/* Thông tin cơ sở y tế */}
+                <div className="space-y-3 text-gray-700 mb-6">
                     <p>
-                        <b>Tên cơ sở y tế:</b> {item.name}
+                        <b>Tên cơ sở:</b> {item.tenCoSo}
                     </p>
                     <p>
-                        <b>Địa chỉ:</b> {item.address}
+                        <b>Địa chỉ:</b> {item.diaChi}
                     </p>
                     <p>
-                        <b>Số điện thoại:</b> {item.phoneNumber}
+                        <b>Số điện thoại:</b> {item.soDienThoai}
                     </p>
                     <p>
-                        <b>Số bác sĩ:</b> {item.doctorCount}
+                        <b>Email:</b> {item.email}
+                    </p>
+                    <p>
+                        <b>Mô tả:</b> {item.moTa}
                     </p>
                 </div>
 
@@ -32,8 +47,8 @@ export default function MedicalViewModal({ item, onClose, onEdit }) {
                     </button>
                     <button
                         onClick={() => {
-                            onClose(); // đóng modal chi tiết
-                            onEdit(item); // mở modal sửa
+                            onClose();
+                            onEdit(item);
                         }}
                         className="px-5 py-2.5 bg-[#ad7555] hover:bg-[#945f46] text-white rounded-xl transition shadow-sm"
                     >

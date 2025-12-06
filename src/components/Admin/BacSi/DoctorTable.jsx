@@ -2,18 +2,14 @@ import React, { useState } from "react";
 import { Eye, Edit, Trash } from "lucide-react";
 import ReactPaginate from "react-paginate";
 
-export default function MedicalTableWithPagination({ items, onView, onEdit, onDelete }) {
+export default function DoctorsTable({ items, onView, onEdit, onDelete }) {
     const [pageNumber, setPageNumber] = useState(0);
-
-    const itemsPerPage = 7; // số cơ sở mỗi trang
+    const itemsPerPage = 5;
     const pagesVisited = pageNumber * itemsPerPage;
-
     const currentItems = items.slice(pagesVisited, pagesVisited + itemsPerPage);
     const pageCount = Math.ceil(items.length / itemsPerPage);
 
-    const changePage = ({ selected }) => {
-        setPageNumber(selected);
-    };
+    const changePage = ({ selected }) => setPageNumber(selected);
 
     return (
         <>
@@ -21,32 +17,29 @@ export default function MedicalTableWithPagination({ items, onView, onEdit, onDe
                 <table className="w-full text-left bg-white">
                     <thead className="bg-gray-100 text-sm font-semibold text-gray-700">
                         <tr>
-                            <th className="p-4">TÊN CƠ SỞ Y TẾ</th>
-                            <th className="p-4">ĐỊA CHỈ</th>
-                            <th className="p-4">SỐ ĐIỆN THOẠI</th>
-                            <th className="p-4 text-center">SỐ BÁC SĨ</th>
-                            <th className="p-4 text-center">THAO TÁC</th>
+                            <th className="p-4">Tên bác sĩ</th>
+                            <th className="p-4">Chuyên khoa</th>
+                            <th className="p-4">Ca làm việc</th>
+                            <th className="p-4">Số điện thoại</th>
+                            <th className="p-4">Trạng thái</th>
+                            <th className="p-4 text-center">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                         {items.length === 0 ? (
                             <tr>
-                                <td colSpan="5" className="text-center py-6 text-gray-500">
-                                    Không tìm thấy cơ sở y tế nào
+                                <td colSpan="6" className="text-center py-6 text-gray-500">
+                                    Không tìm thấy bác sĩ
                                 </td>
                             </tr>
                         ) : (
                             currentItems.map((item, index) => (
-                                <tr
-                                    key={pagesVisited + index}
-                                    className="hover:bg-[#fdf8f5] transition"
-                                >
+                                <tr key={pagesVisited + index} className="hover:bg-[#fdf8f5] transition">
                                     <td className="p-4 font-medium text-gray-800">{item.name}</td>
-                                    <td className="p-4 text-gray-600">{item.address}</td>
+                                    <td className="p-4 text-gray-600">{item.specialtyNames.join(", ")}</td>
+                                    <td className="p-4 text-gray-600">{item.shift}</td>
                                     <td className="p-4 text-gray-600">{item.phoneNumber}</td>
-                                    <td className="p-4 text-gray-600 text-center">
-                                        {item.doctorCount}
-                                    </td>
+                                    <td className="p-4 text-gray-600">{item.status}</td>
                                     <td className="p-4 text-center">
                                         <div className="flex justify-center gap-3">
                                             <button
@@ -76,7 +69,6 @@ export default function MedicalTableWithPagination({ items, onView, onEdit, onDe
                 </table>
             </div>
 
-            {/* thanh phân trang */}
             {pageCount > 1 && (
                 <div className="flex justify-end">
                     <ReactPaginate

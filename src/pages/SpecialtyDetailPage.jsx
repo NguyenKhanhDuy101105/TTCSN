@@ -1,78 +1,102 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import HeaderSub from '../components/HeaderSub'
-import Footer from '../components/Footer'
-import DoctorDetail from '../components/Doctor/DoctorDetail'
-import listDoctorData from '../components/data/DoctorData'
+import React, { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import HeaderSub from '../components/HeaderSub';
+import Footer from '../components/Footer';
+import DoctorDetail from '../components/Doctor/DoctorDetail';
 
 const SpecialtyDetailPage = () => {
-    const { slug } = useParams(); // lấy tên chuyên khoa từ URL
+    const { id } = useParams();
+    const [specialty, setSpecialty] = useState(null);
     const [doctorList, setDoctorList] = useState([]);
+    const [cosoyteList, setCoSoYTeList] = useState([]);
 
+    // Lấy thông tin chuyên khoa theo id
     useEffect(() => {
-        // ✅ Nếu dùng API thật:
-        // fetch(`/api/doctors?specialty=${slug}`)
-        //   .then(res => res.json())
-        //   .then(data => setDoctorList(data));
+        fetch(`http://localhost:8080/api/specialties/${id}`)
+            .then(res => res.json())
+            .then(data => setSpecialty(data))
+            .catch(err => console.error("Lỗi lấy chuyên khoa:", err));
+    }, [id]);
 
-        // ✅ Nếu bạn đang dùng data giả (DoctorData):
-        const filteredDoctors = listDoctorData.filter(
-            (d) => d.specialtySlug === slug
-        );
-        setDoctorList(filteredDoctors);
-    }, [slug]);
+    // Lấy danh sách bác sĩ theo chuyên khoa
+    useEffect(() => {
+        fetch(`http://localhost:8080/api/doctors/specialty/${id}`)
+            .then(res => res.json())
+            .then(data => setDoctorList(data))
+            .catch(err => console.error("Lỗi lấy bác sĩ:", err));
+    }, [id]);
 
-    // Đặt tiêu đề hiển thị (cho đẹp hơn slug)
-    const specialtyName = {
-        'co-xuong-khop': 'Cơ xương khớp',
-        'da-lieu': 'Da liễu',
-        'tim-mach': 'Tim mạch'
-    }[slug] || 'Chuyên khoa';
+    // Lấy danh sách cơ sở y tế
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+
+        fetch("http://localhost:8080/api/facilities", {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("Không thể lấy cơ sở y tế");
+                }
+                return res.json();
+            })
+            .then(data => setCoSoYTeList(data))
+            .catch(err => console.error("Lỗi lấy cơ sở y tế:", err));
+    }, []);
+
+    console.log(cosoyteList)
+
+    if (!specialty) return <p className='p-10'>Đang tải...</p>;
 
     return (
         <div>
             <HeaderSub />
-            <div className='max-w-[1300px] mx-auto'>
-                {/* Breadcrumb */}
+
+            <div className='max-w-[1300px] lg:mx-auto mx-5'>
+
                 <p className='pt-5'>
-                    <Link to="/" className='text-blue-400'><i className="fa-solid fa-house"></i></Link>
+                    <Link to="/" className='text-blue-400'>
+                        <i className="fa-solid fa-house"></i>
+                    </Link>
                     <span className='mx-1.5 text-blue-400'>/</span>
-                    <span className='font-medium text-blue-400'>Khám chuyên khoa</span>
+                    <Link to="/specialtypage" className='text-blue-400'>
+                        Khám chuyên khoa
+                    </Link>
                     <span className='mx-1.5 text-blue-400'>/</span>
-                    <span className='font-medium'>{specialtyName}</span>
+                    <span className='font-medium'>{specialty.tenChuyenKhoa}</span>
                 </p>
 
-                {/* Bộ lọc */}
-                <div className='flex gap-x-3 mt-5'>
-                    <select
-                        className="w-[200px] border border-gray-300 rounded-[4px] shadow-sm p-2 focus:outline-none focus:border-[#bb4d00]"
-                    >
-                        <option value="">Toàn quốc</option>
-                        <option value="Hanoi">Hà Nội</option>
-                        <option value="Hochiminh">Tp Hồ Chí Minh</option>
-                    </select>
 
-                    <select
-                        className="w-[200px] border border-gray-300 rounded-[4px] shadow-sm p-2 focus:outline-none focus:border-[#bb4d00]"
-                    >
-                        <option value="">Chọn ngày</option>
-                    </select>
-                </div>
+                <h2 className='font-bold text-[22px] mt-4'>
+                    {specialty.tenChuyenKhoa}
+                </h2>
 
-                {/* Danh sách bác sĩ */}
+
+                <p className='mt-2 text-gray-700'>{specialty.moTa}</p>
+
+
+                <h3 className='text-[20px] font-semibold mt-8'>Bác sĩ thuộc chuyên khoa</h3>
+
                 <div className='mt-5 space-y-5'>
-                    {doctorList.length > 0 ? (
+                    {doctorList.length > 0 && cosoyteList.length > 0 ? (
                         doctorList.map((item) => (
-                            <DoctorDetail key={item.id} data={item} />
+                            <DoctorDetail
+                                key={item.bacSiID}
+                                doctor={item}
+                                cosoyte={cosoyteList[0]}
+                            />
                         ))
                     ) : (
-                        <p className="text-gray-500 italic">Chưa có bác sĩ trong chuyên khoa này.</p>
+                        <p className="text-gray-500 italic">Chưa có bác sĩ cho chuyên khoa này hoặc cơ sở y tế chưa load.</p>
                     )}
                 </div>
             </div>
+
             <Footer />
         </div>
-    )
-}
+    );
+};
 
-export default SpecialtyDetailPage
+export default SpecialtyDetailPage;

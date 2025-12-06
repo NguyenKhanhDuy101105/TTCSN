@@ -55,7 +55,7 @@ const AuthResetPassword = () => {
     return (
         <>
             <HeaderSub />
-            <div className="max-w-[650px] mx-auto py-5 mt-40 border border-gray-200 shadow-2xl rounded-lg">
+            <div className="w-full max-w-[450px] sm:max-w-[550px] md:max-w-[650px] mx-auto py-5 mt-15 border border-gray-200 shadow-2xl rounded-lg">
                 <h2 className="text-center font-bold text-[24px] mb-3">
                     Đặt lại mật khẩu
                 </h2>

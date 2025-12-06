@@ -2,11 +2,28 @@ import React, { useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { Eye, EyeOff } from 'lucide-react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ChangePassword = () => {
     const [showOld, setShowOld] = useState(false)
     const [showNew, setShowNew] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
+
+    const notifySuccess = () => {
+        toast.success("Đổi mật khẩu thành công!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+        });
+    };
+    const notifyError = () => {
+        toast.error(`Sai mật khẩu cũ đổi mật khẩu thất bại`, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+        });
+    };
 
     const formik = useFormik({
         initialValues: {
@@ -24,21 +41,53 @@ const ChangePassword = () => {
                 .oneOf([Yup.ref("newPassword"), null], "Mật khẩu xác nhận không khớp")
                 .required("Vui lòng nhập lại mật khẩu mới")
         }),
-        onSubmit: (values) => {
-            console.log("Dữ liệu đổi mật khẩu:", values)
-            // 👉 Gọi API POST hoặc PUT /api/users/change-password tại đây
+        onSubmit: async (values) => {
+            const token = localStorage.getItem("accessToken");
+
+            if (!token) {
+                alert("Bạn chưa đăng nhập!");
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `http://localhost:8080/api/auth/change-password?oldPassword=${encodeURIComponent(values.oldPassword)}&newPassword=${encodeURIComponent(values.newPassword)}`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Accept": "*/*"
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    const err = await response.text();
+                    throw new Error(err || "Đổi mật khẩu thất bại");
+                }
+
+                const data = await response.json();
+                console.log(data)
+                notifySuccess();
+                formik.resetForm();
+
+            } catch (error) {
+                notifyError();
+                console.error("Lỗi đổi mật khẩu:", error);
+
+            }
         }
-    })
+    });
 
     return (
         <div className='max-w-xl border rounded-[12px] border-gray-300 shadow-md'>
             <h2 className='bg-[#70b8e8] text-white rounded-t-[12px] px-5 py-2 font-bold text-[24px]'>
                 Đổi mật khẩu
             </h2>
-
+            <ToastContainer />
             <form onSubmit={formik.handleSubmit} className='p-6 bg-white rounded-b-[12px]'>
 
-                {/* Mật khẩu cũ */}
+
                 <div className='mb-5 relative'>
                     <label className='block font-semibold mb-1'>Mật khẩu cũ *</label>
                     <input
@@ -61,7 +110,7 @@ const ChangePassword = () => {
                     )}
                 </div>
 
-                {/* Mật khẩu mới */}
+
                 <div className='mb-5 relative'>
                     <label className='block font-semibold mb-1'>Mật khẩu mới *</label>
                     <input
@@ -84,7 +133,7 @@ const ChangePassword = () => {
                     )}
                 </div>
 
-                {/* Xác nhận lại mật khẩu */}
+
                 <div className='mb-6 relative'>
                     <label className='block font-semibold mb-1'>Xác nhận lại mật khẩu *</label>
                     <input
@@ -107,7 +156,7 @@ const ChangePassword = () => {
                     )}
                 </div>
 
-                {/* Nút hành động */}
+
                 <div className='flex gap-x-3 justify-start'>
                     <button
                         type='submit'

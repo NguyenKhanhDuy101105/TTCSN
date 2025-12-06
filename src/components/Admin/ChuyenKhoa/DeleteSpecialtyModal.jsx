@@ -12,7 +12,7 @@ export default function DeleteSpecial({ item, onCancel, onConfirm }) {
 
                 <p className="text-gray-600 mb-6">
                     Bạn có chắc chắn muốn xóa chuyên khoa{" "}
-                    <b>{item.name}</b> (Mã: {item.code}) này không?
+                    <b>{item.tenChuyenKhoa}</b> (Mã: {item.chuyenKhoaID}) này không?
                 </p>
 
                 <div className="flex justify-end gap-3">

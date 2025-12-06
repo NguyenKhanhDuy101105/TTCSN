@@ -1,81 +1,62 @@
-import React, { useState } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
+import React from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { ToastContainer, toast } from 'react-toastify';
-const InforForm = ({ user, setUser, setIsEditing }) => {
-    const [showPassword, setShowPassword] = useState(false)
 
-    const convertDateFormat = (dateString) => {
-        if (!dateString) return "";
-        const [day, month, year] = dateString.split("/");
-        return `${year}-${month}-${day}`;
-    };
+const InforForm = ({ user, setUser, setIsEditing }) => {
+
     const notifySuccess = () => {
         toast.success("Cập nhật thông tin thành công!", {
             position: "top-right",
             autoClose: 3000,
-            hideProgressBar: false,
         });
     };
+
     const notifyError = () => {
-        toast.error(`Cập nhật thông tin thất bại`, {
+        toast.error("Cập nhật thông tin thất bại!", {
             position: "top-right",
             autoClose: 3000,
-            hideProgressBar: false,
         });
     };
+
     const formik = useFormik({
         initialValues: {
-            full_name: user?.fullName || "",
+            hoTen: user?.hoTen || "",
             email: user?.email || "",
-            phone: user?.phone || "",
-            address: user?.address || "",
-            dob: convertDateFormat(user?.dob) || "",
-            gender: user?.gender || "",
-            password: "",
-            confirmPassword: ""
+            soDienThoai: user?.soDienThoai || "",
+            diaChi: user?.diaChi || "",
+            ngaySinh: user?.ngaySinh || "",
+            gioiTinh: user?.gioiTinh?.toString() || "",
+            avatarUrl: user?.avatarUrl || "",
         },
+
         validationSchema: Yup.object({
-            full_name: Yup.string()
-                .required("Vui lòng nhập họ và tên"),
-            email: Yup.string()
-                .email("Email không hợp lệ")
-                .required("Vui lòng nhập email"),
-            phone: Yup.string()
+            hoTen: Yup.string().required("Vui lòng nhập họ và tên"),
+            email: Yup.string().email("Email không hợp lệ").required("Vui lòng nhập email"),
+            soDienThoai: Yup.string()
                 .matches(/^(?:\+84|0)[0-9]{9,10}$/, "Số điện thoại không hợp lệ")
                 .required("Vui lòng nhập số điện thoại"),
-            address: Yup.string()
-                .required("Vui lòng nhập địa chỉ"),
-            dob: Yup.date()
-                .required("Vui lòng chọn ngày sinh"),
-            gender: Yup.string()
-                .required("Vui lòng chọn giới tính"),
-            password: Yup.string(),
-            confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Mật khẩu xác nhận không khớp"),
+            diaChi: Yup.string().required("Vui lòng nhập địa chỉ"),
+            ngaySinh: Yup.date().required("Vui lòng chọn ngày sinh"),
+            gioiTinh: Yup.string().required("Vui lòng chọn giới tính"),
+            avatarUrl: Yup.string().url("Link ảnh không hợp lệ"),
         }),
+
         onSubmit: async (values) => {
             try {
-                const token = localStorage.getItem("token");
-
-                const convertBackDate = (dateString) => {
-                    const [year, month, day] = dateString.split("-");
-                    return `${day}/${month}/${year}`;
-                };
+                const token = localStorage.getItem("accessToken");
 
                 const updatedUser = {
-                    fullName: values.full_name,
+                    hoTen: values.hoTen,
                     email: values.email,
-                    phone: values.phone,
-                    address: values.address,
-                    dob: convertBackDate(values.dob),
-                    gender: values.gender,
-                    password: values.password,
+                    soDienThoai: values.soDienThoai,
+                    diaChi: values.diaChi,
+                    ngaySinh: values.ngaySinh,
+                    gioiTinh: Number(values.gioiTinh),
+                    avatarUrl: values.avatarUrl
                 };
 
-                console.log("Submitting update:", updatedUser);
-
-                const response = await fetch("http://localhost:8080/api/auth/update", {
+                const response = await fetch("http://localhost:8080/api/auth/me", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
@@ -85,49 +66,41 @@ const InforForm = ({ user, setUser, setIsEditing }) => {
                 });
 
                 const data = await response.json();
+
                 if (!response.ok) {
-                    console.error("Response error:", data);
                     notifyError();
-                    throw new Error("Cập nhật thất bại!");
+                    throw new Error(data?.message || "Cập nhật thất bại!");
                 }
 
-                console.log("Response data:", data);
                 setUser(data);
                 notifySuccess();
+                setTimeout(() => setIsEditing(false), 1500);
 
-                setTimeout(() => {
-                    setIsEditing(false);
-                }, 1500);
             } catch (error) {
                 console.error("Lỗi khi cập nhật thông tin:", error);
             }
         }
-    })
+    });
 
     return (
-        <form
-            onSubmit={formik.handleSubmit}
-            className="rounded-[12px] p-6 w-full bg-white"
-        >
-            <div className="mb-4 p-3 bg-yellow-100 text-yellow-800 rounded">
-                Vui lòng nhập mật khẩu hiện tại để xác nhận thay đổi thông tin
-            </div>
+        <form onSubmit={formik.handleSubmit} className="rounded-[12px] p-6 w-full bg-white">
+
             <ToastContainer />
-            {/* Họ và tên + Email */}
+
+            {/* HỌ TÊN - EMAIL */}
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label className="block text-sm font-semibold mb-1">Họ và tên *</label>
                     <input
                         type="text"
-                        name="full_name"
-                        value={formik.values.full_name}
+                        name="hoTen"
+                        value={formik.values.hoTen}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        placeholder="Nhập họ và tên"
-                        className="w-full border border-gray-300 rounded-[4px] bg-gray-100 p-2 focus:outline-none focus:border-[#bb4d00]"
+                        className="w-full border border-gray-300 rounded bg-gray-100 p-2"
                     />
-                    {formik.touched.full_name && formik.errors.full_name && (
-                        <p className="text-red-500 text-sm mt-1">{formik.errors.full_name}</p>
+                    {formik.touched.hoTen && formik.errors.hoTen && (
+                        <p className="text-red-500 text-sm">{formik.errors.hoTen}</p>
                     )}
                 </div>
 
@@ -136,123 +109,105 @@ const InforForm = ({ user, setUser, setIsEditing }) => {
                     <input
                         type="email"
                         name="email"
+                        disabled
                         value={formik.values.email}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        placeholder="Nhập email"
-                        className="w-full border border-gray-300 rounded-[4px] bg-gray-100 p-2 focus:outline-none focus:border-[#bb4d00]"
+                        className="w-full border border-gray-300 rounded bg-gray-100 p-2"
                     />
-                    {formik.touched.email && formik.errors.email && (
-                        <p className="text-red-500 text-sm mt-1">{formik.errors.email}</p>
-                    )}
                 </div>
             </div>
 
-            {/* Số điện thoại + Địa chỉ */}
+            {/* SDT - Địa chỉ */}
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label className="block text-sm font-semibold mb-1">Số điện thoại *</label>
                     <input
                         type="text"
-                        name="phone"
-                        value={formik.values.phone}
+                        name="soDienThoai"
+                        value={formik.values.soDienThoai}
                         onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        placeholder="Nhập số điện thoại"
-                        className="w-full border border-gray-300 rounded-[4px] bg-gray-100 p-2 focus:outline-none focus:border-[#bb4d00]"
+                        className="w-full border border-gray-300 rounded bg-gray-100 p-2"
                     />
-                    {formik.touched.phone && formik.errors.phone && (
-                        <p className="text-red-500 text-sm mt-1">{formik.errors.phone}</p>
+                    {formik.touched.soDienThoai && formik.errors.soDienThoai && (
+                        <p className="text-red-500 text-sm">{formik.errors.soDienThoai}</p>
                     )}
                 </div>
+
                 <div>
                     <label className="block text-sm font-semibold mb-1">Địa chỉ *</label>
                     <input
                         type="text"
-                        name="address"
-                        value={formik.values.address}
+                        name="diaChi"
+                        value={formik.values.diaChi}
                         onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        placeholder="Nhập địa chỉ"
-                        className="w-full border border-gray-300 rounded-[4px] bg-gray-100 p-2 focus:outline-none focus:border-[#bb4d00]"
+                        className="w-full border border-gray-300 rounded bg-gray-100 p-2"
                     />
-                    {formik.touched.address && formik.errors.address && (
-                        <p className="text-red-500 text-sm mt-1">{formik.errors.address}</p>
+                    {formik.touched.diaChi && formik.errors.diaChi && (
+                        <p className="text-red-500 text-sm">{formik.errors.diaChi}</p>
                     )}
                 </div>
             </div>
 
-            {/* Ngày sinh + Giới tính */}
+            {/* NGÀY SINH - GIỚI TÍNH */}
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label className="block text-sm font-semibold mb-1">Ngày sinh *</label>
                     <input
                         type="date"
-                        name="dob"
-                        value={formik.values.dob}
+                        name="ngaySinh"
+                        value={formik.values.ngaySinh}
                         onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className="w-full border border-gray-300 rounded-[4px] bg-gray-100 p-2 focus:outline-none focus:border-[#bb4d00]"
+                        className="w-full border border-gray-300 rounded bg-gray-100 p-2"
                     />
-                    {formik.touched.dob && formik.errors.dob && (
-                        <p className="text-red-500 text-sm mt-1">{formik.errors.dob}</p>
-                    )}
                 </div>
+
                 <div>
                     <label className="block text-sm font-semibold mb-1">Giới tính *</label>
                     <select
-                        name="gender"
-                        value={formik.values.gender}
+                        name="gioiTinh"
+                        value={formik.values.gioiTinh}
                         onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className="w-full border border-gray-300 rounded-[4px] bg-gray-100 p-2 focus:outline-none focus:border-[#bb4d00]"
+                        className="w-full border border-gray-300 rounded bg-gray-100 p-2"
                     >
                         <option value="">Chọn giới tính</option>
-                        <option value="Nam">Nam</option>
-                        <option value="Nữ">Nữ</option>
+                        <option value="1">Nam</option>
+                        <option value="0">Nữ</option>
                     </select>
-                    {formik.touched.gender && formik.errors.gender && (
-                        <p className="text-red-500 text-sm mt-1">{formik.errors.gender}</p>
-                    )}
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="relative">
-                    <label className="block text-sm font-semibold mb-1">Mật khẩu hiện tại *</label>
-                    <input
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        placeholder="Nhập lại mật khẩu để xác nhận"
-                        className="w-full border border-gray-300 rounded-[4px] bg-gray-100 p-2 pr-10 focus:outline-none focus:border-[#bb4d00]"
+            {/* AVATAR URL */}
+            <div className="mb-4">
+                <label className="block text-sm font-semibold mb-1">Avatar URL</label>
+                <input
+                    type="text"
+                    name="avatarUrl"
+                    placeholder="Nhập URL ảnh mới"
+                    value={formik.values.avatarUrl}
+                    onChange={formik.handleChange}
+                    className="w-full border border-gray-300 rounded bg-gray-100 p-2"
+                />
+                {formik.touched.avatarUrl && formik.errors.avatarUrl && (
+                    <p className="text-red-500 text-sm">{formik.errors.avatarUrl}</p>
+                )}
+
+                {formik.values.avatarUrl && (
+                    <img
+                        src={formik.values.avatarUrl}
+                        alt="preview"
+                        className="w-24 h-24 rounded-full mt-2 object-cover border"
                     />
-                    <span
-                        className="absolute right-3 top-[36px] cursor-pointer text-gray-600"
-                        onClick={() => setShowPassword(!showPassword)}
-                    >
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </span>
-                    {formik.touched.password && formik.errors.password && (
-                        <p className="text-red-500 text-sm mt-1">{formik.errors.password}</p>
-                    )}
-                </div>
+                )}
             </div>
 
-            {/* Nút hành động */}
-            <div className="flex gap-x-3 justify-start">
-                <button
-                    type="submit"
-                    className="px-4 py-2 cursor-pointer bg-sky-500 hover:bg-sky-600 rounded-[8px] text-white font-medium"
-                >
+            {/* BUTTONS */}
+            <div className="flex gap-x-3">
+                <button type="submit" className="px-4 py-2 bg-sky-500 text-white rounded-[4px]">
                     Cập nhật thông tin
                 </button>
                 <button
                     type="button"
                     onClick={() => setIsEditing(false)}
-                    className="px-4 py-2 cursor-pointer bg-[#6e7180] rounded-[8px] text-white font-medium"
+                    className="px-4 py-2 bg-gray-600 text-white rounded-[4px]"
                 >
                     Hủy
                 </button>

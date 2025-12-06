@@ -1,70 +1,168 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-const DoctorSchedule = ({ schedule, doctor }) => {
-    console.log(doctor)
-    const nextDays = Array.from({ length: 5 }, (_, i) => {
-        const date = new Date();
-        date.setDate(date.getDate() + i);
-        return {
-            value: date.toISOString().split("T")[0],
-            label: date.toLocaleDateString("vi-VN", {
-                weekday: "long",
-                day: "2-digit",
-                month: "2-digit",
-            }),
-        };
-    });
 
-    const [selectedDate, setSelectedDate] = useState(nextDays[0].value);
+const generateTimeSlots = (start, end) => {
+    let slots = [];
+    let current = new Date(`2000-01-01 ${start}`);
+    let stop = new Date(`2000-01-01 ${end}`);
+
+    while (current < stop) {
+        const hh = current.getHours().toString().padStart(2, "0");
+        const mm = current.getMinutes().toString().padStart(2, "0");
+        slots.push(`${hh}:${mm}`);
+        current.setMinutes(current.getMinutes() + 30);
+    }
+    return slots;
+};
+
+const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("vi-VN", {
+        weekday: "long",
+        day: "2-digit",
+        month: "2-digit",
+    });
+};
+
+const DoctorSchedule = ({ doctor }) => {
+    const [scheduleList, setScheduleList] = useState([]);
+    const [selectedDate, setSelectedDate] = useState("");
+    const [selectedCa, setSelectedCa] = useState("");
     const navigate = useNavigate();
-    const handleSelectSlot = (slot) => {
-        if (!slot.available) return;
-        console.log("Doctor gửi sang đặt lịch:", doctor);
-        console.log("Ngày đã chọn:", selectedDate);
-        console.log("Khung giờ đã chọn:", slot.time);
-        navigate("/dat-lich", {
-            state: {
-                doctor,
-                date: selectedDate,
-                time: slot.time,
+
+    useEffect(() => {
+        if (!doctor?.bacSiID) return;
+
+        const token = localStorage.getItem("accessToken");
+
+        fetch(`http://localhost:8080/api/bookings/doctor/${doctor.bacSiID}/schedule`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data?.data) {
+                    const sorted = data.data.sort((a, b) =>
+                        a.gioBatDau.localeCompare(b.gioBatDau)
+                    );
+                    setScheduleList(sorted);
+
+                    // Chọn mặc định ngày đầu tiên
+                    const firstDate = sorted[0]?.ngay;
+                    if (firstDate) setSelectedDate(firstDate);
+
+                    // Chọn mặc định ca đầu tiên theo ngày đầu tiên
+                    const firstCa = sorted.find(x => x.ngay === firstDate)?.tenCa;
+                    if (firstCa) setSelectedCa(firstCa);
+                }
+            })
+            .catch(err => console.error("Lỗi lấy lịch khám:", err));
+    }, [doctor?.bacSiID]);
+
+    if (scheduleList.length === 0) {
+        return <p className="text-gray-500">Bác sĩ chưa có lịch khám.</p>;
+    }
+
+    const groupedByDate = scheduleList.reduce((acc, item) => {
+        if (!acc[item.ngay]) acc[item.ngay] = [];
+        acc[item.ngay].push(item);
+        return acc;
+    }, {});
+
+    const dates = Object.keys(groupedByDate);
+
+    const cas = selectedDate
+        ? [...new Set(groupedByDate[selectedDate].map(c => c.tenCa))]
+        : [];
+
+    const handleSelectSlot = (date, time, caInfo) => {
+        if (!caInfo.available || caInfo.gioDaDat.includes(time)) return;
+
+        navigate("/dat-lich", {
+            state: { doctor, date, time, ca: caInfo.ca },
         });
     };
+
     return (
         <>
-            <div className="flex justify-between items-center mb-2">
-                <h3 className="font-semibold">LỊCH KHÁM</h3>
+            {/* SELECT NGÀY */}
+            <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-[18px]">LỊCH KHÁM</h3>
+
                 <select
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:border-sky-400"
+                    className="border border-gray-300 p-2 rounded text-sm w-[180px] outline-none"
                 >
-                    {nextDays.map((day) => (
-                        <option key={day.value} value={day.value}>
-                            {day.label}
+                    {dates.map(date => (
+                        <option key={date} value={date}>
+                            {formatDate(date)}
                         </option>
                     ))}
                 </select>
             </div>
 
-            <div className="grid grid-cols-4 gap-2 mb-4">
-                {schedule.slots.map((slot, index) => (
+            {/* NÚT CA */}
+            <div className="flex gap-2 mb-3">
+                {cas.map((ca, idx) => (
                     <button
-                        key={index}
-                        onClick={() => handleSelectSlot(slot)}
-                        disabled={!slot.available}
-                        className={`border border-gray-300 rounded p-2 text-sm ${slot.available
-                            ? "hover:bg-sky-100"
-                            : "bg-gray-100 cursor-not-allowed"
+                        key={idx}
+                        onClick={() => setSelectedCa(ca)}
+                        className={`px-3 py-1 rounded border text-sm
+                            ${selectedCa === ca
+                                ? "bg-sky-100 border-sky-500 text-sky-700 font-medium"
+                                : "border-gray-300 hover:bg-gray-100"
                             }`}
                     >
-                        {slot.time}
+                        {ca}
                     </button>
                 ))}
             </div>
 
-            <p className="text-gray-500 text-sm mb-2">
-                Chọn và đặt (Phí đặt lịch: {schedule.bookingFee}đ)
+            {/* DANH SÁCH GIỜ */}
+            {selectedDate &&
+                groupedByDate[selectedDate]
+                    .filter(ca => ca.tenCa === selectedCa)
+                    .map((ca, index) => (
+                        <div key={index} className="mb-4">
+
+                            {/* CA NGHỈ */}
+                            {!ca.available && (
+                                <p className="text-red-500 text-sm">
+                                    Ca này đã nghỉ ({ca.loaiNghi})
+                                </p>
+                            )}
+
+                            {/* SLOT GIỜ */}
+                            <div className="grid grid-cols-4 gap-2 mt-1">
+                                {generateTimeSlots(ca.gioBatDau, ca.gioKetThuc).map((slot, idx) => {
+
+                                    const isBooked = ca.gioDaDat.includes(slot);
+
+                                    return (
+                                        <button
+                                            key={idx}
+                                            disabled={!ca.available || isBooked}
+                                            onClick={() => handleSelectSlot(selectedDate, slot, ca)}
+                                            className={`border rounded p-2 text-sm cursor-pointer
+                                                ${!ca.available || isBooked
+                                                    ? "bg-gray-300 border-gray-300 cursor-not-allowed"
+                                                    : "border-gray-300 hover:bg-sky-100"
+                                                }`}
+                                        >
+                                            {slot}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ))}
+
+            <p className="text-gray-500 text-sm mt-2">
+                Chọn giờ để đặt lịch (Phí đặt lịch: 0đ)
             </p>
         </>
     );

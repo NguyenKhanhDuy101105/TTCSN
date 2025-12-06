@@ -1,65 +1,52 @@
-import React, { useState } from "react";
-import Toolbar from "../ChuyenKhoa/Toolbar.jsx"; // dùng lại Toolbar
-import DoctorsTableWithPagination from "./DoctorsTableWithPagination.jsx";
-import DoctorsForm from "./DoctorsForm.jsx";
-import DoctorsViewModal from "./DoctorsViewModal.jsx";
-import DeleteDoctorModal from "./DeleteDoctorModal.jsx";
 
-import { doctors } from "./DoctorData.js"; // dữ liệu bác sĩ
-import { specialties } from "../ChuyenKhoa/SpecialtiesData.js"; // dữ liệu chuyên khoa
-import { data as medicalData } from "../CoSoYTe/MedicalData.js"; // dữ liệu cơ sở y tế
+import React, { useState } from "react";
+import DoctorToolbar from "./DoctorToolbar.jsx";
+import DoctorsTable from "./DoctorTable.jsx"
+import DoctorFormModal from "./DoctorFormModal.jsx";
+import DoctorViewModal from "./DoctorViewModal1.jsx";
+import DeleteDoctorModal from "./DeleteDoctorModal.jsx";
+import { doctors } from "./DoctorData.js";
+import { specialties } from "../ChuyenKhoa/SpecialtiesData.js";
 
 const DoctorsPage = () => {
     const [doctorsData, setDoctorsData] = useState(doctors);
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedSpecialty, setSelectedSpecialty] = useState("");
 
-    // state modal
+    // modal state
     const [selectedItem, setSelectedItem] = useState(null);
     const [openForm, setOpenForm] = useState(false);
     const [openView, setOpenView] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
 
-    // --- Join dữ liệu ---
-    const joinedData = doctorsData.map((item) => {
-        const specialty = specialties.find((s) => s.id === item.specialty?.id || s.id === item.specialtyId);
-        const medical = medicalData.find((m) => m.id === item.medical?.id || m.id === item.medicalId);
-        return {
-            ...item,
-            specialty: specialty || item.specialty || null,
-            medical: medical || item.medical || null,
-        };
-    });
-
-    // --- Tìm kiếm ---
-    const filteredData = joinedData.filter(
-        (item) =>
-            item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.desc.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.specialty?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.medical?.name.toLowerCase().includes(searchTerm.toLowerCase())
+    // filter bác sĩ theo search + chuyên khoa
+    const filteredDoctors = doctorsData.filter(
+        (d) =>
+            d.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+            (!selectedSpecialty || d.specialtyIds.includes(Number(selectedSpecialty)))
     );
 
-    // --- Thêm mới ---
+    // thêm mới
     const handleAdd = () => {
         setSelectedItem(null);
         setOpenForm(true);
     };
 
-    // --- Xem chi tiết ---
+    // xem chi tiết
     const handleView = (index) => {
-        setSelectedItem(filteredData[index]);
+        setSelectedItem(filteredDoctors[index]);
         setOpenView(true);
     };
 
-    // --- Sửa ---
+    // sửa
     const handleEdit = (index) => {
-        setSelectedItem(filteredData[index]);
+        setSelectedItem(filteredDoctors[index]);
         setOpenForm(true);
     };
 
-    // --- Xóa ---
+    // xóa
     const handleDelete = (index) => {
-        setSelectedItem(filteredData[index]);
+        setSelectedItem(filteredDoctors[index]);
         setOpenDelete(true);
     };
 
@@ -69,7 +56,7 @@ const DoctorsPage = () => {
         setSelectedItem(null);
     };
 
-    // --- Lưu (thêm / sửa) ---
+    // lưu thêm / sửa
     const handleSave = (newItem) => {
         if (selectedItem) {
             // sửa
@@ -86,10 +73,22 @@ const DoctorsPage = () => {
 
     return (
         <div>
-            <Toolbar onSearch={setSearchTerm} onAdd={handleAdd} content={"bác sĩ"} />
+            <DoctorToolbar
+                onSearch={setSearchTerm}
+                onAdd={handleAdd}
+                content="bác sĩ"
+                specialties={specialties}
+                selectedSpecialty={selectedSpecialty}
+                onSelectSpecialty={setSelectedSpecialty}
+            />
 
-            <DoctorsTableWithPagination
-                items={filteredData}
+            <DoctorsTable
+                items={filteredDoctors.map((d) => ({
+                    ...d,
+                    specialtyNames: d.specialtyIds
+                        .map((id) => specialties.find((s) => s.id === id)?.name)
+                        .filter(Boolean),
+                }))}
                 onView={handleView}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
@@ -97,8 +96,9 @@ const DoctorsPage = () => {
 
             {/* Modal xem chi tiết */}
             {openView && selectedItem && (
-                <DoctorsViewModal
+                <DoctorViewModal
                     item={selectedItem}
+                    specialties={specialties}
                     onClose={() => {
                         setOpenView(false);
                         setSelectedItem(null);
@@ -111,12 +111,11 @@ const DoctorsPage = () => {
                 />
             )}
 
-            {/* Modal form thêm / sửa */}
+            {/* Modal thêm / sửa */}
             {openForm && (
-                <DoctorsForm
+                <DoctorFormModal
                     editingDoctor={selectedItem}
-                    specialtyOptions={specialties}
-                    medicalOptions={medicalData}
+                    specialties={specialties}
                     onSave={handleSave}
                     onClose={() => {
                         setOpenForm(false);
@@ -125,7 +124,7 @@ const DoctorsPage = () => {
                 />
             )}
 
-            {/* Modal xác nhận xóa */}
+            {/* Modal xóa */}
             {openDelete && selectedItem && (
                 <DeleteDoctorModal
                     item={selectedItem}

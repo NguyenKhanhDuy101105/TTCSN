@@ -9,22 +9,35 @@ const AdminPage = () => {
         "Quản lý cơ sở y tế",
         "Quản lý chuyên khoa",
         "Quản lý bác sĩ",
-        "Quản lý dịch vụ",
-        "Quản lý lịch hẹn",
+        "Quản lý người dùng",
+        "Quản lý lịch khám",
+        "Quản lý trình độ",
+        "Quản lý lịch nghỉ",
     ]
 
     const [index, setIndex] = useState(0)
+    const [sidebarOpen, setSidebarOpen] = useState(true)
 
     return (
         <div>
             {/* Header */}
-            <HeaderAdmin danhMuc={danhMuc} index={index} />
+            <HeaderAdmin
+                danhMuc={danhMuc}
+                index={index}
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+            />
 
             {/* Sidebar */}
-            <SideBar danhMuc={danhMuc} index={index} setIndex={setIndex} />
+            <SideBar
+                danhMuc={danhMuc}
+                index={index}
+                setIndex={setIndex}
+                sidebarOpen={sidebarOpen}
+            />
 
-            {/* Nội dung chính (hiển thị component con theo route) */}
-            <div className="mt-[100px] ml-[280px] h-[630px] p-5">
+            {/* Nội dung chính */}
+            <div className={`mt-[100px] p-5 transition-all duration-300 ${sidebarOpen ? 'ml-[280px]' : 'ml-0'}`}>
                 <Outlet />
             </div>
         </div>

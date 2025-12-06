@@ -1,49 +1,41 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import HeaderSub from '../components/HeaderSub'
 import Footer from '../components/Footer'
 import { Link } from 'react-router-dom'
-import img1 from "../assets/images/doctor/bs7.png"
-import img2 from "../assets/images/doctor/bs9.png"
-import img3 from "../assets/images/doctor/bs10.png"
-import img4 from "../assets/images/doctor/bs11.png"
+
 const DoctorPage = () => {
 
-    const listDoctor = [
-        {
-            id: 1,
-            name: "Bác sĩ Chuyên khoa II Lê Hồng Anh",
-            specialty: "Hô hấp - Phổi",
-            image: img1,
-            path: ""
-        },
-        {
-            id: 2,
-            name: "Tiến sĩ, Bác sĩ Nguyễn Văn Doanh",
-            specialty: "Thần kinh",
-            image: img2,
-            path: ""
-        },
-        {
-            id: 3,
-            name: "Phó Giáo sư, Tiến sĩ Kiều Đình Hùng",
-            specialty: "Thần kinh",
-            image: img3,
-            path: ""
-        },
-        {
-            id: 4,
-            name: "Tiến sĩ, Bác sĩ Chuyên khoa II Trà Anh Duy",
-            specialty: "Thần kinh",
-            image: img4,
-            path: ""
-        },
+    const [doctors, setDoctors] = useState([])
 
-    ]
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+
+        fetch(`http://localhost:8080/api/doctors?page=0&size=50&sortBy=nguoiDung.hoTen&direction=asc`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Lỗi lấy dữ liệu");
+                return response.json();
+            })
+            .then(data => {
+                setDoctors(data.content);
+            })
+            .catch(error => {
+                console.error("Lỗi khi gọi API:", error);
+                alert("Có lỗi xảy ra, vui lòng thử lại!");
+            });
+    }, []);
+
+
 
     return (
         <div>
             <HeaderSub />
-            <div className=' max-w-[1300px] mx-auto'>
+            <div className=' max-w-[1300px] xl:mx-auto mx-5'>
 
                 <p className='pt-5'>
                     <Link to="/" className='text-blue-400'><i class="fa-solid fa-house"></i></Link>
@@ -52,14 +44,16 @@ const DoctorPage = () => {
                 </p>
                 <h2 className='font-semibold text-[18px] pt-3'>Danh sách bác sĩ</h2>
                 <div className='mt-5'>
-                    {listDoctor.map((item, index) => (
+                    {doctors.map((item) => (
                         <Link className='flex gap-x-3 items-center mb-5 border-b-1 pb-5 border-gray-300'
-                            key={index} to="">
+                            key={item.bacSiID}
+                            to={`/doctor/${item.bacSiID}`}
+                        >
                             <img className='size-[110px] rounded-[50%]'
                                 src={item.image} alt="" />
                             <div className=''>
-                                <h3 className='font-medium'>{item.name}</h3>
-                                <p>{item.specialty}</p>
+                                <h3 className='font-medium'>{item.hoTen}</h3>
+                                <p>{item.chuyenKhoa}</p>
                             </div>
                         </Link>
                     ))}

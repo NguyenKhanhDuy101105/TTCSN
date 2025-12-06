@@ -1,40 +1,38 @@
-import React from 'react'
-import HeaderSub from '../components/HeaderSub'
-import Footer from '../components/Footer'
-import { Link } from 'react-router-dom'
-import img1 from "../assets/images/medical/m1.png"
-import img2 from "../assets/images/medical/m2.png"
-import img3 from "../assets/images/medical/m3.png"
+import React, { useState, useEffect } from 'react';
+import HeaderSub from '../components/HeaderSub';
+import Footer from '../components/Footer';
+import { Link } from 'react-router-dom';
 
 const MedicalPage = () => {
+    const [listMedical, setListMedical] = useState([]);
 
-    const listMedical = [
-        {
-            id: 1,
-            name: "Bệnh viện Hữu nghị Việt Đức",
-            image: img1,
-            path: ""
-        },
-        {
-            id: 2,
-            name: "Bệnh viện Chợ Rẫy",
-            image: img2,
-            path: ""
-        },
-        {
-            id: 3,
-            name: "Bệnh viện Đa khoa An Việt",
-            image: img3,
-            path: ""
-        },
-    ]
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        fetch("http://localhost:8080/api/facilities", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(res => res.json())
+            .then(data => {
+                // Map dữ liệu API sang format UI cần
+                const mapped = data.map(item => ({
+                    id: item.coSoID,
+                    name: item.tenCoSo,
+                    image: item.anhDaiDien || item.logo || "", // fallback nếu không có ảnh
+                    path: "" // giữ nguyên nếu cần
+                }));
+                setListMedical(mapped);
+            })
+            .catch(err => console.error(err));
+    }, []);
 
     return (
         <div>
             <HeaderSub />
-            <div className=' max-w-[1300px] mx-auto'>
+            <div className='max-w-[1300px] xl:mx-auto mx-5'>
                 <p className='pt-5'>
-                    <Link to="/" className='text-blue-400'><i class="fa-solid fa-house"></i></Link>
+                    <Link to="/" className='text-blue-400'><i className="fa-solid fa-house"></i></Link>
                     <span className='mx-1.5 text-blue-400'>/</span>
                     <span className='font-medium'>Cơ sở y tế</span>
                 </p>
@@ -42,10 +40,10 @@ const MedicalPage = () => {
                 <div className='mt-5'>
                     {listMedical.map((item, index) => (
                         <Link className='flex gap-x-3 items-center mb-5 border-b-1 pb-5 border-gray-300'
-                            key={index} to="">
-                            <img className='w-[160px] h-[120px]'
-                                src={item.image} alt="" />
-                            <div className=''>
+                            key={index} to={item.path}>
+                            <img className='w-[160px] h-[120px] object-cover'
+                                src={item.image} alt={item.name} />
+                            <div>
                                 <h3 className='font-medium'>{item.name}</h3>
                             </div>
                         </Link>
@@ -54,7 +52,7 @@ const MedicalPage = () => {
             </div>
             <Footer />
         </div>
-    )
-}
+    );
+};
 
-export default MedicalPage
+export default MedicalPage;

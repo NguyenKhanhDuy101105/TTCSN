@@ -56,10 +56,11 @@ const AtHopitalPage = () => {
         <div>
             <HeaderMain check={"taivien"} />
 
-            <div className='w-full pt-[140px] mb-10'>
-                <div className=' max-w-[1300px] mx-auto'>
+            <div className='w-full pt-[140px] mb-10 mt-5 lg:mt-0'>
+                <div className='max-w-[1300px] mx-auto px-5 lg:px-0'>
                     <div className='relative'>
-                        <div className='overflow-hidden rounded-4xl w-full h-[400px] relative'>
+
+                        <div className='overflow-hidden rounded-4xl w-full h-[200px] sm:h-[250px] md:h-[400px] relative'>
                             <div
                                 className={`flex ${isTransitioning ? 'transition-transform duration-500 ease-in-out' : ''}`}
                                 style={{ transform: `translateX(-${index * 100}%)` }}
@@ -70,18 +71,20 @@ const AtHopitalPage = () => {
                                         key={i}
                                         src={url}
                                         alt={`deal-${i}`}
-                                        className='w-full h-[400px] object-cover flex-shrink-0'
+                                        className='w-full h-[200px] sm:h-[250px] md:h-[400px] object-cover flex-shrink-0'
                                     />
                                 ))}
                             </div>
                         </div>
+
+
                         <div className='mt-4 flex justify-center items-center absolute -bottom-2 left-1/2 -translate-x-1/2'>
-                            <div className='flex gap-10 h-[30px]'>
+                            <div className='flex gap-6 h-[30px]'>
                                 {images.map((_, i) => (
                                     <span
                                         key={i}
                                         onClick={() => setIndex(i + 1)}
-                                        className={`block rounded-full bg-amber-400 transition-all duration-300 cursor-pointer ${i + 1 === index ? 'w-3 h-3' : 'w-2 h-2 opacity-50'
+                                        className={`block rounded-full bg-amber-400 transition-all duration-300 cursor-pointer ${i + 1 === index ? 'w-3.5 h-3.5' : 'w-2 h-2 opacity-50'
                                             }`}
                                     ></span>
                                 ))}
@@ -90,6 +93,7 @@ const AtHopitalPage = () => {
                     </div>
                 </div>
             </div>
+
             <ForMe />
             <Medical />
             <ListSpecialty />
