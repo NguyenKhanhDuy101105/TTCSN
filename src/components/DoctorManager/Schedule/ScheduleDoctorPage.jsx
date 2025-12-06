@@ -28,12 +28,12 @@ const SchedulePage = () => {
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Bạn có chắc muốn xóa ca khám này không?")) {
-            await fetch(`http://localhost:8080/api/lichkham/${id}`, {
-                method: "DELETE",
-            });
-            setSchedules((prev) => prev.filter((s) => s.id !== id));
-        }
+        // if (window.confirm("Bạn có chắc muốn xóa ca khám này không?")) {
+        //     await fetch(`http://localhost:8080/api/lichkham/${id}`, {
+        //         method: "DELETE",
+        //     });
+        //     setSchedules((prev) => prev.filter((s) => s.id !== id));
+        // }
     };
 
     return (

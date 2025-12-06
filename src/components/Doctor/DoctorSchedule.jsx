@@ -45,16 +45,25 @@ const DoctorSchedule = ({ doctor }) => {
             .then(res => res.json())
             .then(data => {
                 if (data?.data) {
-                    const sorted = data.data.sort((a, b) =>
+
+                    const todayStr = new Date().toISOString().split("T")[0];
+
+                    const filtered = data.data.filter(item => {
+                        // item.ngay dạng YYYY-MM-DD
+                        return item.ngay > todayStr;
+                    });
+
+                    const sorted = filtered.sort((a, b) =>
                         a.gioBatDau.localeCompare(b.gioBatDau)
                     );
+
                     setScheduleList(sorted);
 
-                    // Chọn mặc định ngày đầu tiên
+
                     const firstDate = sorted[0]?.ngay;
                     if (firstDate) setSelectedDate(firstDate);
 
-                    // Chọn mặc định ca đầu tiên theo ngày đầu tiên
+                    // chọn mặc định ca đầu tiên của ngày đầu
                     const firstCa = sorted.find(x => x.ngay === firstDate)?.tenCa;
                     if (firstCa) setSelectedCa(firstCa);
                 }
@@ -139,7 +148,6 @@ const DoctorSchedule = ({ doctor }) => {
                             {/* SLOT GIỜ */}
                             <div className="grid grid-cols-4 gap-2 mt-1">
                                 {generateTimeSlots(ca.gioBatDau, ca.gioKetThuc).map((slot, idx) => {
-
                                     const isBooked = ca.gioDaDat.includes(slot);
 
                                     return (
@@ -147,7 +155,7 @@ const DoctorSchedule = ({ doctor }) => {
                                             key={idx}
                                             disabled={!ca.available || isBooked}
                                             onClick={() => handleSelectSlot(selectedDate, slot, ca)}
-                                            className={`border rounded p-2 text-sm cursor-pointer
+                                            className={`border rounded p-2 text-sm
                                                 ${!ca.available || isBooked
                                                     ? "bg-gray-300 border-gray-300 cursor-not-allowed"
                                                     : "border-gray-300 hover:bg-sky-100"
@@ -161,8 +169,9 @@ const DoctorSchedule = ({ doctor }) => {
                         </div>
                     ))}
 
-            <p className="text-gray-500 text-sm mt-2">
-                Chọn giờ để đặt lịch (Phí đặt lịch: 0đ)
+            <p className="text-gray-500 text-sm mt-2 italic">
+                * Lịch khám cần đặt trước ít nhất 1 ngày
+                Chọn giờ để đặt lịch khám (phí đặt lịch: Miễn phí)
             </p>
         </>
     );

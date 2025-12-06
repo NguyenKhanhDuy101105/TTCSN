@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 const AppointmentBooking = () => {
     const location = useLocation();
     const navigate = useNavigate();
-
+    const [loading, setLoading] = React.useState(false);
     const { doctor, date, time, ca } = location.state || {};
     const localUser = JSON.parse(localStorage.getItem("user")) || {};
 
@@ -26,7 +26,9 @@ const AppointmentBooking = () => {
             .typeError("Năm sinh phải là số")
             .required("Vui lòng nhập năm sinh"),
         address: Yup.string().required("Vui lòng nhập địa chỉ"),
-        reason: Yup.string().required("Vui lòng nhập lý do khám"),
+        reason: Yup.string()
+            .required("Vui lòng nhập lý do khám")
+            .min(10, "Lý do khám phải từ 10 ký tự trở lên"),
     });
 
     const notifySuccess = () => {
@@ -60,7 +62,7 @@ const AppointmentBooking = () => {
             payment: "TIEN_MAT",
         },
         validationSchema,
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
             const token = localStorage.getItem("accessToken");
 
             if (!token) {
@@ -68,48 +70,50 @@ const AppointmentBooking = () => {
                 return setTimeout(() => navigate("/loginpage"), 1000);
             }
 
+            setLoading(true);
+
             const body = {
                 bacSiID: doctor?.bacSiID,
                 ngayKham: date?.slice(0, 10),
-                ca: ca,
+                ca,
                 gioKham: time,
-                lyDoKham: values.reason,
-                ghiChu: "",
+                lyDoKham: values.reason.trim(),
+                ghiChu: null,
+                tienSuBenh: null,
+                thuocDangDung: null,
+                diUng: null,
                 phuongThucThanhToan: values.payment,
-                tienSuBenh: "",
-                thuocDangDung: "",
-                diUng: "",
-                onlinePayment: values.payment !== "TIEN_MAT"
+                onlinePayment: values.payment !== "TIEN_MAT",
             };
 
-
-            console.log("📌 Body gửi lên:", body);
-
-            fetch("http://localhost:8080/api/bookings", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(body),
-            })
-                .then((res) => {
-                    if (!res.ok) throw new Error();
-                    return res.json();
-                })
-                .then(() => {
-                    notifySuccess();
-                    setTimeout(() => navigate("/"), 1000);
-                })
-                .catch(() => {
-                    notifyError();
+            try {
+                const res = await fetch("http://localhost:8080/api/bookings", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(body),
                 });
-        }
 
+                if (!res.ok) throw new Error();
+
+                await res.json();
+
+                notifySuccess();
+                await new Promise((resolve) => setTimeout(resolve, 1500));
+                navigate("/");
+            } catch (err) {
+                console.log(err)
+                notifyError();
+            } finally {
+                setLoading(false);
+            }
+        },
     });
 
     return (
-        <div className="bg-gray-50 min-h-screen">
+        <div className="bg-gray-50 min-h-screen relative">
             <HeaderSub />
 
             <div className="max-w-5xl mx-auto bg-white mt-6 p-6 rounded-2xl shadow-sm grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -142,7 +146,6 @@ const AppointmentBooking = () => {
                         <p className="font-bold mt-2 text-lg text-right">
                             Tổng cộng: {formatCurrency(doctor?.giaKham || 500000)} vnđ
                         </p>
-
                     </div>
                 </div>
 
@@ -261,15 +264,58 @@ const AppointmentBooking = () => {
                         </label>
                     </div>
 
-
                     <button
                         type="submit"
-                        className="w-full bg-sky-500 hover:bg-sky-600 text-white py-2 rounded-lg font-semibold mt-4"
+                        disabled={loading}
+                        className={`w-full ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-sky-500 hover:bg-sky-600'} text-white py-2 rounded-lg font-semibold mt-4 flex justify-center items-center`}
                     >
-                        Xác nhận đặt khám
+                        {loading && <div style={{
+                            border: "3px solid #f3f3f3",
+                            borderTop: "3px solid #fff",
+                            borderRadius: "50%",
+                            width: "18px",
+                            height: "18px",
+                            marginRight: "8px",
+                            animation: "spin 1s linear infinite"
+                        }}></div>}
+                        {loading ? "Đang đặt lịch..." : "Xác nhận đặt khám"}
                     </button>
+
+                    <style>
+                        {`
+                            @keyframes spin {
+                                0% { transform: rotate(0deg); }
+                                100% { transform: rotate(360deg); }
+                            }
+                        `}
+                    </style>
                 </form>
             </div>
+
+            {/* Overlay khi loading */}
+            {loading && (
+                <div style={{
+                    position: "fixed",
+                    inset: 0,
+                    backgroundColor: "rgba(255,255,255,0.7)",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    zIndex: 50
+                }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <div style={{
+                            border: "4px solid #f3f3f3",
+                            borderTop: "4px solid #3b82f6",
+                            borderRadius: "50%",
+                            width: "24px",
+                            height: "24px",
+                            animation: "spin 1s linear infinite"
+                        }}></div>
+                        <span style={{ color: "#3b82f6", fontWeight: 500 }}>Đang đặt lịch...</span>
+                    </div>
+                </div>
+            )}
 
             <Footer />
             <ToastContainer />

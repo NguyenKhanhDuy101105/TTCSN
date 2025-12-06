@@ -12,6 +12,31 @@ const HeaderMain = ({ check }) => {
     const [mount, setMount] = useState(false);
 
     useEffect(() => {
+        const fetchUser = async () => {
+            if (!isLogin) return;
+            const token = localStorage.getItem("accessToken");
+            if (!token) return;
+
+            try {
+                const res = await fetch("http://localhost:8080/api/auth/me", {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json"
+                    }
+                });
+                if (!res.ok) throw new Error("Lấy thông tin người dùng thất bại");
+                const data = await res.json();
+                setUser(data);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchUser();
+    }, [isLogin, setUser]);
+
+    useEffect(() => {
         if (select === "tatca") {
             setElementSearch(false);
         } else {

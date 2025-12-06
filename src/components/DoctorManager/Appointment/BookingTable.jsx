@@ -1,77 +1,139 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import BookingTable from "./BookingTable";
+import RejectModal from "./RejectModal";
 
-const BookingTable = ({ bookings, onConfirm }) => {
+const DoctorBookingPage = () => {
+    const [selectedDate, setSelectedDate] = useState("");
+    const [bookings, setBookings] = useState([]);
+    const [rejectModalOpen, setRejectModalOpen] = useState(false);
+    const [currentRejectId, setCurrentRejectId] = useState(null);
+
+    const getNext6Days = () => {
+        const today = new Date();
+        const days = [];
+        for (let i = 0; i < 6; i++) {
+            const d = new Date(today);
+            d.setDate(today.getDate() + i);
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, "0");
+            const dd = String(d.getDate()).padStart(2, "0");
+            days.push(`${yyyy}-${mm}-${dd}`);
+        }
+        return days;
+    };
+
+    const mapTrangThai = (status) => {
+        switch (status) {
+            case "CHO_XAC_NHAN_BAC_SI":
+                return "ChoXacNhan";
+            case "DA_XAC_NHAN":
+                return "DaXacNhan";
+            case "HUY":
+                return "DaHuy";
+            default:
+                return status;
+        }
+    };
+
+    // Lấy lịch theo ngày
+    useEffect(() => {
+        if (!selectedDate) return;
+        const token = localStorage.getItem("accessToken");
+        if (!token) return;
+
+        fetch(`http://localhost:8080/api/bookings/doctor/appointments?ngayKham=${selectedDate}`, {
+            headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.success) {
+                    const mapped = data.data.map((item) => ({
+                        id: item.datLichID,
+                        tenKhachHang: item.tenBenhNhan,
+                        ngayKham: item.ngayKham,
+                        gioBatDau: item.gioKham,
+                        trangThai: mapTrangThai(item.trangThai),
+                    }));
+                    setBookings(mapped);
+                } else setBookings([]);
+            })
+            .catch((err) => console.error("Lỗi lấy lịch:", err));
+    }, [selectedDate]);
+
+    // Xử lý xác nhận hoặc từ chối
+    const handleAction = async (id, action, reason = "") => {
+        const token = localStorage.getItem("accessToken");
+        if (!token) return;
+
+        const body =
+            action === "confirm"
+                ? { datLichID: id, duyet: true, approve: true, reject: false, lyDoTuChoi: "" }
+                : { datLichID: id, duyet: false, approve: false, reject: true, lyDoTuChoi: reason };
+
+        try {
+            const res = await fetch(`http://localhost:8080/api/bookings/${id}/confirm`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+                body: JSON.stringify(body),
+            });
+
+            if (!res.ok) throw new Error(`${action === "confirm" ? "Xác nhận" : "Từ chối"} thất bại`);
+
+            setBookings((prev) =>
+                prev.map((b) => (b.id === id ? { ...b, trangThai: action === "confirm" ? "DaXacNhan" : "DaHuy" } : b))
+            );
+
+            alert(`${action === "confirm" ? "Xác nhận" : "Từ chối"} lịch hẹn thành công!`);
+
+            if (action === "confirm") setCurrentRejectId(null); // reset modal id
+        } catch (error) {
+            console.error(error);
+            alert(error.message);
+        }
+    };
+
+    const openRejectModal = (id) => {
+        setCurrentRejectId(id);
+        setRejectModalOpen(true);
+    };
+
+    const closeRejectModal = () => {
+        setRejectModalOpen(false);
+        setCurrentRejectId(null);
+    };
+
+    const submitReject = (reason) => {
+        if (!currentRejectId) return;
+        handleAction(currentRejectId, "reject", reason);
+        closeRejectModal();
+    };
+
     return (
-        <div className="overflow-hidden rounded-xl border border-gray-300 shadow-md">
-            <table className="w-full border-collapse">
-                <thead>
-                    <tr className="bg-gray-100 text-left">
-                        <th className="p-3 border-b border-r border-gray-300 text-center">Tên khách hàng</th>
-                        <th className="p-3 border-b border-r border-gray-300 text-center">Ngày khám</th>
-                        <th className="p-3 border-b border-r border-gray-300 text-center">Giờ bắt đầu</th>
-                        <th className="p-3 border-b border-r border-gray-300 text-center">Giờ kết thúc</th>
-                        <th className="p-3 border-b border-r border-gray-300 text-center">Trạng thái</th>
-                        <th className="p-3 border-b text-center border-gray-300">Thao tác</th>
-                    </tr>
-                </thead>
+        <div className="p-4 md:p-6 min-h-[300px] border border-gray-300 rounded-2xl shadow-sm bg-white">
+            <div className="mb-5">
+                <select
+                    className="border border-gray-400 p-2 rounded-lg text-gray-700"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                >
+                    <option value="">-- Chọn ngày --</option>
+                    {getNext6Days().map((day) => (
+                        <option key={day} value={day}>
+                            {day}
+                        </option>
+                    ))}
+                </select>
+            </div>
 
-                <tbody>
-                    {bookings.length === 0 ? (
-                        <tr>
-                            <td colSpan="6" className="text-center p-4 text-gray-500">
-                                Không có lịch đặt nào
-                            </td>
-                        </tr>
-                    ) : (
-                        bookings.map((item) => (
-                            <tr
-                                key={item.id}
-                                className="hover:bg-gray-50 transition border-b"
-                            >
-                                <td className="p-3">{item.tenKhachHang}</td>
-                                <td className="p-3">{item.ngayKham}</td>
-                                <td className="p-3">{item.gioBatDau.slice(0, 5)}</td>
-                                <td className="p-3">{item.gioKetThuc.slice(0, 5)}</td>
+            <BookingTable
+                bookings={bookings}
+                onConfirm={(id) => handleAction(id, "confirm")}
+                onReject={(id) => openRejectModal(id)}
+            />
 
-                                <td className="p-3 font-semibold">
-                                    {item.trangThai === "ChoXacNhan" && (
-                                        <span className="text-yellow-600 bg-yellow-100 px-2 py-1 rounded-lg">
-                                            Chờ xác nhận
-                                        </span>
-                                    )}
-                                    {item.trangThai === "DaXacNhan" && (
-                                        <span className="text-green-700 bg-green-100 px-2 py-1 rounded-lg">
-                                            Đã xác nhận
-                                        </span>
-                                    )}
-                                    {item.trangThai === "DaHuy" && (
-                                        <span className="text-red-700 bg-red-100 px-2 py-1 rounded-lg">
-                                            Đã hủy
-                                        </span>
-                                    )}
-                                </td>
-
-                                <td className="p-3 text-center">
-                                    <button
-                                        onClick={() => onConfirm(item.id)}
-                                        disabled={item.trangThai !== "ChoXacNhan"}
-                                        className={`px-3 py-1 rounded-lg text-white text-sm font-medium shadow
-                                            ${item.trangThai !== "ChoXacNhan"
-                                                ? "bg-gray-400 cursor-not-allowed"
-                                                : "bg-green-600 hover:bg-green-700"
-                                            }
-                                        `}
-                                    >
-                                        Xác nhận
-                                    </button>
-                                </td>
-                            </tr>
-                        ))
-                    )}
-                </tbody>
-            </table>
+            <RejectModal isOpen={rejectModalOpen} onClose={closeRejectModal} onSubmit={submitReject} />
         </div>
     );
 };
 
-export default BookingTable;
+export default DoctorBookingPage;
