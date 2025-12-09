@@ -10,7 +10,7 @@ const AuthResetPassword = () => {
     const [showConfirm, setShowConfirm] = useState(false);
     const [captcha, setCaptcha] = useState("");
 
-    // ✅ Sinh captcha ngẫu nhiên
+
     const generateCaptcha = () => {
         const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ123456789";
         let newCaptcha = "";
@@ -20,12 +20,12 @@ const AuthResetPassword = () => {
         setCaptcha(newCaptcha);
     };
 
-    // ✅ Tự sinh captcha khi load trang
+
     useEffect(() => {
         generateCaptcha();
     }, []);
 
-    // ✅ Khởi tạo formik
+
     const formik = useFormik({
         initialValues: {
             newPassword: "",
@@ -48,7 +48,7 @@ const AuthResetPassword = () => {
         onSubmit: (values) => {
             console.log("🔐 Dữ liệu đặt lại mật khẩu:", values);
             alert("✅ Đặt lại mật khẩu thành công!");
-            // 👉 Gọi API /reset-password ở đây (POST)
+            // Gọi API reset-password ở đây (POST)
         },
     });
 
@@ -64,7 +64,7 @@ const AuthResetPassword = () => {
                     onSubmit={formik.handleSubmit}
                     className="p-6 bg-white rounded-b-[12px]"
                 >
-                    {/* Mật khẩu mới */}
+
                     <div className="mb-5 relative">
                         <label className="block font-semibold mb-1">Mật khẩu mới *</label>
                         <input
@@ -89,7 +89,7 @@ const AuthResetPassword = () => {
                         )}
                     </div>
 
-                    {/* Xác nhận mật khẩu */}
+
                     <div className="mb-5 relative">
                         <label className="block font-semibold mb-1">
                             Xác nhận mật khẩu *
@@ -117,13 +117,13 @@ const AuthResetPassword = () => {
                             )}
                     </div>
 
-                    {/* CAPTCHA */}
+
                     <div className="mb-6">
                         <label className="block font-semibold mb-1">
                             Mã xác nhận (CAPTCHA) *
                         </label>
                         <div className="flex items-center gap-3">
-                            {/* Mã CAPTCHA sinh ra */}
+
                             <input
                                 name="captchaInput"
                                 placeholder="Nhập mã"
@@ -136,10 +136,6 @@ const AuthResetPassword = () => {
                                 {captcha}
                             </div>
 
-                            {/* Ô nhập CAPTCHA */}
-
-
-                            {/* Nút làm mới CAPTCHA */}
                             <RotateCw
                                 className="cursor-pointer text-[#bb4d00]"
                                 onClick={generateCaptcha}
@@ -148,7 +144,7 @@ const AuthResetPassword = () => {
                             />
                         </div>
 
-                        {/* Hiển thị lỗi nếu có */}
+
                         {formik.touched.captchaInput && formik.errors.captchaInput && (
                             <p className="text-red-500 text-sm mt-1">
                                 {formik.errors.captchaInput}
@@ -157,7 +153,7 @@ const AuthResetPassword = () => {
                     </div>
 
 
-                    {/* Nút hành động */}
+
                     <div className="flex gap-x-3 justify-start">
                         <button
                             type="submit"

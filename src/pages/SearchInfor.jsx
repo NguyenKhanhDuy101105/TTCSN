@@ -70,7 +70,7 @@ const SreachInfor = () => {
                     Tìm kiếm {searchType === 'doctor' ? 'bác sĩ' : 'chuyên khoa'}
                 </h2>
 
-                {/* === Search bar responsive === */}
+
                 <div className="flex flex-col md:flex-row gap-3 mb-2 justify-center items-center">
                     <input
                         type="text"

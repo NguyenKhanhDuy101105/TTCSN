@@ -7,7 +7,7 @@ const Infor = ({ user, setIsEditing }) => {
     const formatCurrency = (amount) =>
         new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount);
 
-    const formatGender = (g) => (g === 0 ? "Nam" : g === 1 ? "Nữ" : "Khác");
+    const formatGender = (g) => (g === 1 ? "Nam" : g === 0 ? "Nữ" : "Khác");
 
     const Line = ({ label, value }) => (
         <p className="flex justify-between py-2 border-b border-gray-300 last:border-none text-sm md:text-base">
@@ -21,7 +21,6 @@ const Infor = ({ user, setIsEditing }) => {
     return (
         <div className="w-full flex flex-col gap-y-6 p-1">
 
-            {/* I. THÔNG TIN CÁ NHÂN */}
             <div className="bg-white rounded-xl border shadow-sm p-4 md:p-6 border-gray-300">
                 <h3 className="font-bold text-[18px] md:text-[20px] text-sky-600 mb-4 flex items-center gap-2">
                     <FaUserMd className="text-sky-600" /> Thông tin cá nhân
@@ -35,7 +34,7 @@ const Infor = ({ user, setIsEditing }) => {
                 <Line label="Địa chỉ" value={user.diaChi || "Chưa cập nhật"} />
             </div>
 
-            {/* II. CHUYÊN MÔN */}
+
             <div className="bg-white rounded-xl border shadow-sm p-4 md:p-6 border-gray-300">
                 <h3 className="font-bold text-[18px] md:text-[20px] text-sky-600 mb-4 flex items-center gap-2">
                     <BsHospital className="text-sky-600" /> Thông tin chuyên môn
@@ -54,39 +53,34 @@ const Infor = ({ user, setIsEditing }) => {
                 <Line label="Thời gian khám mỗi ca" value={`${user.thoiGianKhamMotCa} phút`} />
             </div>
 
-            {/* III. KINH NGHIỆM */}
+
             <div className="bg-white rounded-xl border shadow-sm p-4 md:p-6 border-gray-300">
                 <h3 className="font-bold text-[18px] md:text-[20px] text-sky-600 mb-4 flex items-center gap-2">
                     <GiSkills className="text-sky-600" /> Giới thiệu - Kinh nghiệm
                 </h3>
 
                 <div className="mb-4">
-                    <p className="text-gray-600 font-medium mb-1 text-sm md:text-base">Giới thiệu:</p>
-                    <p className="pl-2 text-gray-900 break-words">{user.gioiThieu}</p>
+                    <p className="text-gray-600 font-medium mb-1 text-sm md:text-base">Giới thiệu: {user.gioiThieu}</p>
                 </div>
 
                 <div className="mb-4">
-                    <p className="text-gray-600 font-medium mb-1 text-sm md:text-base">Quá trình đào tạo:</p>
-                    <p className="pl-2 text-gray-900 break-words">{user.quaTrinhDaoTao}</p>
+                    <p className="text-gray-600 font-medium mb-1 text-sm md:text-base">Quá trình đào tạo: {user.quaTrinhDaoTao}</p>
                 </div>
 
                 <div className="mb-4">
-                    <p className="text-gray-600 font-medium mb-1 text-sm md:text-base">Kinh nghiệm làm việc:</p>
-                    <p className="pl-2 text-gray-900 break-words">{user.kinhNghiemLamViec}</p>
+                    <p className="text-gray-600 font-medium mb-1 text-sm md:text-base">Kinh nghiệm làm việc: {user.kinhNghiemLamViec}</p>
                 </div>
 
                 <div className="mb-4">
-                    <p className="text-gray-600 font-medium mb-1 text-sm md:text-base">Thành tích:</p>
-                    <p className="pl-2 text-gray-900 break-words">{user.thanhTich}</p>
+                    <p className="text-gray-600 font-medium mb-1 text-sm md:text-base">Thành tích: {user.thanhTich}</p>
                 </div>
 
                 <div>
-                    <p className="text-gray-600 font-medium mb-1 text-sm md:text-base">Chứng chỉ:</p>
-                    <p className="pl-2 text-gray-900 break-words">{user.chungChi}</p>
+                    <p className="text-gray-600 font-medium mb-1 text-sm md:text-base">Chứng chỉ: {user.chungChi}</p>
                 </div>
             </div>
 
-            {/* IV. TRẠNG THÁI */}
+
             <div className="bg-white rounded-xl border shadow-sm p-4 md:p-6 border-gray-300">
                 <h3 className="font-bold text-[18px] md:text-[20px] text-sky-600 mb-4 flex items-center gap-2">
                     <FaUserMd className="text-sky-600" /> Trạng thái làm việc

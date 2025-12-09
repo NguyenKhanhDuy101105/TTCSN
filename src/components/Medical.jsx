@@ -6,7 +6,7 @@ const Medical = () => {
     const [list, setList] = useState([]);
     const [indexStart, setIndexStart] = useState(0);
     const itemsPerPage = 3;
-
+    const [hopital, setHopital] = useState([]);
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
         fetch("http://localhost:8080/api/facilities", {
@@ -23,6 +23,7 @@ const Medical = () => {
                     image: item.anhDaiDien || item.logo || "",
                 }));
                 setList(mapped);
+                setHopital(data);
             })
             .catch((err) => console.error(err));
     }, []);
@@ -46,7 +47,10 @@ const Medical = () => {
             <h2 className='text-[24px] font-semibold mb-10'>Cơ sở y tế</h2>
             <ul className='flex gap-12 relative'>
                 {listCurrent.map((item, index) => (
-                    <Link to={"/"} key={index} className='w-1/3 text-center rounded-2xl border border-gray-200 p-5'>
+                    <Link to={"/hopital"}
+                        state={hopital.find(h => h.coSoID === item.id)}
+                        key={index}
+                        className='w-1/3 text-center rounded-2xl border border-gray-200 p-5'>
                         <img className='w-[280px] h-[170px] mx-auto rounded-2xl object-cover'
                             src={item.image} alt={item.name} />
                         <h3 className='font-semibold text-[14px] md:text-[18px] mt-2 md:mt-3'>{item.name}</h3>

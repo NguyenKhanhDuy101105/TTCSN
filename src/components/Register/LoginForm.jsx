@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-// import logo from '../../assets/icons/google.svg'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { ToastContainer, toast } from 'react-toastify';
@@ -67,18 +66,18 @@ const LoginForm = ({ setShowLoginForm }) => {
                     notifySuccess();
                     console.log("Server trả về:", data);
 
-                    // Lưu accessToken
+
                     localStorage.setItem("accessToken", data.accessToken);
                     localStorage.setItem("expiresIn", data.expiresIn);
 
-                    // Lưu thông tin người dùng
+
                     const user = data.userInfo;
                     localStorage.setItem("user", JSON.stringify(user));
                     localStorage.setItem("email", user.email);
                     localStorage.setItem("hoTen", user.hoTen);
                     localStorage.setItem("vaiTro", user.vaiTro);
 
-                    // Cập nhật context
+
                     setUser(user);
                     setIsLogin(true);
 

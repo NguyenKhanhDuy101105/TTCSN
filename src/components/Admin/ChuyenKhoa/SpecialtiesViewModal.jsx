@@ -8,7 +8,7 @@ export default function SpecialtiesViewModal({ item, onClose, onEdit }) {
                     Chi tiết chuyên khoa
                 </h2>
 
-                {/* Thông tin chuyên khoa */}
+
                 <div className="space-y-3 text-gray-700 mb-6">
                     <p>
                         <b>Mã chuyên khoa:</b> {item.chuyenKhoaID}
@@ -30,7 +30,7 @@ export default function SpecialtiesViewModal({ item, onClose, onEdit }) {
                     )}
                 </div>
 
-                {/* Nút thao tác */}
+
                 <div className="flex justify-end mt-6 space-x-3">
                     <button
                         onClick={onClose}

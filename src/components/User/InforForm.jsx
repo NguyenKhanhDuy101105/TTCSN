@@ -87,7 +87,7 @@ const InforForm = ({ user, setUser, setIsEditing }) => {
 
             <ToastContainer />
 
-            {/* HỌ TÊN - EMAIL */}
+
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label className="block text-sm font-semibold mb-1">Họ và tên *</label>
@@ -116,7 +116,7 @@ const InforForm = ({ user, setUser, setIsEditing }) => {
                 </div>
             </div>
 
-            {/* SDT - Địa chỉ */}
+
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label className="block text-sm font-semibold mb-1">Số điện thoại *</label>
@@ -147,7 +147,7 @@ const InforForm = ({ user, setUser, setIsEditing }) => {
                 </div>
             </div>
 
-            {/* NGÀY SINH - GIỚI TÍNH */}
+
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label className="block text-sm font-semibold mb-1">Ngày sinh *</label>
@@ -175,7 +175,7 @@ const InforForm = ({ user, setUser, setIsEditing }) => {
                 </div>
             </div>
 
-            {/* AVATAR URL */}
+
             <div className="mb-4">
                 <label className="block text-sm font-semibold mb-1">Avatar URL</label>
                 <input
@@ -199,7 +199,7 @@ const InforForm = ({ user, setUser, setIsEditing }) => {
                 )}
             </div>
 
-            {/* BUTTONS */}
+
             <div className="flex gap-x-3">
                 <button type="submit" className="px-4 py-2 bg-sky-500 text-white rounded-[4px]">
                     Cập nhật thông tin

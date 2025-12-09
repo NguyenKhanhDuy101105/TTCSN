@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// --- Lấy tất cả chuyên khoa (API công khai, không cần đăng nhập) ---
 export const getAllSpecialties = async () => {
   try {
     const response = await axios.get("http://localhost:8080/api/specialties");
@@ -14,7 +13,6 @@ export const getAllSpecialties = async () => {
   }
 };
 
-// Tao chuyen khoa
 export const createSpecialty = async (data, token) => {
   try {
     const response = await axios.post(
@@ -37,7 +35,6 @@ export const createSpecialty = async (data, token) => {
   }
 };
 
-// Xoa chuyen khoa
 export const deleteSpecialty = async (id, token) => {
   try {
     const response = await axios.delete(
@@ -57,7 +54,7 @@ export const deleteSpecialty = async (id, token) => {
     throw error;
   }
 };
-// Cap nhat chuyen khoa
+
 export const updateSpecialty = async (id, data, token) => {
   try {
     const response = await axios.put(

@@ -17,7 +17,7 @@ const DoctorManagerPage = () => {
 
     return (
         <div>
-            {/* Header */}
+
             <DoctorAdmin
                 danhMuc={danhMuc}
                 index={index}
@@ -25,7 +25,7 @@ const DoctorManagerPage = () => {
                 setSidebarOpen={setSidebarOpen}
             />
 
-            {/* Sidebar */}
+
             <SidebarDoctor
                 danhMuc={danhMuc}
                 index={index}
@@ -33,7 +33,7 @@ const DoctorManagerPage = () => {
                 sidebarOpen={sidebarOpen}
             />
 
-            {/* Nội dung chính */}
+
             <div className={`mt-[100px] ${sidebarOpen ? 'ml-[280px]' : 'ml-[0px]'} transition-all duration-300 h-[630px] p-5 mb-5 z-10`}>
                 <Outlet />
             </div>

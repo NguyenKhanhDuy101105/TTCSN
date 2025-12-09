@@ -60,7 +60,7 @@ const CancelBookingModal = ({ open, onClose, datLichID, onSuccess }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="bg-white w-[90%] max-w-md rounded-2xl shadow-xl p-6 relative">
 
-                {/* Spinner overlay khi loading */}
+
                 {loading && (
                     <div
                         style={{
@@ -99,7 +99,7 @@ const CancelBookingModal = ({ open, onClose, datLichID, onSuccess }) => {
                     </div>
                 )}
 
-                {/* Close */}
+
                 <button
                     onClick={onClose}
                     className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
@@ -121,7 +121,7 @@ const CancelBookingModal = ({ open, onClose, datLichID, onSuccess }) => {
                 >
                     {({ isSubmitting }) => (
                         <Form>
-                            {/* Textarea */}
+
                             <Field
                                 as="textarea"
                                 name="lyDoHuy"
@@ -141,14 +141,14 @@ const CancelBookingModal = ({ open, onClose, datLichID, onSuccess }) => {
                                 "
                             />
 
-                            {/* Error message */}
+
                             <ErrorMessage
                                 name="lyDoHuy"
                                 component="p"
                                 className="mt-1 text-sm text-red-500"
                             />
 
-                            {/* Actions */}
+
                             <div className="flex justify-end gap-3 mt-5">
                                 <button
                                     type="button"

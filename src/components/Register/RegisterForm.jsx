@@ -117,7 +117,6 @@ const RegisterForm = ({ setShowLoginForm }) => {
                 }
             } catch (error) {
                 console.log("Payload gửi đi:", dataToSend);
-                // console.log("Response status:", response.status);
                 console.error("Lỗi khi gọi API:", error);
                 alert("Có lỗi xảy ra, vui lòng thử lại!");
             }

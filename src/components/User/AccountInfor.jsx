@@ -34,7 +34,7 @@ const AccountInfor = () => {
                 Thông tin tài khoản
             </h2>
             <div className='flex flex-col sm:flex-row px-5 gap-5 pt-2'>
-                {/* Avatar */}
+
                 <div className='pt-5 text-center flex flex-col items-center'>
                     <img
                         className='rounded-full w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 object-cover'
@@ -44,7 +44,7 @@ const AccountInfor = () => {
                     <p className='font-semibold mt-2 text-sm sm:text-base md:text-lg'>{user.hoTen}</p>
                 </div>
 
-                {/* Thông tin người dùng */}
+
                 <div className='flex-1 py-5'>
                     {isEditing
                         ? <InforForm user={user} setUser={setUser} setIsEditing={setIsEditing} />

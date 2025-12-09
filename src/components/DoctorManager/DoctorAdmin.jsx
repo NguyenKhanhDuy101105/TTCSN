@@ -10,65 +10,70 @@ const DoctorAdmin = ({ danhMuc, index, sidebarOpen, setSidebarOpen }) => {
     const [mount, setMount] = useState(false)
 
     const userLocal = JSON.parse(localStorage.getItem("user"));
+
     function handleLogout() {
         localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+        localStorage.removeItem("vaiTro");
         localStorage.removeItem("email");
         localStorage.removeItem("hoTen");
-        localStorage.removeItem("vaiTro");
-        localStorage.removeItem("user");
-        localStorage.removeItem("doctorId");
         setIsLogin(false);
         setUser(null);
         navigate("/loginpage");
     }
 
     return (
-        <div className='w-screen fixed top-0 left-0 right-0 h-[100px] bg-[#81c9f9] text-white flex items-center z-10'>
-            <div className='flex justify-between w-full px-4'>
+        <div className='w-full fixed top-0 left-0 h-[72px] sm:h-[88px] md:h-[100px] bg-[#81c9f9] text-white flex items-center z-10'>
+            <div className='flex justify-between items-center w-full px-3 sm:px-4 md:px-6'>
 
-                <div className='flex items-center'>
+
+                <div className='flex items-center gap-2 sm:gap-3 min-w-0'>
                     {sidebarOpen ? (
                         <FiMenu
-                            className="text-2xl cursor-pointer"
+                            className="cursor-pointer text-xl sm:text-2xl"
                             onClick={() => setSidebarOpen(false)}
                         />
                     ) : (
                         <FiX
-                            className="text-2xl cursor-pointer"
+                            className="cursor-pointer text-xl sm:text-2xl"
                             onClick={() => setSidebarOpen(true)}
                         />
                     )}
-                    <p className='font-bold text-[28px] ml-2'>{danhMuc[index]}</p>
+
+                    <p className='font-bold text-base sm:text-xl md:text-2xl truncate max-w-[160px] sm:max-w-[260px]'>
+                        {danhMuc[index]}
+                    </p>
                 </div>
 
 
-                <div className='flex items-center justify-center text-[23px] pr-8 cursor-pointer'>
-                    <li onMouseEnter={() => setMount(true)}
-                        onMouseLeave={() => setMount(false)}
-                        className="flex items-center gap-1">
-                        <FaUserDoctor className='mr-1' />
-                        <p className="font-semibold max-w-[300px] truncate overflow-hidden whitespace-nowrap">
-                            {isLogin && userLocal ? userLocal.hoTen : "Tài khoản"}
-                        </p>
-                    </li>
-                </div>
-
-
-                <div onMouseEnter={() => setMount(true)}
+                <div
+                    className='flex items-center gap-2 cursor-pointer relative'
+                    onMouseEnter={() => setMount(true)}
                     onMouseLeave={() => setMount(false)}
-                    onClick={handleLogout}
-                    className={`${mount ? "block" : "hidden"}
-                        absolute text-red-500 bg-white px-4 py-2 rounded-lg font-medium shadow-md
-                        top-[75px] right-[42px] cursor-pointer`}>
-                    <div className='flex justify-center items-center'>
-                        <i className="fa-solid fa-right-from-bracket mr-1"></i>
-                        <p>Đăng xuất</p>
-                    </div>
-                </div>
+                >
+                    <FaUserDoctor className='text-lg sm:text-xl md:text-2xl' />
 
-                <div onMouseEnter={() => setMount(true)}
-                    className='absolute w-[150px] h-[30px] top-[55px] right-[45px]'>
+                    <p className="font-semibold text-sm sm:text-base md:text-lg max-w-[120px] sm:max-w-[180px] truncate">
+                        {isLogin && userLocal ? userLocal.hoTen : "Tài khoản"}
+                    </p>
+
+
+                    <div
+                        onClick={handleLogout}
+                        className={`${mount ? "block" : "hidden"}
+                            absolute right-0 top-[40px] sm:top-[48px] 
+                            bg-white text-red-500 px-4 py-2 rounded-lg 
+                            shadow-md text-sm sm:text-base cursor-pointer`}
+                    >
+                        <div className='flex items-center gap-2'>
+                            <i className="fa-solid fa-right-from-bracket"></i>
+                            <span>Đăng xuất</span>
+                        </div>
+                    </div>
+
+                    <div onMouseEnter={() => setMount(true)}
+                        className='absolute w-[150px] h-[30px] top-[20px] right-[5px]'>
+                    </div>
                 </div>
 
             </div>
@@ -76,4 +81,4 @@ const DoctorAdmin = ({ danhMuc, index, sidebarOpen, setSidebarOpen }) => {
     )
 }
 
-export default DoctorAdmin
+export default DoctorAdmin;

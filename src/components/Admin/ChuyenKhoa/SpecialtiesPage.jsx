@@ -10,23 +10,25 @@ import {
     updateSpecialty,
     deleteSpecialty,
 } from "./chuyenkhoaAPI.js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const SpecialtiesPage = () => {
     const [specialtiesData, setSpecialtiesData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
-    // state modal
+
     const [selectedItem, setSelectedItem] = useState(null);
     const [openForm, setOpenForm] = useState(false);
     const [openView, setOpenView] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     const token = localStorage.getItem("accessToken");
-    // --- Lấy dữ liệu từ API khi component mount ---
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await getAllSpecialties();
-                console.log(data)
                 setSpecialtiesData(data);
             } catch (err) {
                 console.error("Lỗi tải danh sách chuyên khoa:", err);
@@ -35,7 +37,7 @@ const SpecialtiesPage = () => {
         fetchData();
     }, []);
 
-    // --- Tìm kiếm ---
+
     const filteredData = specialtiesData.filter((item) => {
         if (!searchTerm) return true;
         const term = searchTerm.toLowerCase();
@@ -45,25 +47,25 @@ const SpecialtiesPage = () => {
         );
     });
 
-    // --- Thêm mới ---
+
     const handleAdd = () => {
         setSelectedItem(null);
         setOpenForm(true);
     };
 
-    // --- Xem chi tiết ---
+
     const handleView = (index) => {
         setSelectedItem(filteredData[index]);
         setOpenView(true);
     };
 
-    // --- Sửa ---
+
     const handleEdit = (index) => {
         setSelectedItem(filteredData[index]);
         setOpenForm(true);
     };
 
-    // --- Xóa ---
+
     const handleDelete = (index) => {
         setSelectedItem(filteredData[index]);
         setOpenDelete(true);
@@ -76,20 +78,22 @@ const SpecialtiesPage = () => {
             setSpecialtiesData((prev) =>
                 prev.filter((s) => s.chuyenKhoaID !== selectedItem.chuyenKhoaID)
             );
+            toast.success("Xóa chuyên khoa thành công");
         } catch (err) {
             console.error("Lỗi xóa chuyên khoa:", err);
+            toast.error("Xóa chuyên khoa thất bại");
         } finally {
             setOpenDelete(false);
             setSelectedItem(null);
         }
     };
 
-    // --- Lưu (thêm / sửa) ---
+
     const handleSave = async (newItem) => {
         try {
 
             if (selectedItem) {
-                // Sửa
+
                 const updated = await updateSpecialty(
                     selectedItem.chuyenKhoaID,
                     newItem,
@@ -104,9 +108,11 @@ const SpecialtiesPage = () => {
 
                 const created = await createSpecialty(newItem, token);
                 setSpecialtiesData((prev) => [...prev, created]);
+                toast.success("Thêm chuyên khoa thành công");
             }
         } catch (err) {
             console.error("Lỗi lưu chuyên khoa:", err);
+            toast.error("Có lỗi xảy ra khi lưu chuyên khoa");
         } finally {
             setOpenForm(false);
             setSelectedItem(null);
@@ -124,7 +130,7 @@ const SpecialtiesPage = () => {
                 onDelete={handleDelete}
             />
 
-            {/* Modal xem chi tiết */}
+
             {openView && selectedItem && (
                 <SpecialtiesViewModal
                     item={selectedItem}
@@ -140,7 +146,7 @@ const SpecialtiesPage = () => {
                 />
             )}
 
-            {/* Modal form thêm / sửa */}
+
             {openForm && (
                 <SpecialtiesForm
                     editingSpecialty={selectedItem}
@@ -152,7 +158,7 @@ const SpecialtiesPage = () => {
                 />
             )}
 
-            {/* Modal xác nhận xóa */}
+
             {openDelete && selectedItem && (
                 <DeleteSpecialtyModal
                     item={selectedItem}
@@ -163,6 +169,15 @@ const SpecialtiesPage = () => {
                     onConfirm={confirmDelete}
                 />
             )}
+
+            <ToastContainer
+                position="top-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                pauseOnHover
+            />
         </div>
     );
 };

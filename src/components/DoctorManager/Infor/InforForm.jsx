@@ -117,7 +117,7 @@ const InforForm = ({ user, setUser, setIsEditing, specialties = [], degrees = []
                 Vui lòng nhập mật khẩu hiện tại để xác nhận thay đổi
             </div>
 
-            {/* Họ và tên */}
+
             <div className="mb-4">
                 <label className="block text-sm font-semibold mb-1">Họ và tên *</label>
                 <input
@@ -133,7 +133,7 @@ const InforForm = ({ user, setUser, setIsEditing, specialties = [], degrees = []
                 )}
             </div>
 
-            {/* Số điện thoại + Địa chỉ */}
+
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label className="block text-sm font-semibold mb-1">Số điện thoại *</label>
@@ -165,7 +165,7 @@ const InforForm = ({ user, setUser, setIsEditing, specialties = [], degrees = []
                 </div>
             </div>
 
-            {/* Ngày sinh + Giới tính */}
+
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label className="block text-sm font-semibold mb-1">Ngày sinh *</label>
@@ -195,7 +195,7 @@ const InforForm = ({ user, setUser, setIsEditing, specialties = [], degrees = []
                 </div>
             </div>
 
-            {/* Thông tin chuyên môn */}
+
             <div className="border border-gray-300 p-4 rounded-[8px] mb-6">
                 <h3 className="text-sky-600 font-bold text-[18px] mb-3">Thông tin chuyên môn</h3>
 
@@ -261,7 +261,7 @@ const InforForm = ({ user, setUser, setIsEditing, specialties = [], degrees = []
                 </select>
             </div>
 
-            {/* Mật khẩu */}
+
             <div className="mb-6 relative">
                 <label className="block text-sm font-semibold mb-1">Mật khẩu hiện tại *</label>
                 <input
@@ -280,7 +280,7 @@ const InforForm = ({ user, setUser, setIsEditing, specialties = [], degrees = []
                 </span>
             </div>
 
-            {/* Buttons */}
+
             <div className="flex gap-x-3 justify-end">
                 <button
                     type="submit"

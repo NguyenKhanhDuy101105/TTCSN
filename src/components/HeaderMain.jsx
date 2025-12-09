@@ -57,8 +57,11 @@ const HeaderMain = ({ check }) => {
     }, [text.length]);
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
+        localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
+        localStorage.removeItem("vaiTro");
+        localStorage.removeItem("email");
+        localStorage.removeItem("hoTen");
         setIsLogin(false);
         setUser(null);
         navigate("/loginpage");
@@ -69,13 +72,13 @@ const HeaderMain = ({ check }) => {
             <div className="w-screen bg-[#ecfffb] fixed top-0 right-0 left-0 z-50 lg:pb-0 pb-10">
                 <div className="w-full max-w-[1300px] h-[100px] bg-[#ecfffb] mx-auto flex items-center relative px-5 lg:px-0 flex-wrap">
 
-                    {/* Logo */}
+
                     <Link to="/" className="flex items-center gap-1 mr-3 flex-shrink-0">
                         <i className="fa-solid fa-notes-medical text-[24px] sm:text-[30px] text-[#f6c310]"></i>
                         <p className="text-[24px] sm:text-[32px] font-bold text-[#f6c310]">HealthCare</p>
                     </Link>
 
-                    {/* Menu */}
+
                     <ul className={`${elementSearch ? "mr-4" : "mr-60"} flex gap-2 justify-between font-medium absolute lg:left-60 lg:top-7.5 top-22 w-full lg:w-auto pr-5 lg:pr-0 flex-wrap`}>
                         <Link to="/" onClick={() => { handleSelect("tatca") }}
                             className={`${select === "tatca" ? "text-white font-semibold  bg-[#eec965]" : "text-black font-normal"} 
@@ -95,7 +98,7 @@ const HeaderMain = ({ check }) => {
                         >Sống khỏe</Link>
                     </ul>
 
-                    {/* Search bar */}
+
                     {elementSearch && (
 
                         <div className=''>
@@ -107,7 +110,7 @@ const HeaderMain = ({ check }) => {
                         </div>
                     )}
 
-                    {/* Lịch hẹn + Tài khoản */}
+
                     <ul className="flex gap-3 sm:gap-5 items-center justify-self-end ml-auto mr-0 xl:mr-5 flex-shrink-0">
                         <Link to="/userpage"
                             state={{ indexPage: 1 }}
@@ -125,7 +128,7 @@ const HeaderMain = ({ check }) => {
                         </li>
                     </ul>
 
-                    {/* Dropdown tài khoản */}
+
                     {isLogin ?
                         <div
                             onMouseLeave={() => setMount(false)}

@@ -4,7 +4,7 @@ import { Search, Plus } from "lucide-react";
 const Toolbar = ({ onSearch, onAdd, content }) => {
     return (
         <div className="flex justify-between items-center mb-4 p-4 border border-gray-200 rounded-2xl shadow-sm bg-white">
-            {/* Ô tìm kiếm */}
+
             <div className="relative w-1/3">
                 <Search
                     className="absolute left-3 top-2.5 text-gray-400 pointer-events-none"

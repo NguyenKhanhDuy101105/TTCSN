@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// --- Lấy danh sách tất cả trình độ (API công khai, không cần đăng nhập) ---
 export const getAllDegrees = async () => {
   try {
     const response = await axios.get("http://localhost:8080/api/degrees");
@@ -14,7 +13,6 @@ export const getAllDegrees = async () => {
   }
 };
 
-// --- Tạo trình độ mới (chỉ Admin) ---
 export const createDegree = async (data, token) => {
   try {
     const response = await axios.post(
@@ -37,7 +35,6 @@ export const createDegree = async (data, token) => {
   }
 };
 
-// --- Cập nhật trình độ theo ID (chỉ Admin) ---
 export const updateDegree = async (id, data, token) => {
   try {
     const response = await axios.put(
@@ -60,7 +57,6 @@ export const updateDegree = async (id, data, token) => {
   }
 };
 
-// --- Xóa mềm trình độ theo ID (chỉ Admin) ---
 export const deleteDegree = async (id, token) => {
   try {
     const response = await axios.delete(

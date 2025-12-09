@@ -49,7 +49,6 @@ const DoctorSchedule = ({ doctor }) => {
                     const todayStr = new Date().toISOString().split("T")[0];
 
                     const filtered = data.data.filter(item => {
-                        // item.ngay dạng YYYY-MM-DD
                         return item.ngay > todayStr;
                     });
 
@@ -63,7 +62,7 @@ const DoctorSchedule = ({ doctor }) => {
                     const firstDate = sorted[0]?.ngay;
                     if (firstDate) setSelectedDate(firstDate);
 
-                    // chọn mặc định ca đầu tiên của ngày đầu
+
                     const firstCa = sorted.find(x => x.ngay === firstDate)?.tenCa;
                     if (firstCa) setSelectedCa(firstCa);
                 }
@@ -97,14 +96,14 @@ const DoctorSchedule = ({ doctor }) => {
 
     return (
         <>
-            {/* SELECT NGÀY */}
+
             <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold text-[18px]">LỊCH KHÁM</h3>
 
                 <select
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="border border-gray-300 p-2 rounded text-sm w-[180px] outline-none"
+                    className="border border-gray-300 p-2 rounded text-sm w-[180px] outline-none cursor-pointer"
                 >
                     {dates.map(date => (
                         <option key={date} value={date}>
@@ -114,13 +113,13 @@ const DoctorSchedule = ({ doctor }) => {
                 </select>
             </div>
 
-            {/* NÚT CA */}
+
             <div className="flex gap-2 mb-3">
                 {cas.map((ca, idx) => (
                     <button
                         key={idx}
                         onClick={() => setSelectedCa(ca)}
-                        className={`px-3 py-1 rounded border text-sm
+                        className={`px-3 py-1 rounded border text-sm cursor-pointer
                             ${selectedCa === ca
                                 ? "bg-sky-100 border-sky-500 text-sky-700 font-medium"
                                 : "border-gray-300 hover:bg-gray-100"
@@ -131,21 +130,21 @@ const DoctorSchedule = ({ doctor }) => {
                 ))}
             </div>
 
-            {/* DANH SÁCH GIỜ */}
+
             {selectedDate &&
                 groupedByDate[selectedDate]
                     .filter(ca => ca.tenCa === selectedCa)
                     .map((ca, index) => (
                         <div key={index} className="mb-4">
 
-                            {/* CA NGHỈ */}
+
                             {!ca.available && (
                                 <p className="text-red-500 text-sm">
                                     Ca này đã nghỉ ({ca.loaiNghi})
                                 </p>
                             )}
 
-                            {/* SLOT GIỜ */}
+
                             <div className="grid grid-cols-4 gap-2 mt-1">
                                 {generateTimeSlots(ca.gioBatDau, ca.gioKetThuc).map((slot, idx) => {
                                     const isBooked = ca.gioDaDat.includes(slot);
@@ -155,7 +154,7 @@ const DoctorSchedule = ({ doctor }) => {
                                             key={idx}
                                             disabled={!ca.available || isBooked}
                                             onClick={() => handleSelectSlot(selectedDate, slot, ca)}
-                                            className={`border rounded p-2 text-sm
+                                            className={`border rounded p-2 text-sm cursor-pointer
                                                 ${!ca.available || isBooked
                                                     ? "bg-gray-300 border-gray-300 cursor-not-allowed"
                                                     : "border-gray-300 hover:bg-sky-100"
@@ -170,7 +169,7 @@ const DoctorSchedule = ({ doctor }) => {
                     ))}
 
             <p className="text-gray-500 text-sm mt-2 italic">
-                * Lịch khám cần đặt trước ít nhất 1 ngày
+                * Lịch khám cần đặt trước ít nhất <strong>1 ngày </strong>
                 Chọn giờ để đặt lịch khám (phí đặt lịch: Miễn phí)
             </p>
         </>

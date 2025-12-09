@@ -26,7 +26,7 @@ const ForgotPassword = () => {
             setError(null);
 
             try {
-                const token = localStorage.getItem("token"); // nếu API cần token
+                const token = localStorage.getItem("accessToken");
                 const res = await axios.post(
                     `http://localhost:8080/api/auth/forgot-password?email=${encodeURIComponent(values.email)}`,
                     {},
@@ -39,7 +39,6 @@ const ForgotPassword = () => {
                 );
 
                 console.log("Kết quả API:", res.data);
-                // Chuyển sang trang nhập OTP
                 navigate("/authotp", { state: { email: values.email } });
 
             } catch (err) {

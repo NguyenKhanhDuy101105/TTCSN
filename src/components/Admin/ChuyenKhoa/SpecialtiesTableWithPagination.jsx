@@ -74,7 +74,7 @@ export default function SpecialtiesTableWithPagination({ items, onView, onEdit, 
                 </table>
             </div>
 
-            {/* Thanh phân trang */}
+
             {pageCount > 1 && (
                 <div className="flex justify-end">
                     <ReactPaginate

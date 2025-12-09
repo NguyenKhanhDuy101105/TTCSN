@@ -15,7 +15,7 @@ const RejectModal = ({ isOpen, onClose, onSubmit }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
             <div className="bg-white p-6 rounded-xl w-96 shadow-lg">
                 <h2 className="text-lg font-semibold mb-4">Nhập lý do từ chối</h2>
                 <textarea
@@ -26,7 +26,7 @@ const RejectModal = ({ isOpen, onClose, onSubmit }) => {
                 />
                 <div className="flex justify-end gap-2">
                     <button
-                        className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
+                        className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 cursor-pointer"
                         onClick={() => {
                             onClose();
                             setReason("");
@@ -35,7 +35,7 @@ const RejectModal = ({ isOpen, onClose, onSubmit }) => {
                         Hủy
                     </button>
                     <button
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 cursor-pointer"
                         onClick={handleSubmit}
                     >
                         Từ chối

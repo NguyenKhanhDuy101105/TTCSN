@@ -10,7 +10,7 @@ const ListDoctor = () => {
     const [indexStart, setIndexStart] = useState(0);
     const itemsPerPage = 4;
 
-    // ==== CALL API top 10 bác sĩ kinh nghiệm cao nhất ====
+
     useEffect(() => {
         const fetchDoctors = async () => {
             try {
@@ -25,7 +25,7 @@ const ListDoctor = () => {
                     }
                 );
 
-                setListDoctor(res.data);  // Lưu dữ liệu API vào state
+                setListDoctor(res.data);
             } catch (error) {
                 console.error("Lỗi tải danh sách bác sĩ:", error);
             }

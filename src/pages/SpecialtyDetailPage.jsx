@@ -10,7 +10,7 @@ const SpecialtyDetailPage = () => {
     const [doctorList, setDoctorList] = useState([]);
     const [cosoyteList, setCoSoYTeList] = useState([]);
 
-    // Lấy thông tin chuyên khoa theo id
+
     useEffect(() => {
         fetch(`http://localhost:8080/api/specialties/${id}`)
             .then(res => res.json())
@@ -18,7 +18,7 @@ const SpecialtyDetailPage = () => {
             .catch(err => console.error("Lỗi lấy chuyên khoa:", err));
     }, [id]);
 
-    // Lấy danh sách bác sĩ theo chuyên khoa
+
     useEffect(() => {
         fetch(`http://localhost:8080/api/doctors/specialty/${id}`)
             .then(res => res.json())
@@ -26,7 +26,7 @@ const SpecialtyDetailPage = () => {
             .catch(err => console.error("Lỗi lấy bác sĩ:", err));
     }, [id]);
 
-    // Lấy danh sách cơ sở y tế
+
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
 

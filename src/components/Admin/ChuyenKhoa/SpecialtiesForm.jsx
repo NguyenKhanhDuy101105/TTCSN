@@ -2,7 +2,6 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-// Validation bằng Yup
 const SpecialtySchema = Yup.object().shape({
     name: Yup.string().required("Tên chuyên khoa không được để trống"),
     desc: Yup.string()
@@ -39,7 +38,7 @@ export default function SpecialtiesForm({ editingSpecialty, onSave, onClose }) {
                     }
                     validationSchema={SpecialtySchema}
                     onSubmit={(values) => {
-                        // map lại theo tên API
+
                         onSave({
                             tenChuyenKhoa: values.name,
                             moTa: values.desc,
@@ -51,7 +50,7 @@ export default function SpecialtiesForm({ editingSpecialty, onSave, onClose }) {
                 >
                     {({ values, setFieldValue }) => (
                         <Form className="flex flex-col gap-5">
-                            {/* Tên chuyên khoa */}
+
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">
                                     Tên chuyên khoa
@@ -68,7 +67,7 @@ export default function SpecialtiesForm({ editingSpecialty, onSave, onClose }) {
                                 />
                             </div>
 
-                            {/* Ảnh đại diện */}
+
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">
                                     Ảnh đại diện (URL)
@@ -93,7 +92,7 @@ export default function SpecialtiesForm({ editingSpecialty, onSave, onClose }) {
                                 )}
                             </div>
 
-                            {/* Mô tả */}
+
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">
                                     Mô tả
@@ -117,7 +116,7 @@ export default function SpecialtiesForm({ editingSpecialty, onSave, onClose }) {
                                 </div>
                             </div>
 
-                            {/* Thứ tự hiển thị */}
+
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">
                                     Thứ tự hiển thị
@@ -137,7 +136,7 @@ export default function SpecialtiesForm({ editingSpecialty, onSave, onClose }) {
                                 />
                             </div>
 
-                            {/* Nút */}
+
                             <div className="flex justify-end gap-3 mt-4">
                                 <button
                                     type="button"

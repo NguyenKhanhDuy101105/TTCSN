@@ -4,7 +4,7 @@ import { Search, Plus } from "lucide-react";
 const DoctorToolbar = ({ onSearch, onAdd, content, specialties, selectedSpecialty, onSelectSpecialty }) => {
     return (
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 p-4 border border-gray-200 rounded-2xl shadow-sm bg-white gap-3">
-            {/* Ô tìm kiếm */}
+
             <div className="flex items-center gap-3 w-full md:w-1/2">
                 <div className="relative flex-1">
                     <Search
@@ -21,24 +21,22 @@ const DoctorToolbar = ({ onSearch, onAdd, content, specialties, selectedSpecialt
                     />
                 </div>
 
-                {/* Select chuyên khoa */}
+
                 <select
                     value={selectedSpecialty}
                     onChange={(e) => onSelectSpecialty(e.target.value)}
                     className="py-2 px-3 border border-gray-200 rounded-xl shadow-sm text-gray-700"
                 >
                     <option value="">Tất cả chuyên khoa</option>
-                    {specialties.map((s) => (
-                        <option key={s.id} value={s.id}>
-                            {s.name}
-                        </option>
+                    {specialties.map(s => (
+                        <option key={s.chuyenKhoaID} value={s.chuyenKhoaID}>{s.tenChuyenKhoa}</option>
                     ))}
                 </select>
             </div>
 
             <button
                 onClick={onAdd}
-                className="bg-[#ad7555] hover:bg-[#945f46] text-white px-4 py-2 
+                className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 
                            rounded-xl flex items-center gap-2 shadow-md transition"
             >
                 <Plus size={18} /> Thêm {content}

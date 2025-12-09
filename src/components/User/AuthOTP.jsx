@@ -13,7 +13,6 @@ const AuthOTP = ({ onSubmit, onResend }) => {
     const inputRefs = useRef([]);
     const [timeLeft, setTimeLeft] = useState(120);
 
-    // Timer countdown
     useEffect(() => {
         if (timeLeft <= 0) return;
         const timer = setInterval(() => {
@@ -62,12 +61,12 @@ const AuthOTP = ({ onSubmit, onResend }) => {
             <HeaderSub />
             <div className='w-full max-w-[450px] sm:max-w-[550px] md:max-w-[650px] mx-auto py-5 mt-10'>
                 <div className="bg-white p-8 rounded-2xl shadow-lg w-[400px] text-center mx-auto">
-                    {/* Icon */}
+
                     <div className="flex justify-center mb-4">
                         <FaUserLock className="text-[rgb(173,117,85)] drop-shadow-md" size={80} />
                     </div>
 
-                    {/* Title */}
+
                     <h2 className="text-xl font-bold text-[#ad7555] mb-2">XÁC THỰC OTP</h2>
                     <p className="text-sm text-gray-600 mb-6">
                         Vui lòng nhập mã số chúng tôi đã gửi cho bạn qua{" "}
@@ -76,7 +75,7 @@ const AuthOTP = ({ onSubmit, onResend }) => {
                         <span className="font-semibold text-red-500">{timeLeft}s</span>
                     </p>
 
-                    {/* OTP Input */}
+
                     <div className="flex justify-center gap-3 mb-6">
                         {otp.map((value, index) => (
                             <input
@@ -93,7 +92,7 @@ const AuthOTP = ({ onSubmit, onResend }) => {
                         ))}
                     </div>
 
-                    {/* Submit Button */}
+
                     <button
                         onClick={handleSubmit}
                         className="w-full bg-[#ad7555] text-white py-2 rounded-lg font-semibold shadow-md 
@@ -102,7 +101,7 @@ const AuthOTP = ({ onSubmit, onResend }) => {
                         Tiếp tục
                     </button>
 
-                    {/* Resend OTP */}
+
                     <p className="text-sm text-gray-600 mt-4">
                         {timeLeft > 0 ? (
                             <>

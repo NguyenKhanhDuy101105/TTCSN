@@ -2,7 +2,7 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-// Validation schema khớp với API
+
 const schema = Yup.object({
     tenTrinhDo: Yup.string().required("Tên trình độ không được để trống"),
     moTa: Yup.string().required("Mô tả không được để trống"),
@@ -36,7 +36,7 @@ export default function TrinhDoForm({ editingItem, onSave, onClose }) {
                     enableReinitialize
                 >
                     <Form className="space-y-4">
-                        {/* TÊN */}
+
                         <div>
                             <label className="font-medium">Tên trình độ</label>
                             <Field
@@ -50,7 +50,7 @@ export default function TrinhDoForm({ editingItem, onSave, onClose }) {
                             />
                         </div>
 
-                        {/* MÔ TẢ */}
+
                         <div>
                             <label className="font-medium">Mô tả</label>
                             <Field
@@ -66,7 +66,7 @@ export default function TrinhDoForm({ editingItem, onSave, onClose }) {
                             />
                         </div>
 
-                        {/* GIÁ KHÁM */}
+
                         <div>
                             <label className="font-medium">Giá khám</label>
                             <Field
@@ -82,7 +82,7 @@ export default function TrinhDoForm({ editingItem, onSave, onClose }) {
                             />
                         </div>
 
-                        {/* THỨ TỰ ƯU TIÊN */}
+
                         <div>
                             <label className="font-medium">Thứ tự ưu tiên</label>
                             <Field
@@ -98,7 +98,7 @@ export default function TrinhDoForm({ editingItem, onSave, onClose }) {
                             />
                         </div>
 
-                        {/* BUTTONS */}
+
                         <div className="flex justify-end gap-3">
                             <button
                                 type="button"

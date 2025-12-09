@@ -92,7 +92,7 @@ const EmailVerification = () => {
                     onSubmit={formik.handleSubmit}
                     className="w-full mx-auto flex flex-col items-center"
                 >
-                    {/* Email */}
+
                     <input
                         type="email"
                         value={email || ""}
@@ -100,7 +100,7 @@ const EmailVerification = () => {
                         className="border border-gray-300 py-2 px-4 w-[90%] mx-auto focus:outline-amber-800 mb-3"
                     />
 
-                    {/* Mã xác nhận */}
+
                     <input
                         name="code"
                         type="text"
@@ -114,7 +114,7 @@ const EmailVerification = () => {
                         <p className="text-red-500 text-sm w-[90%] pb-2">{formik.errors.code}</p>
                     )}
 
-                    {/* Nút */}
+
                     <div className="flex w-[90%] justify-between items-center mx-auto mt-4">
                         <p
                             onClick={() => hanldeBackToRegister()}

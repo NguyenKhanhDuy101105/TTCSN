@@ -10,7 +10,11 @@ const HeaderAdmin = ({ danhMuc, index, sidebarOpen, setSidebarOpen }) => {
     const [mount, setMount] = useState(false);
 
     function handleLogout() {
-        localStorage.clear();
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("user");
+        localStorage.removeItem("vaiTro");
+        localStorage.removeItem("email");
+        localStorage.removeItem("hoTen");
         setIsLogin(false);
         setUser(null);
         navigate("/loginpage");

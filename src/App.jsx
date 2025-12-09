@@ -8,7 +8,6 @@ import Dashboard from "./components/Admin/DashBoard/Dashboard"
 import MedicalPage from "./components/Admin/CoSoYTe/MedicalPage"
 import SpecialtiesPage from "./components/Admin/ChuyenKhoa/SpecialtiesPage"
 import DoctorsPage from "./components/Admin/BacSi/DoctorsPage"
-import ServicesPage from "./components/Admin/DichVu/ServicesPage";
 import PageLogin from "./pages/PageLogin"
 import UserPage from "./pages/UserPage";
 import SpecialtyPage from "./pages/SpecialtyPage"
@@ -18,7 +17,6 @@ import AuthOTP from "./components/User/AuthOTP";
 import AuthChangePass from "./components/User/AuthChangePass";
 import DoctorPage from "./pages/DoctorPage";
 import Medical_Page from "./pages/Medical_Page";
-import HealthPackageList from "./components/HealthPackageList";
 import Doctor from "./components/Doctor/Doctor";
 import SpecialtyDetailPage from "./pages/SpecialtyDetailPage";
 import AppointmentBooking from "./components/AppointmentBooking";
@@ -26,11 +24,16 @@ import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import ProtectedDoctorRoute from "./components/ProtectedDoctorRoute";
 import DoctorManagerPage from "./components/DoctorManager/DoctorManagerPage";
 import DoctorInfor from "./components/DoctorManager/Infor/DoctorInfor";
-import ScheduleDoctorPage from "./components/DoctorManager/Schedule/ScheduleDoctorPage";
 import CustomerBookingPage from "./components/DoctorManager/Appointment/CustomerBookingPage";
 import EmailVerification from "./components/Register/EmailVerification.jsx";
 import SearchInfor from "./pages/SearchInfor.jsx"
 import TrinhDoPage from "./components/Admin/TrinhDo/TrinhDoPage.jsx";
+import DoctorBookingPageConfirmed from "./components/DoctorManager/Confirmed/CustomerBookingPageConfirmed.jsx";
+import DoctorLeavePage from "./components/Admin/LichNghi/DoctorLeavePage.jsx";
+import MyLeavePage from "./components/DoctorManager/Schedule/MyLeavePage.jsx";
+import HealthcareCenterCard from "./pages/HealthcareCenterCard.jsx";
+import ScheduleTimetable from "./components/Admin/LichLamViec/ScheduleTimetable.jsx";
+import PatientPage from "./components/Admin/BenhNhan/PatientPage.jsx";
 function App() {
   return (
     <BrowserRouter>
@@ -51,6 +54,8 @@ function App() {
         <Route path="/authchangepass" element={<AuthChangePass />} />
         <Route path="/emailverification" element={<EmailVerification />} />
         <Route path="/search" element={<SearchInfor />} />
+        <Route path="/hopital" element={<HealthcareCenterCard />} />
+
         // small page
         <Route path="/doctor/:id" element={<Doctor />} />
         <Route path="/chuyenkhoa/:id" element={<SpecialtyDetailPage />} />
@@ -67,9 +72,9 @@ function App() {
         >
           <Route index element={<DoctorInfor />} />
           <Route path="infor" element={<DoctorInfor />} />
-          <Route path="schedule" element={<ScheduleDoctorPage />} />
+          <Route path="schedule" element={<MyLeavePage />} />
           <Route path="appointment" element={<CustomerBookingPage />} />
-          <Route path="meetings" element={<CustomerBookingPage />} />
+          <Route path="meetings" element={<DoctorBookingPageConfirmed />} />
         </Route>
 
         // Admin
@@ -85,9 +90,10 @@ function App() {
           <Route path="medical" element={<MedicalPage />} />
           <Route path="specialties" element={<SpecialtiesPage />} />
           <Route path="doctors" element={<DoctorsPage />} />
-          <Route path="services" element={<ServicesPage />} />
-          <Route path="appointments" element={<Dashboard />} />
+          <Route path="services" element={<PatientPage />} />
+          <Route path="appointments" element={<ScheduleTimetable />} />
           <Route path="degree" element={<TrinhDoPage />} />
+          <Route path="leave" element={<DoctorLeavePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

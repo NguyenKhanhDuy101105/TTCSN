@@ -15,7 +15,7 @@ const BookingItem = ({ items, onCancel, onCancelPayment }) => {
                         key={index}
                         className="bg-white rounded-xl shadow p-3 border border-gray-300 mb-3 flex flex-col md:flex-col lg:flex-col"
                     >
-                        {/* Header */}
+
                         <div className="flex flex-col md:flex-row justify-between border-b border-gray-300 pb-2 gap-3">
                             <div className="flex items-center gap-3">
                                 <img
@@ -41,7 +41,7 @@ const BookingItem = ({ items, onCancel, onCancelPayment }) => {
                             </div>
                         </div>
 
-                        {/* Thông tin bệnh nhân & lịch */}
+
                         <div className="flex flex-col md:flex-row justify-between mt-2 gap-3 text-sm">
                             <div className="font-medium">
                                 <p>
@@ -61,7 +61,7 @@ const BookingItem = ({ items, onCancel, onCancelPayment }) => {
                             </div>
                         </div>
 
-                        {/* Giá, trạng thái & hành động */}
+
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-2 border-t border-gray-300 pt-2 text-sm gap-3">
                             <div className="font-medium">
                                 <p>

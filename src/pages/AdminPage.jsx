@@ -20,7 +20,7 @@ const AdminPage = () => {
 
     return (
         <div>
-            {/* Header */}
+
             <HeaderAdmin
                 danhMuc={danhMuc}
                 index={index}
@@ -28,7 +28,7 @@ const AdminPage = () => {
                 setSidebarOpen={setSidebarOpen}
             />
 
-            {/* Sidebar */}
+
             <SideBar
                 danhMuc={danhMuc}
                 index={index}
@@ -36,7 +36,7 @@ const AdminPage = () => {
                 sidebarOpen={sidebarOpen}
             />
 
-            {/* Nội dung chính */}
+
             <div className={`mt-[100px] p-5 transition-all duration-300 ${sidebarOpen ? 'ml-[280px]' : 'ml-0'}`}>
                 <Outlet />
             </div>

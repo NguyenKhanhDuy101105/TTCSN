@@ -1,96 +1,204 @@
-// Dashboard.jsx
-import React from "react";
-import { medicalCenters, specialties, doctors, services } from "./Data";
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import {
+    Chart as ChartJS,
+    ArcElement,
+    Tooltip,
+    Legend,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+} from "chart.js";
+import { Pie, Bar } from "react-chartjs-2";
 
-const Dashboard = () => {
-    // --- Tính số liệu tổng quan ---
-    const totalMedicalCenters = medicalCenters.length;
-    const totalSpecialties = specialties.length;
-    const totalDoctors = doctors.length;
-    const totalServices = services.length;
+ChartJS.register(
+    ArcElement,
+    Tooltip,
+    Legend,
+    CategoryScale,
+    LinearScale,
+    BarElement
+);
 
-    // --- Lấy số liệu lịch hẹn hôm nay giả lập ---
-    const todayAppointments = Math.floor(Math.random() * 20) + 5;
+const API_URL = "http://localhost:8080/api/bookings/statistics";
 
-    // --- Dữ liệu PieChart: số bác sĩ theo trạng thái ---
-    const doctorStatusData = [
-        { name: "Active", value: doctors.filter(d => d.status === "active").length },
-        { name: "Inactive", value: doctors.filter(d => d.status === "inactive").length },
-    ];
-    const COLORS = ["#0088FE", "#FF8042"];
+export default function BookingStatisticsDashboard() {
+    const [stats, setStats] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    // --- Dữ liệu BarChart: số bác sĩ theo chuyên khoa ---
-    const doctorsPerSpecialty = specialties.map(spec => ({
-        name: spec.name,
-        count: doctors.filter(d => d.specialtyId === spec.id).length,
-    }));
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const token = localStorage.getItem("accessToken");
+                const res = await axios.get(API_URL, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setStats(res.data.data);
+            } catch (err) {
+                console.error("Lỗi lấy thống kê:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchStats();
+    }, []);
+
+    if (loading) {
+        return <div className="p-6 text-gray-500">Đang tải thống kê...</div>;
+    }
+
+    if (!stats) {
+        return <div className="p-6 text-red-500">Không có dữ liệu thống kê</div>;
+    }
+
+
+    const bookingStatusData = {
+        labels: [
+            "Chờ duyệt",
+            "Chờ thanh toán",
+            "Đã xác nhận",
+            "Đang khám",
+            "Hoàn thành",
+            "Hủy",
+            "Không đến",
+            "Từ chối",
+        ],
+        datasets: [
+            {
+                data: [
+                    stats.pendingApproval,
+                    stats.pendingPayment,
+                    stats.confirmed,
+                    stats.inProgress,
+                    stats.completed,
+                    stats.cancelled,
+                    stats.noShow,
+                    stats.rejected,
+                ],
+                backgroundColor: [
+                    "#fbbf24",
+                    "#60a5fa",
+                    "#34d399",
+                    "#a78bfa",
+                    "#22c55e",
+                    "#ef4444",
+                    "#f97316",
+                    "#9ca3af",
+                ],
+            },
+        ],
+    };
+
+    const ratingData = {
+        labels: ["5 ★", "4 ★", "3 ★", "2 ★", "1 ★"],
+        datasets: [
+            {
+                label: "Số lượt đánh giá",
+                data: [
+                    stats.fiveStars,
+                    stats.fourStars,
+                    stats.threeStars,
+                    stats.twoStars,
+                    stats.oneStar,
+                ],
+                backgroundColor: "#ad7555",
+                borderRadius: 6,
+            },
+        ],
+    };
+
 
     return (
-        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-            <h1>Dashboard</h1>
+        <div className="p-6 space-y-6">
 
-            {/* --- Cards tổng quan --- */}
-            <div style={{ display: "flex", gap: "20px", marginBottom: "40px" }}>
-                <div style={{ padding: "20px", background: "#f2f2f2", borderRadius: "10px", flex: 1 }}>
-                    <h3>Tổng số cơ sở y tế</h3>
-                    <p style={{ fontSize: "24px", fontWeight: "bold" }}>{totalMedicalCenters}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                <StatCard title="Tổng booking" value={stats.totalBookings} />
+                <StatCard title="Booking hôm nay" value={stats.todayBookings} />
+                <StatCard
+                    title="Doanh thu hôm nay"
+                    value={stats.todayRevenue.toLocaleString() + " đ"}
+                />
+                <StatCard
+                    title="Doanh thu tháng"
+                    value={stats.thisMonthRevenue.toLocaleString() + " đ"}
+                />
+                <StatCard
+                    title="Doanh thu năm"
+                    value={stats.totalRevenue.toLocaleString() + " đ"}
+                />
+            </div>
+
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white p-6 rounded-2xl shadow">
+                    <h3 className="font-semibold mb-4 text-gray-700">
+                        Booking theo trạng thái
+                    </h3>
+                    <div className="h-[260px] flex justify-center">
+                        <Pie
+                            data={bookingStatusData}
+                            options={{
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: "bottom",
+                                    },
+                                },
+                            }}
+                        />
+                    </div>
                 </div>
-                <div style={{ padding: "20px", background: "#f2f2f2", borderRadius: "10px", flex: 1 }}>
-                    <h3>Tổng số chuyên khoa</h3>
-                    <p style={{ fontSize: "24px", fontWeight: "bold" }}>{totalSpecialties}</p>
-                </div>
-                <div style={{ padding: "20px", background: "#f2f2f2", borderRadius: "10px", flex: 1 }}>
-                    <h3>Tổng số bác sĩ</h3>
-                    <p style={{ fontSize: "24px", fontWeight: "bold" }}>{totalDoctors}</p>
-                </div>
-                <div style={{ padding: "20px", background: "#f2f2f2", borderRadius: "10px", flex: 1 }}>
-                    <h3>Tổng số dịch vụ</h3>
-                    <p style={{ fontSize: "24px", fontWeight: "bold" }}>{totalServices}</p>
-                </div>
-                <div style={{ padding: "20px", background: "#f2f2f2", borderRadius: "10px", flex: 1 }}>
-                    <h3>Lịch hẹn hôm nay</h3>
-                    <p style={{ fontSize: "24px", fontWeight: "bold" }}>{todayAppointments}</p>
+
+                <div className="bg-white p-6 rounded-2xl shadow">
+                    <h3 className="font-semibold mb-4 text-gray-700">
+                        Đánh giá dịch vụ
+                    </h3>
+                    <div className="h-[260px]">
+                        <Bar
+                            data={ratingData}
+                            options={{
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { display: false },
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: { stepSize: 1 },
+                                    },
+                                },
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
 
-            {/* --- PieChart: trạng thái bác sĩ --- */}
-            <div style={{ display: "flex", gap: "40px", marginBottom: "40px" }}>
-                <div>
-                    <h3>Số bác sĩ theo trạng thái</h3>
-                    <PieChart width={300} height={300}>
-                        <Pie
-                            data={doctorStatusData}
-                            dataKey="value"
-                            nameKey="name"
-                            cx="50%"
-                            cy="50%"
-                            outerRadius={100}
-                            fill="#8884d8"
-                            label
-                        >
-                            {doctorStatusData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                        </Pie>
-                        <Tooltip />
-                    </PieChart>
-                </div>
 
-                {/* --- BarChart: số bác sĩ theo chuyên khoa --- */}
-                <div>
-                    <h3>Số bác sĩ theo chuyên khoa</h3>
-                    <BarChart width={500} height={300} data={doctorsPerSpecialty}>
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="count" fill="#82ca9d" />
-                    </BarChart>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <MiniStat label="Đã thanh toán" value={stats.paidBookings} />
+                <MiniStat label="Chưa thanh toán" value={stats.unpaidBookings} />
+                <MiniStat
+                    label="Hoàn tiền"
+                    value={stats.totalRefund.toLocaleString() + " đ"}
+                />
             </div>
         </div>
     );
-};
+}
 
-export default Dashboard;
+
+const StatCard = ({ title, value }) => (
+    <div className="bg-white p-6 rounded-2xl shadow hover:shadow-md transition">
+        <p className="text-gray-500 text-sm">{title}</p>
+        <p className="text-2xl font-semibold mt-2 text-gray-800">{value}</p>
+    </div>
+);
+
+const MiniStat = ({ label, value }) => (
+    <div className="bg-white p-5 rounded-2xl shadow">
+        <p className="text-gray-500 text-sm">{label}</p>
+        <p className="text-xl font-semibold text-gray-800 mt-2">{value}</p>
+    </div>
+);
