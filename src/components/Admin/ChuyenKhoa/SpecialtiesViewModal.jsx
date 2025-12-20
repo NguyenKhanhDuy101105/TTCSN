@@ -34,7 +34,7 @@ export default function SpecialtiesViewModal({ item, onClose, onEdit }) {
                 <div className="flex justify-end mt-6 space-x-3">
                     <button
                         onClick={onClose}
-                        className="px-5 py-2.5 border border-gray-300 rounded-xl hover:bg-gray-100 transition shadow-sm"
+                        className="px-5 py-2.5 border border-gray-300 rounded-xl hover:bg-gray-100 transition shadow-sm cursor-pointer"
                     >
                         Đóng
                     </button>
@@ -43,7 +43,7 @@ export default function SpecialtiesViewModal({ item, onClose, onEdit }) {
                             onClose();
                             onEdit(item);
                         }}
-                        className="px-5 py-2.5 bg-[#ad7555] hover:bg-[#945f46] text-white rounded-xl transition shadow-sm"
+                        className="px-5 py-2.5 bg-[#ad7555] hover:bg-[#945f46] text-white rounded-xl transition shadow-sm cursor-pointer"
                     >
                         Sửa thông tin
                     </button>

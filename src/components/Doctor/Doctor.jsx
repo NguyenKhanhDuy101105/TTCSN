@@ -15,11 +15,13 @@ const Doctor = () => {
     // const { cosoyte } = location.state || {};
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
-        fetch(`http://localhost:8080/api/doctors/${id}`, {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+        fetch(`${API_BASE_URL}/api/doctors/${id}`, {
             method: "GET",
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                "ngrok-skip-browser-warning": "true",
             },
         })
             .then(response => {

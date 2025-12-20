@@ -30,13 +30,13 @@ export default function DoctorLeaveViewModal({ item, onClose, onConfirm, onRejec
                 </div>
 
                 <div className="flex justify-end gap-3 mt-6">
-                    <button onClick={onClose} className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">
+                    <button onClick={onClose} className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 cursor-pointer">
                         Đóng
                     </button>
-                    <button onClick={() => onConfirm(item)} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    <button onClick={() => onConfirm(item)} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 cursor-pointer">
                         Xác nhận
                     </button>
-                    <button onClick={() => onReject(item)} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                    <button onClick={() => onReject(item)} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 cursor-pointer">
                         Từ chối
                     </button>
                 </div>

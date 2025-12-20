@@ -1,16 +1,84 @@
-import React from "react";
+import React, { useState } from "react";
 
 const BookingTable = ({ bookings, onConfirm, onReject }) => {
+    const [processingId, setProcessingId] = useState(null);
+    console.log(bookings)
+    const trangThaiMap = {
+        CHO_XAC_NHAN_BAC_SI: {
+            label: "Chờ bác sĩ xác nhận",
+            color: "bg-yellow-500",
+            canHandle: true,
+        },
+        CHO_THANH_TOAN: {
+            label: "Chờ thanh toán",
+            color: "bg-blue-500",
+            canHandle: true,
+        },
+        DA_XAC_NHAN: {
+            label: "Đã xác nhận",
+            color: "bg-green-600",
+            canHandle: false,
+        },
+        DANG_KHAM: {
+            label: "Đang khám",
+            color: "bg-indigo-600",
+            canHandle: false,
+        },
+        HOAN_THANH: {
+            label: "Hoàn thành",
+            color: "bg-green-600",
+            canHandle: false,
+        },
+        TU_CHOI: {
+            label: "Đã từ chối",
+            color: "bg-red-600",
+            canHandle: false,
+        },
+        DA_XAC_NHAN_CHO_THANH_TOAN: {
+            label: "Đã xác nhận chờ thanh toán",
+            color: "bg-green-800",
+            canHandle: false,
+        },
+    };
+
+    const handleConfirm = async (id) => {
+        setProcessingId(id);
+        try {
+            await onConfirm(id);
+        } finally {
+            setProcessingId(null);
+        }
+    };
+
+    const handleReject = async (id) => {
+        setProcessingId(id);
+        try {
+            await onReject(id);
+        } finally {
+            setProcessingId(null);
+        }
+    };
+
     return (
         <div className="overflow-x-auto rounded-xl border border-gray-300 shadow-md">
             <table className="w-full min-w-[600px] border-collapse text-center">
                 <thead>
                     <tr className="bg-gray-100 text-xs sm:text-sm">
-                        <th className="p-2 sm:p-3 border border-gray-300">Tên khách hàng</th>
-                        <th className="p-2 sm:p-3 border border-gray-300">Ngày khám</th>
-                        <th className="p-2 sm:p-3 border border-gray-300">Giờ bắt đầu</th>
-                        <th className="p-2 sm:p-3 border border-gray-300">Trạng thái</th>
-                        <th className="p-2 sm:p-3 border border-gray-300">Thao tác</th>
+                        <th className="p-2 sm:p-3 border border-gray-300">
+                            Tên khách hàng
+                        </th>
+                        <th className="p-2 sm:p-3 border border-gray-300">
+                            Ngày khám
+                        </th>
+                        <th className="p-2 sm:p-3 border border-gray-300">
+                            Giờ bắt đầu
+                        </th>
+                        <th className="p-2 sm:p-3 border border-gray-300">
+                            Trạng thái
+                        </th>
+                        <th className="p-2 sm:p-3 border border-gray-300">
+                            Thao tác
+                        </th>
                     </tr>
                 </thead>
 
@@ -25,66 +93,81 @@ const BookingTable = ({ bookings, onConfirm, onReject }) => {
                             </td>
                         </tr>
                     ) : (
-                        bookings.map((item) => (
-                            <tr key={item.id} className="hover:bg-gray-50 transition">
-                                <td className="p-2 sm:p-3 border border-gray-300 whitespace-nowrap">
-                                    {item.tenKhachHang}
-                                </td>
+                        bookings.map((item) => {
+                            const trangThai =
+                                trangThaiMap[item.trangThai] || {
+                                    label: item.trangThai,
+                                    color: "bg-gray-400",
+                                    canHandle: false,
+                                };
 
-                                <td className="p-2 sm:p-3 border border-gray-300 whitespace-nowrap">
-                                    {item.ngayKham}
-                                </td>
+                            const isProcessing = processingId === item.id;
+                            const disableAction =
+                                !trangThai.canHandle || isProcessing;
 
-                                <td className="p-2 sm:p-3 border border-gray-300">
-                                    {item.gioBatDau.slice(0, 5)}
-                                </td>
+                            return (
+                                <tr
+                                    key={item.id}
+                                    className="hover:bg-gray-50 transition"
+                                >
+                                    <td className="p-2 sm:p-3 border border-gray-300 whitespace-nowrap">
+                                        {item.tenKhachHang}
+                                    </td>
 
+                                    <td className="p-2 sm:p-3 border border-gray-300 whitespace-nowrap">
+                                        {item.ngayKham}
+                                    </td>
 
-                                <td className="p-2 sm:p-3 border border-gray-300">
-                                    <span
-                                        className={`px-2 py-1 rounded-md font-medium text-white text-[10px] sm:text-xs whitespace-nowrap ${item.trangThai === "DaXacNhan"
-                                            ? "bg-green-600"
-                                            : item.trangThai === "ChoXacNhan"
-                                                ? "bg-yellow-500"
-                                                : "bg-red-600"
-                                            }`}
-                                    >
-                                        {item.trangThai === "DaXacNhan"
-                                            ? "Đã xác nhận"
-                                            : item.trangThai === "ChoXacNhan"
-                                                ? "Chờ xác nhận"
-                                                : "Đã từ chối"}
-                                    </span>
-                                </td>
+                                    <td className="p-2 sm:p-3 border border-gray-300">
+                                        {item.gioBatDau.slice(0, 5)}
+                                    </td>
 
-
-                                <td className="p-2 sm:p-3 border border-gray-300">
-                                    <div className="flex flex-col sm:flex-row justify-center gap-2">
-                                        <button
-                                            onClick={() => onConfirm(item.id)}
-                                            disabled={item.trangThai !== "ChoXacNhan"}
-                                            className={`px-2 py-1 rounded-md text-white text-[10px] sm:text-xs shadow ${item.trangThai !== "ChoXacNhan"
-                                                ? "bg-gray-400 cursor-not-allowed"
-                                                : "bg-green-600 hover:bg-green-700"
-                                                }`}
+                                    <td className="p-2 sm:p-3 border border-gray-300">
+                                        <span
+                                            className={`px-2 py-1 rounded-md font-medium text-white text-[10px] sm:text-xs whitespace-nowrap ${trangThai.color}`}
                                         >
-                                            Xác nhận
-                                        </button>
+                                            {trangThai.label}
+                                        </span>
+                                    </td>
 
-                                        <button
-                                            onClick={() => onReject(item.id)}
-                                            disabled={item.trangThai !== "ChoXacNhan"}
-                                            className={`px-2 py-1 rounded-md text-white text-[10px] sm:text-xs shadow ${item.trangThai !== "ChoXacNhan"
-                                                ? "bg-gray-400 cursor-not-allowed"
-                                                : "bg-red-600 hover:bg-red-700"
-                                                }`}
-                                        >
-                                            Từ chối
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))
+                                    <td className="p-2 sm:p-3 border border-gray-300">
+                                        <div className="flex flex-col sm:flex-row justify-center gap-2">
+                                            <button
+                                                onClick={() =>
+                                                    handleConfirm(item.id)
+                                                }
+                                                disabled={disableAction}
+                                                className={`px-2 py-1 rounded-md text-white text-[10px] sm:text-xs shadow
+                                                    ${disableAction
+                                                        ? "bg-gray-400 cursor-not-allowed"
+                                                        : "bg-green-600 hover:bg-green-700 cursor-pointer"
+                                                    }`}
+                                            >
+                                                {isProcessing
+                                                    ? "Đang xử lý..."
+                                                    : "Xác nhận"}
+                                            </button>
+
+                                            <button
+                                                onClick={() =>
+                                                    handleReject(item.id)
+                                                }
+                                                disabled={disableAction}
+                                                className={`px-2 py-1 rounded-md text-white text-[10px] sm:text-xs shadow
+                                                    ${disableAction
+                                                        ? "bg-gray-400 cursor-not-allowed"
+                                                        : "bg-red-600 hover:bg-red-700 cursor-pointer"
+                                                    }`}
+                                            >
+                                                {isProcessing
+                                                    ? "Đang xử lý..."
+                                                    : "Từ chối"}
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            );
+                        })
                     )}
                 </tbody>
             </table>

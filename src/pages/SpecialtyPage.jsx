@@ -6,12 +6,15 @@ import { Link } from 'react-router-dom'
 const SpecialtyPage = () => {
 
     const [listSpecialty, setListSpecialty] = useState([])
+
     useEffect(() => {
-        fetch(`http://localhost:8080/api/specialties`, {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+        fetch(`${API_BASE_URL}/api/specialties`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
-            },
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true"
+            }
         })
             .then(response => {
                 if (!response.ok) throw new Error("Lỗi lấy dữ liệu");

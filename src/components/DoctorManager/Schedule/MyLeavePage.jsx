@@ -81,9 +81,12 @@ export default function MyLeavePage() {
 
     useEffect(() => {
         if (!bacSiID || !token) return;
-
-        fetch(`http://localhost:8080/api/leave-requests/my-requests/${bacSiID}`, {
-            headers: { Authorization: `Bearer ${token}` },
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+        fetch(`${API_BASE_URL}/api/leave-requests/my-requests/${bacSiID}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "ngrok-skip-browser-warning": "true",
+            },
         })
             .then((res) => res.json())
             .then((data) => {

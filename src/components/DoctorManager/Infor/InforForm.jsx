@@ -77,12 +77,13 @@ const InforForm = ({ user, setUser, setIsEditing, specialties = [], degrees = []
                     trangThai: Boolean(values.trangThai),
                     avatar: user.avatarUrl,
                 };
-
-                const response = await fetch(`http://localhost:8080/api/doctor/update`, {
+                const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+                const response = await fetch(`${API_BASE_URL}/api/doctor/update`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
+                        "ngrok-skip-browser-warning": "true",
                     },
                     body: JSON.stringify(body),
                 });

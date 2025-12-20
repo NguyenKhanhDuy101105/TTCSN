@@ -24,7 +24,7 @@ const Toolbar = ({ onSearch, onAdd, content }) => {
             <button
                 onClick={onAdd}
                 className="bg-[#ad7555] hover:bg-[#945f46] text-white px-4 py-2 
-                           rounded-xl flex items-center gap-2 shadow-md transition"
+                           rounded-xl flex items-center gap-2 shadow-md transition cursor-pointer"
             >
                 <Plus size={18} /> Thêm {content}
             </button>

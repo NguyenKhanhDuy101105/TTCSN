@@ -27,14 +27,16 @@ export default function MedicalForm({ editingMedical, onSave, onClose }) {
         enableReinitialize: true,
         onSubmit: async (values) => {
             try {
+                const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
                 const token = localStorage.getItem("accessToken");
                 const response = await fetch(
-                    `http://localhost:8080/api/facilities/${editingMedical.coSoID}`,
+                    `${API_BASE_URL}/api/facilities/${editingMedical.coSoID}`,
                     {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
                             Authorization: `Bearer ${token}`,
+                            "ngrok-skip-browser-warning": "true",
                         },
                         body: JSON.stringify(values),
                     }

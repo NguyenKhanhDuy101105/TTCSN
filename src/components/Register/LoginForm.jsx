@@ -47,10 +47,12 @@ const LoginForm = ({ setShowLoginForm }) => {
             }
 
             try {
-                const response = await fetch("http://localhost:8080/api/auth/login", {
+                const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "true",
                     },
                     body: JSON.stringify(dataToSend)
 

@@ -9,12 +9,13 @@ const DoctorPage = () => {
 
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
-
-        fetch(`http://localhost:8080/api/doctors?page=0&size=50&sortBy=nguoiDung.hoTen&direction=asc`, {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+        fetch(`${API_BASE_URL}/api/doctors?page=0&size=50&sortBy=nguoiDung.hoTen&direction=asc`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${token}`,
+                "ngrok-skip-browser-warning": "true"
             },
         })
             .then(response => {

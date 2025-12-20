@@ -48,19 +48,19 @@ export default function DoctorLeaveTable({ items, onView, onConfirm, onReject })
                                         <div className="flex flex-col gap-2 sm:flex-row sm:justify-center sm:items-center">
                                             <button
                                                 onClick={() => onView(page * perPage + i)}
-                                                className="w-full sm:w-auto px-2 py-1 bg-blue-500 text-white rounded-lg text-xs sm:text-sm hover:bg-blue-700"
+                                                className="w-full sm:w-auto px-2 py-1 bg-blue-500 text-white rounded-lg text-xs sm:text-sm hover:bg-blue-700 cursor-pointer"
                                             >
                                                 Xem
                                             </button>
                                             <button
                                                 onClick={() => onConfirm(page * perPage + i)}
-                                                className="w-full sm:w-auto px-2 py-1 bg-green-600 text-white rounded-lg text-xs sm:text-sm hover:bg-green-700"
+                                                className="w-full sm:w-auto px-2 py-1 bg-green-600 text-white rounded-lg text-xs sm:text-sm hover:bg-green-700 cursor-pointer"
                                             >
                                                 Duyệt
                                             </button>
                                             <button
                                                 onClick={() => onReject(page * perPage + i)}
-                                                className="w-full sm:w-auto px-2 py-1 bg-red-600 text-white rounded-lg text-xs sm:text-sm hover:bg-red-700"
+                                                className="w-full sm:w-auto px-2 py-1 bg-red-600 text-white rounded-lg text-xs sm:text-sm hover:bg-red-700 cursor-pointer"
                                             >
                                                 Từ chối
                                             </button>

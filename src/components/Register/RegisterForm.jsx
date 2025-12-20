@@ -1,5 +1,5 @@
 import { useFormik } from 'formik'
-import React from 'react'
+import React, { useState } from 'react'
 import * as Yup from "yup"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 const RegisterForm = ({ setShowLoginForm }) => {
 
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+
 
     const notifySuccess = () => {
         toast.success("Đăng ký thành công vui lòng xác thực email", {
@@ -15,13 +17,13 @@ const RegisterForm = ({ setShowLoginForm }) => {
             hideProgressBar: false,
         });
     };
-    const notifyError = () => {
-        toast.error(`Đăng ký thất bại`, {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-        });
-    };
+    // const notifyError = () => {
+    //     toast.error(`Đăng ký thất bại`, {
+    //         position: "top-right",
+    //         autoClose: 3000,
+    //         hideProgressBar: false,
+    //     });
+    // };
 
     const formik = useFormik({
         initialValues: {
@@ -72,6 +74,8 @@ const RegisterForm = ({ setShowLoginForm }) => {
         }),
         onSubmit: async (values) => {
 
+            setLoading(true);
+
             const convertDate = (dateStr) => {
                 const [day, month, year] = dateStr.split("-");
                 return `${year}-${month}-${day}`;
@@ -88,10 +92,12 @@ const RegisterForm = ({ setShowLoginForm }) => {
             };
 
             try {
-                const response = await fetch("http://localhost:8080/api/auth/register", {
+                const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+                const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "true",
                     },
                     body: JSON.stringify(dataToSend)
                 });
@@ -100,10 +106,23 @@ const RegisterForm = ({ setShowLoginForm }) => {
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    console.error("Đăng ký thất bại:", errorData.message);
-                    console.log("Status:", response.status);
-                    console.log("Error:", await response.text());
-                    notifyError();
+
+                    if (response.status === 409) {
+                        toast.error("Email đã được sử dụng!", {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                        });
+                        return;
+                    }
+
+
+                    toast.error(errorData.message || "Đăng ký thất bại", {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                    });
+                    return;
                 } else {
                     const data = await response.json();
                     console.log("Server trả về:", data);
@@ -119,6 +138,9 @@ const RegisterForm = ({ setShowLoginForm }) => {
                 console.log("Payload gửi đi:", dataToSend);
                 console.error("Lỗi khi gọi API:", error);
                 alert("Có lỗi xảy ra, vui lòng thử lại!");
+            }
+            finally {
+                setLoading(false);
             }
         },
         validateOnChange: true,
@@ -240,13 +262,67 @@ const RegisterForm = ({ setShowLoginForm }) => {
                         )}
 
                         <div className='flex w-[90%] justify-between items-center mx-auto mt-4'>
-                            <p onClick={() => setShowLoginForm(true)}
-                                className='text-[14px] text-blue-400 cursor-pointer'>Quay lại đăng nhập</p>
-                            <button type='submit' className='bg-amber-700 text-white font-bold rounded-lg px-4 py-2 cursor-pointer'>Đăng ký</button>
+                            <p
+                                onClick={() => setShowLoginForm(true)}
+                                className='text-[14px] text-blue-400 cursor-pointer'
+                            >
+                                Quay lại đăng nhập
+                            </p>
+
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className={`flex items-center gap-2 bg-amber-700 text-white font-bold rounded-lg px-4 py-2 cursor-pointer
+            ${loading ? "opacity-70 cursor-not-allowed" : "hover:bg-amber-800"}
+        `}
+                            >
+                                {loading && (
+                                    <span
+                                        style={{
+                                            border: "3px solid #f3f3f3",
+                                            borderTop: "3px solid #fff",
+                                            borderRadius: "50%",
+                                            width: "16px",
+                                            height: "16px",
+                                            animation: "spin 1s linear infinite"
+                                        }}
+                                    />
+                                )}
+                                {loading ? "Đang đăng ký..." : "Đăng ký"}
+                            </button>
                         </div>
+
                     </form>
                 </div>
             </div>
+
+            {loading && (
+                <div className="fixed inset-0 bg-white/70 flex items-center justify-center z-50">
+                    <div className="flex items-center gap-2">
+                        <div
+                            style={{
+                                border: "4px solid #f3f3f3",
+                                borderTop: "4px solid #d97706",
+                                borderRadius: "50%",
+                                width: "28px",
+                                height: "28px",
+                                animation: "spin 1s linear infinite"
+                            }}
+                        />
+                        <span className="font-medium text-amber-700">
+                            Đang xử lý đăng ký...
+                        </span>
+                    </div>
+                </div>
+            )}
+            <style>
+                {`
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `}
+            </style>
         </>
 
     )

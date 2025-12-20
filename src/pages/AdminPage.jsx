@@ -13,6 +13,7 @@ const AdminPage = () => {
         "Quản lý lịch khám",
         "Quản lý trình độ",
         "Quản lý lịch nghỉ",
+        "Quản lý lịch sử khám",
     ]
 
     const [index, setIndex] = useState(0)

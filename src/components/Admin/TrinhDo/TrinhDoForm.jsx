@@ -103,7 +103,7 @@ export default function TrinhDoForm({ editingItem, onSave, onClose }) {
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-300"
+                                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-300 cursor-pointer"
                             >
                                 Hủy
                             </button>

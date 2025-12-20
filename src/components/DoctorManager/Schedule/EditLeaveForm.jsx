@@ -22,13 +22,15 @@ export default function EditLeaveForm({
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
             const res = await fetch(
-                `http://localhost:8080/api/leave-requests/${leave.nghiID}`,
+                `${API_BASE_URL}/api/leave-requests/${leave.nghiID}`,
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
+                        "ngrok-skip-browser-warning": "true",
                     },
                     body: JSON.stringify({
                         ...formData,

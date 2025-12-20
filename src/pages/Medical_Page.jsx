@@ -7,10 +7,12 @@ const MedicalPage = () => {
     const [listMedical, setListMedical] = useState([]);
     const [hopital, setHopital] = useState([]);
     useEffect(() => {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
         const token = localStorage.getItem("accessToken");
-        fetch("http://localhost:8080/api/facilities", {
+        fetch(`${API_BASE_URL}/api/facilities`, {
             headers: {
                 Authorization: `Bearer ${token}`,
+                "ngrok-skip-browser-warning": "true"
             },
         })
             .then(res => res.json())

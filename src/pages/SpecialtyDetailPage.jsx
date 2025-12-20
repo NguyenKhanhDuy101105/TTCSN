@@ -12,7 +12,13 @@ const SpecialtyDetailPage = () => {
 
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/specialties/${id}`)
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+        fetch(`${API_BASE_URL}/api/specialties/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true",
+            }
+        })
             .then(res => res.json())
             .then(data => setSpecialty(data))
             .catch(err => console.error("Lỗi lấy chuyên khoa:", err));
@@ -20,7 +26,13 @@ const SpecialtyDetailPage = () => {
 
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/doctors/specialty/${id}`)
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+        fetch(`${API_BASE_URL}/api/doctors/specialty/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true",
+            }
+        })
             .then(res => res.json())
             .then(data => setDoctorList(data))
             .catch(err => console.error("Lỗi lấy bác sĩ:", err));
@@ -28,12 +40,14 @@ const SpecialtyDetailPage = () => {
 
 
     useEffect(() => {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
         const token = localStorage.getItem("accessToken");
 
-        fetch("http://localhost:8080/api/facilities", {
+        fetch(`${API_BASE_URL}/api/facilities`, {
             headers: {
                 "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true",
             }
         })
             .then(res => {

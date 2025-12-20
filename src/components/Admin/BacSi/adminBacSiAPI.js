@@ -1,11 +1,17 @@
 const BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const getToken = () => localStorage.getItem("accessToken");
 
 export const fetchDoctorById = async (id) => {
   try {
-    const token = getToken(); // nếu API public, có thể bỏ dòng này
-    const res = await fetch(`${BASE_URL}/doctors/${id}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    const token = getToken();
+    const res = await fetch(`${API_BASE_URL}/api/doctors/${id}`, {
+      headers: token
+        ? {
+            Authorization: `Bearer ${token}`,
+            "ngrok-skip-browser-warning": "true",
+          }
+        : {},
     });
     if (!res.ok) {
       const errData = await res.json();
@@ -27,9 +33,12 @@ export const fetchDoctors = async ({
   try {
     const token = getToken();
     const res = await fetch(
-      `${BASE_URL}/doctors?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`,
+      `${API_BASE_URL}/api/doctors?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`,
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
+        },
       }
     );
     if (!res.ok) throw new Error("Không thể tải danh sách bác sĩ");
@@ -43,9 +52,12 @@ export const fetchDoctors = async ({
 export const deleteDoctor = async (id) => {
   try {
     const token = getToken();
-    const res = await fetch(`${BASE_URL}/doctors/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/api/doctors/${id}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "ngrok-skip-browser-warning": "true",
+      },
     });
     if (!res.ok) {
       const errData = await res.json();
@@ -61,9 +73,12 @@ export const deleteDoctor = async (id) => {
 export const restoreDoctor = async (id) => {
   try {
     const token = getToken();
-    const res = await fetch(`${BASE_URL}/doctors/${id}/restore`, {
+    const res = await fetch(`${API_BASE_URL}/api/doctors/${id}/restore`, {
       method: "PUT",
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "ngrok-skip-browser-warning": "true",
+      },
     });
     if (!res.ok) throw new Error("Khôi phục bác sĩ thất bại");
     return await res.json();
@@ -76,11 +91,12 @@ export const restoreDoctor = async (id) => {
 export const updateDoctor = async (id, doctorData) => {
   try {
     const token = getToken();
-    const res = await fetch(`${BASE_URL}/doctors/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/api/doctors/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "ngrok-skip-browser-warning": "true",
       },
       body: JSON.stringify(doctorData),
     });
@@ -98,17 +114,15 @@ export const updateDoctor = async (id, doctorData) => {
 export const createDoctor = async (doctorData) => {
   try {
     const token = getToken();
-    const res = await fetch(
-      `http://localhost:8080/api/doctors/create-account`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(doctorData),
-      }
-    );
+    const res = await fetch(`${API_BASE_URL}/api/doctors/create-account`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "ngrok-skip-browser-warning": "true",
+      },
+      body: JSON.stringify(doctorData),
+    });
     if (!res.ok) {
       const errData = await res.json();
       throw new Error(errData.message || "Tạo mới bác sĩ thất bại");
@@ -122,7 +136,12 @@ export const createDoctor = async (doctorData) => {
 
 export const fetchSpecialties = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/specialties`);
+    const res = await fetch(`${API_BASE_URL}/api/specialties`, {
+      headers: {
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
     if (!res.ok) throw new Error("Không thể tải danh sách chuyên khoa");
     return await res.json();
   } catch (error) {
@@ -133,7 +152,12 @@ export const fetchSpecialties = async () => {
 
 export const fetchDegrees = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/degrees`);
+    const res = await fetch(`${API_BASE_URL}/api/degrees`, {
+      headers: {
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
     if (!res.ok) throw new Error("Không thể tải danh sách trình độ");
     return await res.json();
   } catch (error) {

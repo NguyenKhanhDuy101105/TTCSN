@@ -27,13 +27,15 @@ const ForgotPassword = () => {
 
             try {
                 const token = localStorage.getItem("accessToken");
+                const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
                 const res = await axios.post(
-                    `http://localhost:8080/api/auth/forgot-password?email=${encodeURIComponent(values.email)}`,
+                    `${API_BASE_URL}/api/auth/forgot-password?email=${encodeURIComponent(values.email)}`,
                     {},
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
                             Accept: "*/*",
+                            "ngrok-skip-browser-warning": "true",
                         },
                     }
                 );

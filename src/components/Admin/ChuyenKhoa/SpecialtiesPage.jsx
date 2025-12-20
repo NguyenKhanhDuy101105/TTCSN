@@ -104,6 +104,7 @@ const SpecialtiesPage = () => {
                         s.chuyenKhoaID === selectedItem.chuyenKhoaID ? updated : s
                     )
                 );
+                toast.success("Cập nhật chuyên khoa thành công");
             } else {
 
                 const created = await createSpecialty(newItem, token);

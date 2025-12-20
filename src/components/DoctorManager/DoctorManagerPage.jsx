@@ -1,4 +1,3 @@
-// DoctorManagerPage.jsx
 import React, { useState } from 'react'
 import SidebarDoctor from './SidebarDoctor'
 import DoctorAdmin from './DoctorAdmin'
@@ -10,6 +9,7 @@ const DoctorManagerPage = () => {
         "Đăng ký lịch nghỉ",
         "Danh sách lịch chờ",
         "Danh sách lịch hẹn",
+        "Lịch sử khám"
     ]
 
     const [index, setIndex] = useState(0)

@@ -48,6 +48,7 @@ const AppointmentBooking = () => {
         toast.success("Đặt lịch thành công!", {
             position: "top-right",
             autoClose: 3000,
+            onClose: () => navigate("/"),
         });
     };
 
@@ -99,21 +100,23 @@ const AppointmentBooking = () => {
             };
 
             try {
-                const res = await fetch("http://localhost:8080/api/bookings", {
+                const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+                const res = await fetch(`${API_BASE_URL}/api/bookings`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
+                        "ngrok-skip-browser-warning": "true",
                     },
                     body: JSON.stringify(body),
                 });
 
                 if (!res.ok) throw new Error();
-
+                console.log(body)
                 await res.json();
 
                 notifySuccess();
-                await new Promise((resolve) => setTimeout(resolve, 1500));
+                await new Promise((resolve) => setTimeout(resolve, 3000));
                 navigate("/");
             } catch (err) {
                 console.log(err);
@@ -285,7 +288,7 @@ const AppointmentBooking = () => {
                     <button
                         type="submit"
                         disabled={loading || !isLoggedIn}
-                        className={`w-full ${loading || !isLoggedIn ? 'bg-gray-400 cursor-not-allowed' : 'bg-sky-500 hover:bg-sky-600'} text-white py-2 rounded-lg font-semibold mt-4 flex justify-center items-center`}
+                        className={`w-full cursor-pointer ${loading || !isLoggedIn ? 'bg-gray-400 cursor-not-allowed' : 'bg-sky-500 hover:bg-sky-600'} text-white py-2 rounded-lg font-semibold mt-4 flex justify-center items-center`}
                     >
                         {loading && <div style={{
                             border: "3px solid #f3f3f3",

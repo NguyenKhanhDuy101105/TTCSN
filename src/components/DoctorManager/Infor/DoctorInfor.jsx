@@ -38,11 +38,12 @@ const DoctorInfor = () => {
             console.error("Không tìm thấy ID trong đối tượng user.");
             return;
         }
-
-        fetch(`http://localhost:8080/api/doctors/${userID}`, {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+        fetch(`${API_BASE_URL}/api/doctors/${userID}`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
+                "ngrok-skip-browser-warning": "true",
             },
         })
             .then(response => {

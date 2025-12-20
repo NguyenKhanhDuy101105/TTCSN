@@ -8,12 +8,13 @@ const AccountInfor = () => {
 
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
-
-        fetch("http://localhost:8080/api/auth/me", {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+        fetch(`${API_BASE_URL}/api/auth/me`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true",
             },
         })
             .then(response => {

@@ -7,7 +7,7 @@ export default function TrinhDoTable({ items, onView, onEdit, onDelete }) {
     const perPage = 7;
 
 
-    const totalPage = Math.max(1, Math.ceil(items.length / perPage));
+    // const totalPage = Math.max(1, Math.ceil(items.length / perPage));
     const current = items.slice(page * perPage, page * perPage + perPage);
 
 
@@ -67,21 +67,21 @@ export default function TrinhDoTable({ items, onView, onEdit, onDelete }) {
                                         <div className="flex justify-center gap-3">
                                             <button
                                                 onClick={() => onView(page * perPage + i)}
-                                                className="text-blue-500 hover:text-blue-700 transition"
+                                                className="text-blue-500 hover:text-blue-700 transition cursor-pointer"
                                             >
                                                 <Eye size={18} />
                                             </button>
 
                                             <button
                                                 onClick={() => onEdit(page * perPage + i)}
-                                                className="text-[#ad7555] hover:text-[#945f46] transition"
+                                                className="text-[#ad7555] hover:text-[#945f46] transition cursor-pointer"
                                             >
                                                 <Edit size={18} />
                                             </button>
 
                                             <button
                                                 onClick={() => onDelete(page * perPage + i)}
-                                                className="text-red-500 hover:text-red-700 transition"
+                                                className="text-red-500 hover:text-red-700 transition cursor-pointer"
                                             >
                                                 <Trash size={18} />
                                             </button>

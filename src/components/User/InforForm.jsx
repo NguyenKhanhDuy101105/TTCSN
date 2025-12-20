@@ -55,12 +55,13 @@ const InforForm = ({ user, setUser, setIsEditing }) => {
                     gioiTinh: Number(values.gioiTinh),
                     avatarUrl: values.avatarUrl
                 };
-
-                const response = await fetch("http://localhost:8080/api/auth/me", {
+                const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+                const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,
+                        "ngrok-skip-browser-warning": "true",
                     },
                     body: JSON.stringify(updatedUser),
                 });

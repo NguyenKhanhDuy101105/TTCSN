@@ -1,5 +1,5 @@
 import axios from "axios";
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 /**
  * ===============================
  * 1. Lấy danh sách yêu cầu nghỉ CHỜ DUYỆT (Admin)
@@ -8,15 +8,13 @@ import axios from "axios";
  */
 export const getPendingLeaveRequests = async (token) => {
   try {
-    const res = await axios.get(
-      "http://localhost:8080/api/leave-requests/pending",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "*/*",
-        },
-      }
-    );
+    const res = await axios.get(`${API_BASE_URL}/api/leave-requests/pending`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "*/*",
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
     return res.data;
   } catch (error) {
     console.error(
@@ -35,15 +33,13 @@ export const getPendingLeaveRequests = async (token) => {
  */
 export const getLeaveRequestDetail = async (id, token) => {
   try {
-    const res = await axios.get(
-      `http://localhost:8080/api/leave-requests/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "*/*",
-        },
-      }
-    );
+    const res = await axios.get(`${API_BASE_URL}/api/leave-requests/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "*/*",
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
     return res.data;
   } catch (error) {
     console.error(
@@ -62,15 +58,13 @@ export const getLeaveRequestDetail = async (id, token) => {
  */
 export const deleteLeaveRequest = async (id, token) => {
   try {
-    const res = await axios.delete(
-      `http://localhost:8080/api/leave-requests/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "*/*",
-        },
-      }
-    );
+    const res = await axios.delete(`${API_BASE_URL}/api/leave-requests/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "*/*",
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
     return res.data;
   } catch (error) {
     console.error(
@@ -90,12 +84,13 @@ export const deleteLeaveRequest = async (id, token) => {
 export const cancelLeaveRequest = async (id, token) => {
   try {
     const res = await axios.patch(
-      `http://localhost:8080/api/leave-requests/${id}/cancel`,
+      `${API_BASE_URL}/api/leave-requests/${id}/cancel`,
       null,
       {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "*/*",
+          "ngrok-skip-browser-warning": "true",
         },
       }
     );
@@ -116,11 +111,12 @@ export const cancelLeaveRequest = async (id, token) => {
  * ===============================
  */
 export const approveOrRejectLeaveRequests = async (data, token) => {
-  return axios.patch("http://localhost:8080/api/leave-requests/approve", data, {
+  return axios.patch(`${API_BASE_URL}/api/leave-requests/approve`, data, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
       Accept: "*/*",
+      "ngrok-skip-browser-warning": "true",
     },
   });
 };

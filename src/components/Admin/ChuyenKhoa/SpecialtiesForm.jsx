@@ -141,13 +141,13 @@ export default function SpecialtiesForm({ editingSpecialty, onSave, onClose }) {
                                 <button
                                     type="button"
                                     onClick={onClose}
-                                    className="px-4 py-2 border border-gray-400 rounded-xl hover:bg-gray-100 transition"
+                                    className="px-4 py-2 border border-gray-400 rounded-xl hover:bg-gray-100 transition cursor-pointer"
                                 >
                                     Hủy
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-[#ad7555] text-white rounded-xl shadow-md hover:bg-[#945f46] hover:scale-105 transition"
+                                    className="px-4 py-2 bg-[#ad7555] text-white rounded-xl shadow-md hover:bg-[#945f46] hover:scale-105 transition cursor-pointer"
                                 >
                                     {editingSpecialty ? "Cập nhật" : "Thêm mới"}
                                 </button>

@@ -12,89 +12,103 @@ export default function PatientTableWithPagination({ items = [], onView }) {
 
     return (
         <>
-
-            <div className="overflow-x-auto border border-gray-200 rounded-2xl shadow-sm">
-                <table className="min-w-full bg-white text-left text-sm">
-                    <thead className="bg-gray-100 font-semibold text-gray-700">
-                        <tr>
-                            <th className="p-4 whitespace-nowrap">HỌ TÊN</th>
-                            <th className="p-4 whitespace-nowrap">EMAIL</th>
-                            <th className="p-4 whitespace-nowrap">SĐT</th>
-
-
-                            <th className="p-4 whitespace-nowrap hidden md:table-cell">
-                                ĐỊA CHỈ
-                            </th>
-
-                            <th className="p-4 text-center whitespace-nowrap">
-                                THAO TÁC
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody className="divide-y divide-gray-100">
-                        {currentItems.length === 0 ? (
-                            <tr>
-                                <td
-                                    colSpan="5"
-                                    className="text-center py-6 text-gray-500"
-                                >
-                                    Không có bệnh nhân
-                                </td>
+            <div className="border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full min-w-[700px] bg-white">
+                        <thead className="bg-gray-100 text-gray-700 border-b border-gray-300">
+                            <tr className="text-xs sm:text-sm">
+                                <th className="p-3 sm:p-4 text-left whitespace-nowrap">
+                                    Họ tên
+                                </th>
+                                <th className="p-3 sm:p-4 text-left whitespace-nowrap">
+                                    Email
+                                </th>
+                                <th className="p-3 sm:p-4 text-left whitespace-nowrap">
+                                    SĐT
+                                </th>
+                                <th className="p-3 sm:p-4 text-left whitespace-nowrap hidden md:table-cell">
+                                    Địa chỉ
+                                </th>
+                                <th className="p-3 sm:p-4 text-center whitespace-nowrap">
+                                    Thao tác
+                                </th>
                             </tr>
-                        ) : (
-                            currentItems.map((p) => (
-                                <tr
-                                    key={p.nguoiDungID}
-                                    className="hover:bg-[#fdf8f5] transition"
-                                >
-                                    <td className="p-4 font-medium text-gray-800">
-                                        {p.hoTen}
-                                    </td>
+                        </thead>
 
-                                    <td className="p-4 text-gray-600 max-w-[220px] truncate">
-                                        {p.email}
-                                    </td>
-
-                                    <td className="p-4 text-gray-600">
-                                        {p.soDienThoai}
-                                    </td>
-
-
-                                    <td className="p-4 text-gray-600 hidden md:table-cell">
-                                        {p.diaChi || "—"}
-                                    </td>
-
-                                    <td className="p-4 text-center">
-                                        <button
-                                            onClick={() => onView(p)}
-                                            className="inline-flex items-center justify-center 
-                                                       w-9 h-9 rounded-full 
-                                                       text-blue-600 hover:bg-blue-100 transition"
-                                        >
-                                            <Eye size={18} />
-                                        </button>
+                        <tbody className="divide-y divide-gray-100">
+                            {currentItems.length === 0 ? (
+                                <tr>
+                                    <td
+                                        colSpan="5"
+                                        className="py-6 text-center text-gray-500 text-sm"
+                                    >
+                                        Không có bệnh nhân
                                     </td>
                                 </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                            ) : (
+                                currentItems.map((p) => (
+                                    <tr
+                                        key={p.nguoiDungID}
+                                        className="hover:bg-[#fdf8f5] transition text-xs sm:text-sm"
+                                    >
+                                        <td className="p-3 sm:p-4 font-medium text-gray-800 whitespace-nowrap">
+                                            {p.hoTen}
+                                        </td>
+
+                                        <td
+                                            className="p-3 sm:p-4 text-gray-600 
+                                            max-w-[220px] truncate"
+                                            title={p.email}
+                                        >
+                                            {p.email}
+                                        </td>
+
+                                        <td className="p-3 sm:p-4 text-gray-600 whitespace-nowrap">
+                                            {p.soDienThoai}
+                                        </td>
+
+                                        <td
+                                            className="p-3 sm:p-4 text-gray-600 
+                                            hidden md:table-cell 
+                                            max-w-[260px] truncate"
+                                            title={p.diaChi}
+                                        >
+                                            {p.diaChi || "—"}
+                                        </td>
+
+                                        <td className="p-3 sm:p-4 text-center">
+                                            <button
+                                                onClick={() => onView(p)}
+                                                className="inline-flex items-center justify-center
+                                                w-8 h-8 sm:w-9 sm:h-9
+                                                rounded-full text-blue-600
+                                                hover:bg-blue-100 transition cursor-pointer"
+                                            >
+                                                <Eye size={16} className="sm:size-[18px]" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-
             {pageCount > 1 && (
-                <div className="flex justify-center sm:justify-end mt-4">
+                <div className="flex justify-center sm:justify-end mt-4 text-sm">
                     <ReactPaginate
                         previousLabel={"<"}
                         nextLabel={">"}
                         pageCount={pageCount}
-                        onPageChange={({ selected }) => setPageNumber(selected)}
-                        containerClassName="flex items-center gap-1 text-sm"
-                        pageClassName="px-3 py-1 border rounded-lg cursor-pointer hover:bg-gray-100"
-                        activeClassName="bg-[#a35a37] text-white"
-                        previousClassName="px-3 py-1 border rounded-lg cursor-pointer"
-                        nextClassName="px-3 py-1 border rounded-lg cursor-pointer"
+                        onPageChange={({ selected }) =>
+                            setPageNumber(selected)
+                        }
+                        containerClassName="flex items-center gap-1"
+                        pageClassName="px-2 sm:px-3 py-1 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
+                        activeClassName="bg-[#a35a37] text-white border-[#a35a37]"
+                        previousClassName="px-2 sm:px-3 py-1 border border-gray-300 rounded-lg cursor-pointer"
+                        nextClassName="px-2 sm:px-3 py-1 border border-gray-300 rounded-lg cursor-pointer"
                         disabledClassName="opacity-40 cursor-not-allowed"
                     />
                 </div>

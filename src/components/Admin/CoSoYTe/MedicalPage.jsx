@@ -13,10 +13,17 @@ const MedicalPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
                 const token = localStorage.getItem("accessToken");
-                const res = await fetch("http://localhost:8080/api/facilities/default", {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+                const res = await fetch(
+                    `${API_BASE_URL}/api/facilities/default`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "ngrok-skip-browser-warning": "true",
+                        },
+                    }
+                );
                 if (!res.ok) throw new Error("Không thể tải dữ liệu");
                 const data = await res.json();
                 setMedicalData(data);
@@ -35,41 +42,70 @@ const MedicalPage = () => {
         <div className="border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
             <ToastContainer position="top-right" autoClose={3000} />
 
-            <table className="w-full bg-white">
-                <thead className="bg-gray-100 text-gray-700 border-b border-gray-300">
-                    <tr>
-                        <th className="p-4 border-r border-gray-300 text-center">Tên cơ sở</th>
-                        <th className="p-4 border-r border-gray-300 text-center">Địa chỉ</th>
-                        <th className="p-4 border-r border-gray-300 text-center">Số điện thoại</th>
-                        <th className="p-4 border-r border-gray-300 text-center">Email</th>
-                        <th className="p-4 text-center">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr className="hover:bg-[#fdf8f5] transition">
-                        <td className="p-4 font-medium text-center border-r border-gray-300">{medicalData.tenCoSo}</td>
-                        <td className="p-4 text-center border-r border-gray-300">{medicalData.diaChi}</td>
-                        <td className="p-4 text-center border-r border-gray-300">{medicalData.soDienThoai}</td>
-                        <td className="p-4 text-center border-r border-gray-300">{medicalData.email}</td>
-                        <td className="p-4 text-center">
-                            <div className="flex justify-center gap-3">
-                                <button
-                                    onClick={() => setOpenView(true)}
-                                    className="text-blue-500 hover:text-sky-700 transition cursor-pointer"
-                                >
-                                    <Eye size={18} />
-                                </button>
-                                <button
-                                    onClick={() => setOpenForm(true)}
-                                    className="text-[#ad7555] hover:text-[#945f46] transition cursor-pointer"
-                                >
-                                    <Edit size={18} />
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div className="overflow-x-auto">
+                <table className="w-full min-w-[700px] bg-white">
+                    <thead className="bg-gray-100 text-gray-700 border-b border-gray-300">
+                        <tr className="text-xs sm:text-sm">
+                            <th className="p-3 sm:p-4 border-r border-gray-300 text-center">
+                                Tên cơ sở
+                            </th>
+                            <th className="p-3 sm:p-4 border-r border-gray-300 text-center">
+                                Địa chỉ
+                            </th>
+                            <th className="p-3 sm:p-4 border-r border-gray-300 text-center">
+                                Số điện thoại
+                            </th>
+                            <th className="p-3 sm:p-4 border-r border-gray-300 text-center">
+                                Email
+                            </th>
+                            <th className="p-3 sm:p-4 text-center">
+                                Thao tác
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr className="hover:bg-[#fdf8f5] transition text-xs sm:text-sm">
+                            <td className="p-3 sm:p-4 font-medium text-center border-r border-gray-300 whitespace-nowrap">
+                                {medicalData.tenCoSo}
+                            </td>
+
+                            <td
+                                className="p-3 sm:p-4 text-center border-r border-gray-300 
+                                max-w-[220px] sm:max-w-none truncate"
+                                title={medicalData.diaChi}
+                            >
+                                {medicalData.diaChi}
+                            </td>
+
+                            <td className="p-3 sm:p-4 text-center border-r border-gray-300 whitespace-nowrap">
+                                {medicalData.soDienThoai}
+                            </td>
+
+                            <td className="p-3 sm:p-4 text-center border-r border-gray-300 truncate max-w-[200px]">
+                                {medicalData.email}
+                            </td>
+
+                            <td className="p-3 sm:p-4 text-center">
+                                <div className="flex justify-center gap-3">
+                                    <button
+                                        onClick={() => setOpenView(true)}
+                                        className="text-blue-500 hover:text-sky-700 transition cursor-pointer"
+                                    >
+                                        <Eye size={16} className="sm:size-[18px]" />
+                                    </button>
+                                    <button
+                                        onClick={() => setOpenForm(true)}
+                                        className="text-[#ad7555] hover:text-[#945f46] transition cursor-pointer"
+                                    >
+                                        <Edit size={16} className="sm:size-[18px]" />
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             {openView && (
                 <MedicalViewModal

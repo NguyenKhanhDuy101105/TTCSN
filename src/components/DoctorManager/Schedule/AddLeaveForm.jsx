@@ -35,14 +35,15 @@ export default function AddLeaveForm({ bacSiID, token, setLeaves, onClose, onSuc
                 moTaThoiGianNghi: values.moTaThoiGianNghi,
                 nghiCaNgay: values.nghiCaNgay,
             };
-
+            const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
             const res = await fetch(
-                `http://localhost:8080/api/leave-requests?bacSiID=${bacSiID}`,
+                `${API_BASE_URL}/api/leave-requests?bacSiID=${bacSiID}`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
+                        "ngrok-skip-browser-warning": "true",
                     },
                     body: JSON.stringify(body),
                 }

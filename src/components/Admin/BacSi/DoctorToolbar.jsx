@@ -25,7 +25,7 @@ const DoctorToolbar = ({ onSearch, onAdd, content, specialties, selectedSpecialt
                 <select
                     value={selectedSpecialty}
                     onChange={(e) => onSelectSpecialty(e.target.value)}
-                    className="py-2 px-3 border border-gray-200 rounded-xl shadow-sm text-gray-700"
+                    className="py-2 px-3 border border-gray-200 rounded-xl shadow-sm text-gray-700 cursor-pointer"
                 >
                     <option value="">Tất cả chuyên khoa</option>
                     {specialties.map(s => (
@@ -36,8 +36,8 @@ const DoctorToolbar = ({ onSearch, onAdd, content, specialties, selectedSpecialt
 
             <button
                 onClick={onAdd}
-                className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 
-                           rounded-xl flex items-center gap-2 shadow-md transition"
+                className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 
+                           rounded-xl flex items-center gap-2 shadow-md transition cursor-pointer"
             >
                 <Plus size={18} /> Thêm {content}
             </button>

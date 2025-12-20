@@ -15,12 +15,13 @@ const ListDoctor = () => {
         const fetchDoctors = async () => {
             try {
                 const token = localStorage.getItem("token");
-
+                const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
                 const res = await axios.get(
-                    "http://localhost:8080/api/doctors/top-experienced",
+                    `${API_BASE_URL}/api/doctors/top-experienced`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
+                            "ngrok-skip-browser-warning": "true"
                         }
                     }
                 );
@@ -59,7 +60,7 @@ const ListDoctor = () => {
                             <Link to={`/doctor/${item.bacSiID}`} key={item.bacSiID} className='text-center flex-1 min-w-[140px] max-w-[220px]'>
                                 <div className='w-[120px] sm:w-[140px] md:w-[160px] lg:w-[180px] aspect-square mx-auto rounded-full overflow-hidden'>
                                     <img
-                                        src={item.avatarUrl || "https://via.placeholder.com/150"}
+                                        src={item.avatarUrl}
                                         alt={item.hoTen}
                                         className='w-full h-full object-cover'
                                     />

@@ -30,7 +30,7 @@ export default function PatientViewModal({ patient, onClose }) {
                 <div className="flex justify-end mt-6">
                     <button
                         onClick={onClose}
-                        className="px-5 py-2.5 border rounded-xl hover:bg-gray-100"
+                        className="px-5 py-2.5 border border-gray-300 rounded-xl hover:bg-gray-100 cursor-pointer"
                     >
                         Đóng
                     </button>

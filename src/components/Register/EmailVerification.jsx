@@ -51,12 +51,14 @@ const EmailVerification = () => {
             }
 
             try {
+                const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
                 const response = await fetch(
-                    `http://localhost:8080/api/auth/verify-email?email=${encodeURIComponent(email)}&code=${encodeURIComponent(values.code)}`,
+                    `${API_BASE_URL}/api/auth/verify-email?email=${encodeURIComponent(email)}&code=${encodeURIComponent(values.code)}`,
                     {
                         method: "POST",
                         headers: {
-                            "Accept": "application/json"
+                            "Accept": "application/json",
+                            "ngrok-skip-browser-warning": "true",
                         }
                     }
                 );

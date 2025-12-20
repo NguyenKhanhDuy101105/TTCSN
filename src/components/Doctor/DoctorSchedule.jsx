@@ -34,12 +34,13 @@ const DoctorSchedule = ({ doctor }) => {
         if (!doctor?.bacSiID) return;
 
         const token = localStorage.getItem("accessToken");
-
-        fetch(`http://localhost:8080/api/bookings/doctor/${doctor.bacSiID}/schedule`, {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+        fetch(`${API_BASE_URL}/api/bookings/doctor/${doctor.bacSiID}/schedule`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
+                "ngrok-skip-browser-warning": "true",
             },
         })
             .then(res => res.json())

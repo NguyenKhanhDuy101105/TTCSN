@@ -3,6 +3,7 @@ import { MdDashboard, MdMiscellaneousServices } from "react-icons/md";
 import { FaHospitalAlt, FaStethoscope, FaUserMd, FaRegCalendarAlt, FaGraduationCap } from "react-icons/fa";
 import { FaBusinessTime } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { AiOutlineHistory } from "react-icons/ai";
 
 const SideBar = ({ danhMuc, index, setIndex, sidebarOpen }) => {
     const icon = [
@@ -13,7 +14,8 @@ const SideBar = ({ danhMuc, index, setIndex, sidebarOpen }) => {
         <MdMiscellaneousServices />,
         <FaRegCalendarAlt />,
         <FaGraduationCap />,
-        <FaBusinessTime />
+        <FaBusinessTime />,
+        <AiOutlineHistory />,
     ]
 
     const path = [
@@ -25,6 +27,7 @@ const SideBar = ({ danhMuc, index, setIndex, sidebarOpen }) => {
         "/admin/appointments",
         "/admin/degree",
         "/admin/leave",
+        "/admin/history",
     ];
 
     return (

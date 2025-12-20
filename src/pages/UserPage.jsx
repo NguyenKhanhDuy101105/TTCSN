@@ -6,6 +6,7 @@ import AccountInfor from '../components/User/AccountInfor';
 import ChangePassword from '../components/User/ChangePassword';
 import BookingItem from '../components/User/BookingItem';
 import CancelBookingModal from '../components/User/CancelBookingModal';
+import MedicalHistory from '../components/User/MedicalHistory';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -42,31 +43,64 @@ const UserPage = () => {
 
         setLoading(true);
         setError(null);
-
-        fetch(`http://localhost:8080/api/bookings/my?page=0&size=10`, {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+        fetch(`${API_BASE_URL}/api/bookings/my?page=0&size=10`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                "ngrok-skip-browser-warning": "true",
             }
         })
             .then(res => res.json())
             .then(data => {
+                console.log(data)
                 if (data.success) {
+
+                    const now = new Date();
+
                     const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+
                     const sortedBookings = [...data.data.content]
+
                         .filter(item => item.tenTrangThai !== "Hủy bởi bệnh nhân")
-                        .filter(item => new Date(`${item.ngayKham}T${item.gioKham}`) >= today)
+
+                        .filter(item => {
+                            const bookingDateOnly = new Date(item.ngayKham);
+                            bookingDateOnly.setHours(0, 0, 0, 0);
+
+
+                            if (bookingDateOnly.getTime() === today.getTime()) {
+                                return true;
+                            }
+
+
+                            const bookingDateTime = new Date(`${item.ngayKham}T${item.gioKham}`);
+                            return bookingDateTime >= now;
+                        })
+
+                        // 🔃 Sắp xếp
                         .sort((a, b) => {
+
+                            if (a.tenTrangThai === "CHO_XAC_NHAN_BAC_SI" && b.tenTrangThai !== "CHO_XAC_NHAN_BAC_SI") {
+                                return -1;
+                            }
+                            if (b.tenTrangThai === "CHO_XAC_NHAN_BAC_SI" && a.tenTrangThai !== "CHO_XAC_NHAN_BAC_SI") {
+                                return 1;
+                            }
+
                             const dateA = new Date(`${a.ngayKham}T${a.gioKham}`);
                             const dateB = new Date(`${b.ngayKham}T${b.gioKham}`);
                             return dateA - dateB;
                         });
 
                     setAllBookings(sortedBookings);
+
                 } else {
                     setError(data.message || "Lỗi khi lấy dữ liệu");
                 }
             })
+
             .catch(err => setError("Lỗi fetch API: " + err.message))
             .finally(() => setLoading(false));
     }, []);
@@ -94,6 +128,8 @@ const UserPage = () => {
         }, 0);
     };
 
+
+
     return (
         <>
             <HeaderSub />
@@ -110,6 +146,12 @@ const UserPage = () => {
                         onClick={() => setIndexPage(1)}
                     >
                         Lịch khám của bạn
+                    </Link>
+                    <Link
+                        className={`${indexPage === 3 ? "border-[#bb4d00] bg-[#f2edea] text-amber-800" : "border-gray-400"} py-3 px-4 border-l-4 hover:bg-gray-100 rounded-[4px] font-medium`}
+                        onClick={() => setIndexPage(3)}
+                    >
+                        Lịch sử khám
                     </Link>
                     <Link
                         className={`${indexPage === 2 ? "border-[#bb4d00] bg-[#f2edea] text-amber-800" : "border-gray-400"} py-3 px-4 border-l-4 hover:bg-gray-100 rounded-[4px] font-medium`}
@@ -139,7 +181,7 @@ const UserPage = () => {
 
                                     <button
                                         onClick={() => navigate("/")}
-                                        className="px-6 py-2 text-sm font-medium text-white bg-blue-400 rounded-lg hover:bg-blue-700 transition"
+                                        className="px-6 py-2 text-sm font-medium text-white bg-blue-400 rounded-lg hover:bg-blue-700 transition cursor-pointer"
                                     >
                                         Quay về trang chủ
                                     </button>
@@ -147,10 +189,11 @@ const UserPage = () => {
                             )}
 
 
-                            {!loading && !error && (
+                            {!loading && !error && bookings.length > 0 && (
                                 <BookingItem
                                     items={bookings}
                                     onCancel={handleCancel}
+
                                 />
                             )}
 
@@ -179,6 +222,8 @@ const UserPage = () => {
                     )}
 
                     {indexPage === 2 && <ChangePassword />}
+
+                    {indexPage === 3 && <MedicalHistory />}
                 </div>
             </div>
 

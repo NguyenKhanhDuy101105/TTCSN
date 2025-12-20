@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import BookingTable from "./BookingTable";
 import RejectModal from "./RejectModal";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DoctorBookingPage = () => {
     const getNext6Days = () => {
@@ -23,44 +25,33 @@ const DoctorBookingPage = () => {
     const [rejectModalOpen, setRejectModalOpen] = useState(false);
     const [currentRejectId, setCurrentRejectId] = useState(null);
 
-    const mapTrangThai = (status) => {
-        switch (status) {
-            case "CHO_XAC_NHAN_BAC_SI":
-                return "ChoXacNhan";
-            case "DA_XAC_NHAN":
-                return "DaXacNhan";
-            case "HUY":
-                return "DaHuy";
-            default:
-                return status;
-        }
-    };
-
     useEffect(() => {
         if (!selectedDate) return;
-
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
         const token = localStorage.getItem("accessToken");
         if (!token) return;
 
-        fetch(
-            `http://localhost:8080/api/bookings/doctor/appointments?ngayKham=${selectedDate}`,
+        fetch(`${API_BASE_URL}/api/bookings/doctor/appointments?ngayKham=${selectedDate}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
+                    "ngrok-skip-browser-warning": "true",
                 },
             }
         )
             .then((res) => res.json())
             .then((data) => {
                 if (data.success) {
-                    const mapped = data.data.map((item) => ({
-                        id: item.datLichID,
-                        tenKhachHang: item.tenBenhNhan,
-                        ngayKham: item.ngayKham,
-                        gioBatDau: item.gioKham,
-                        trangThai: mapTrangThai(item.trangThai),
-                    }));
+                    const mapped = data.data
+                        .filter(item => item.trangThai !== "HUY_BOI_BENH_NHAN")
+                        .map((item) => ({
+                            id: item.datLichID,
+                            tenKhachHang: item.tenBenhNhan,
+                            ngayKham: item.ngayKham,
+                            gioBatDau: item.gioKham,
+                            trangThai: item.trangThai,
+                        }));
                     setBookings(mapped);
                 } else {
                     setBookings([]);
@@ -91,13 +82,14 @@ const DoctorBookingPage = () => {
                 };
 
         try {
-            const res = await fetch(
-                `http://localhost:8080/api/bookings/${id}/confirm`,
+            const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+            const res = await fetch(`${API_BASE_URL}/api/bookings/${id}/confirm`,
                 {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "true",
                     },
                     body: JSON.stringify(body),
                 }
@@ -119,14 +111,14 @@ const DoctorBookingPage = () => {
                 )
             );
 
-            alert(
+            toast.success(
                 action === "confirm"
                     ? "Xác nhận lịch hẹn thành công!"
                     : "Đã từ chối lịch hẹn!"
             );
         } catch (error) {
             console.error(error);
-            alert(error.message);
+            toast.error(error.message || "Có lỗi xảy ra!");
         }
     };
 
@@ -173,6 +165,8 @@ const DoctorBookingPage = () => {
                 onClose={closeRejectModal}
                 onSubmit={submitReject}
             />
+
+            <ToastContainer position="top-right" autoClose={3000} />
         </div>
     );
 };

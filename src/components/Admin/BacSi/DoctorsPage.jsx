@@ -17,14 +17,18 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const PAGE_SIZE = 7;
+
 const DoctorsPage = () => {
-    const [doctorsData, setDoctorsData] = useState([]);
+
+    const [allDoctors, setAllDoctors] = useState([]);
+
+
     const [specialties, setSpecialties] = useState([]);
     const [degrees, setDegrees] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedSpecialty, setSelectedSpecialty] = useState("");
     const [page, setPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
 
     const [selectedItem, setSelectedItem] = useState(null);
     const [openForm, setOpenForm] = useState(false);
@@ -33,27 +37,27 @@ const DoctorsPage = () => {
     const [openDelete, setOpenDelete] = useState(false);
 
 
-    const loadDoctors = async (pageNumber = 0) => {
+    const loadDoctors = async () => {
         try {
             const res = await fetchDoctors({
-                page: pageNumber,
-                size: 7,
+                page: 0,
+                size: 1000,
                 sortBy: "nguoiDung.hoTen",
                 direction: "asc"
             });
-            setDoctorsData(res.content);
-            setTotalPages(res.totalPages);
-            setPage(res.number);
+            setAllDoctors(res.content);
         } catch (error) {
             console.error(error.message);
             toast.error("Lấy danh sách bác sĩ thất bại!");
         }
     };
 
-
     const loadSpecialtiesAndDegrees = async () => {
         try {
-            const [specs, degs] = await Promise.all([fetchSpecialties(), fetchDegrees()]);
+            const [specs, degs] = await Promise.all([
+                fetchSpecialties(),
+                fetchDegrees()
+            ]);
             setSpecialties(specs);
             setDegrees(degs);
         } catch (error) {
@@ -67,12 +71,25 @@ const DoctorsPage = () => {
         loadSpecialtiesAndDegrees();
     }, []);
 
-
-    const filteredDoctors = doctorsData.filter(
+    const filteredDoctors = allDoctors.filter(
         (d) =>
             d.hoTen.toLowerCase().includes(searchTerm.toLowerCase()) &&
             (!selectedSpecialty || d.chuyenKhoaID === Number(selectedSpecialty))
     );
+
+
+    useEffect(() => {
+        setPage(0);
+    }, [searchTerm, selectedSpecialty]);
+
+
+    const totalPages = Math.ceil(filteredDoctors.length / PAGE_SIZE);
+
+    const pagedDoctors = filteredDoctors.slice(
+        page * PAGE_SIZE,
+        (page + 1) * PAGE_SIZE
+    );
+
 
     const handleView = (doctor) => {
         setSelectedItem(doctor);
@@ -85,7 +102,7 @@ const DoctorsPage = () => {
             setSelectedItem(details);
             setOpenForm(true);
         } catch (error) {
-            console.error(error.message);
+            console.log(error)
             toast.error("Lấy chi tiết bác sĩ thất bại!");
         }
     };
@@ -98,27 +115,30 @@ const DoctorsPage = () => {
     const confirmDelete = async () => {
         try {
             await deleteDoctor(selectedItem.bacSiID);
-            setDoctorsData(prev =>
-                prev.map(d => d.bacSiID === selectedItem.bacSiID ? { ...d, deleted: true } : d)
+            setAllDoctors(prev =>
+                prev.map(d =>
+                    d.bacSiID === selectedItem.bacSiID
+                        ? { ...d, deleted: true }
+                        : d
+                )
             );
+            toast.success("Xóa bác sĩ thành công!");
+        } catch {
+            toast.error("Xóa bác sĩ thất bại!");
+        } finally {
             setOpenDelete(false);
             setSelectedItem(null);
-            toast.success("Xóa bác sĩ thành công!");
-        } catch (error) {
-            console.error(error.message);
-            toast.error("Xóa bác sĩ thất bại!");
         }
     };
 
     const handleRestore = async (doctor) => {
         try {
-            const restoredDoctor = await restoreDoctor(doctor.bacSiID);
-            setDoctorsData(prev =>
-                prev.map(d => d.bacSiID === doctor.bacSiID ? restoredDoctor : d)
+            const restored = await restoreDoctor(doctor.bacSiID);
+            setAllDoctors(prev =>
+                prev.map(d => d.bacSiID === doctor.bacSiID ? restored : d)
             );
             toast.success("Khôi phục bác sĩ thành công!");
-        } catch (error) {
-            console.error(error.message);
+        } catch {
             toast.error("Khôi phục bác sĩ thất bại!");
         }
     };
@@ -140,18 +160,18 @@ const DoctorsPage = () => {
                 thoiGianKhamMotCa: selectedItem.thoiGianKhamMotCa
             };
 
-            const updatedDoctor = await updateDoctor(selectedItem.bacSiID, fullData);
+            const updated = await updateDoctor(selectedItem.bacSiID, fullData);
 
-            setDoctorsData(prev =>
-                prev.map(d => d.bacSiID === selectedItem.bacSiID ? updatedDoctor : d)
+            setAllDoctors(prev =>
+                prev.map(d => d.bacSiID === selectedItem.bacSiID ? updated : d)
             );
 
+            toast.success("Cập nhật bác sĩ thành công!");
+        } catch {
+            toast.error("Cập nhật bác sĩ thất bại!");
+        } finally {
             setOpenForm(false);
             setSelectedItem(null);
-            toast.success("Cập nhật bác sĩ thành công!");
-        } catch (error) {
-            console.error(error.message);
-            toast.error("Cập nhật bác sĩ thất bại!");
         }
     };
 
@@ -161,7 +181,7 @@ const DoctorsPage = () => {
     };
 
     return (
-        <div className="">
+        <div>
             <ToastContainer position="top-right" autoClose={2000} />
 
             <DoctorToolbar
@@ -174,14 +194,14 @@ const DoctorsPage = () => {
             />
 
             <DoctorsTable
-                items={filteredDoctors.map(d => ({
+                items={pagedDoctors.map(d => ({
                     ...d,
-                    tenChuyenKhoa: specialties.length
-                        ? specialties.find(s => Number(s.chuyenKhoaID) === Number(d.chuyenKhoaID))?.tenChuyenKhoa || "Không xác định"
-                        : d.tenChuyenKhoa,
-                    tenTrinhDo: degrees.length
-                        ? degrees.find(t => Number(t.trinhDoID) === Number(d.trinhDoID))?.tenTrinhDo || "Không xác định"
-                        : d.tenTrinhDo,
+                    tenChuyenKhoa:
+                        specialties.find(s => Number(s.chuyenKhoaID) === Number(d.chuyenKhoaID))
+                            ?.tenChuyenKhoa || "Không xác định",
+                    tenTrinhDo:
+                        degrees.find(t => Number(t.trinhDoID) === Number(d.trinhDoID))
+                            ?.tenTrinhDo || "Không xác định",
                     status: d.trangThaiCongViec ? "Hoạt động" : "Ngưng hoạt động"
                 }))}
                 onView={handleView}
@@ -189,7 +209,7 @@ const DoctorsPage = () => {
                 onDelete={handleDelete}
                 onRestore={handleRestore}
                 page={page}
-                setPage={loadDoctors}
+                setPage={setPage}
                 totalPages={totalPages}
             />
 

@@ -1,4 +1,3 @@
-// DoctorBookingPageConfirmed.jsx
 import React, { useEffect, useState } from "react";
 import ConfirmedTable from "./ConfirmedTable";
 import CompleteForm from "./CompleteForm";
@@ -6,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const DoctorBookingPageConfirmed = () => {
+
     const getNext6Days = () => {
         const today = new Date();
         const days = [];
@@ -27,31 +27,42 @@ const DoctorBookingPageConfirmed = () => {
         return status;
     };
 
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "";
+        const d = new Date(dateStr);
+        return d.toLocaleDateString("vi-VN");
+    };
+
     useEffect(() => {
         if (!selectedDate) return;
 
         const token = localStorage.getItem("accessToken");
         if (!token) return;
-
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
         fetch(
-            `http://localhost:8080/api/bookings/doctor/appointments?ngayKham=${selectedDate}`,
+            `${API_BASE_URL}/api/bookings/doctor/appointments?ngayKham=${selectedDate}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
+                    "ngrok-skip-browser-warning": "true",
                 },
             }
         )
             .then((res) => res.json())
             .then((data) => {
                 if (data.success) {
-                    const mapped = data.data.map((item) => ({
-                        id: item.datLichID,
-                        tenKhachHang: item.tenBenhNhan,
-                        ngayKham: item.ngayKham,
-                        gioBatDau: item.gioKham,
-                        trangThai: mapTrangThai(item.trangThai),
-                    }));
+                    const mapped = data.data
+                        .filter(item => item.tenTrangThai !== "Hủy bởi bệnh nhân")
+                        .map((item) => ({
+                            id: item.datLichID,
+                            tenKhachHang: item.tenBenhNhan,
+                            ngayKham: formatDate(item.ngayKham),
+                            gioBatDau: item.gioKham,
+                            trangThai: mapTrangThai(item.trangThai),
+                        }));
+
                     setBookings(mapped);
                 } else {
                     setBookings([]);
@@ -61,17 +72,19 @@ const DoctorBookingPageConfirmed = () => {
     }, [selectedDate]);
 
     const handleCheckIn = async (id) => {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
         const token = localStorage.getItem("accessToken");
         if (!token) return;
 
         try {
             const res = await fetch(
-                `http://localhost:8080/api/bookings/${id}/checkin`,
+                `${API_BASE_URL}/api/bookings/${id}/checkin`,
                 {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${token}`,
-                    },
+                        "ngrok-skip-browser-warning": "true",
+                    }
                 }
             );
 
@@ -97,13 +110,15 @@ const DoctorBookingPageConfirmed = () => {
         if (!token) return;
 
         try {
+            const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
             const res = await fetch(
-                `http://localhost:8080/api/bookings/${id}/complete`,
+                `${API_BASE_URL}/api/bookings/${id}/complete`,
                 {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "true",
                     },
                     body: JSON.stringify({ datLichID: id, ...formData }),
                 }
@@ -113,6 +128,7 @@ const DoctorBookingPageConfirmed = () => {
 
             setBookings((prev) => prev.filter((b) => b.id !== id));
             setSelectedBooking(null);
+
             toast.success("Đã hoàn thành ca khám");
         } catch (error) {
             toast.error(error.message);
@@ -128,9 +144,7 @@ const DoctorBookingPageConfirmed = () => {
                     onChange={(e) => setSelectedDate(e.target.value)}
                 >
                     {getNext6Days().map((day) => (
-                        <option key={day} value={day}>
-                            {day}
-                        </option>
+                        <option key={day} value={day}>{day}</option>
                     ))}
                 </select>
             </div>

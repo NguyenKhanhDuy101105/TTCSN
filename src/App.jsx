@@ -34,6 +34,8 @@ import MyLeavePage from "./components/DoctorManager/Schedule/MyLeavePage.jsx";
 import HealthcareCenterCard from "./pages/HealthcareCenterCard.jsx";
 import ScheduleTimetable from "./components/Admin/LichLamViec/ScheduleTimetable.jsx";
 import PatientPage from "./components/Admin/BenhNhan/PatientPage.jsx";
+import DoctorHistoryPage from "./components/DoctorManager/HistoryAppointment/DoctorHistoryPage.jsx";
+import AdminHistoryPage from "./components/Admin/LichSuKham/AdminHistoryPage.jsx"
 function App() {
   return (
     <BrowserRouter>
@@ -75,6 +77,7 @@ function App() {
           <Route path="schedule" element={<MyLeavePage />} />
           <Route path="appointment" element={<CustomerBookingPage />} />
           <Route path="meetings" element={<DoctorBookingPageConfirmed />} />
+          <Route path="history" element={<DoctorHistoryPage />} />
         </Route>
 
         // Admin
@@ -94,6 +97,7 @@ function App() {
           <Route path="appointments" element={<ScheduleTimetable />} />
           <Route path="degree" element={<TrinhDoPage />} />
           <Route path="leave" element={<DoctorLeavePage />} />
+          <Route path="history" element={<AdminHistoryPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

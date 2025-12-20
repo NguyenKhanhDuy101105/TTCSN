@@ -4,7 +4,7 @@ import { AiFillCalendar } from "react-icons/ai";
 import { RiCalendarScheduleFill } from "react-icons/ri";
 import { GrSchedules } from "react-icons/gr";
 import { Link } from "react-router-dom";
-
+import { AiOutlineHistory } from "react-icons/ai";
 const SidebarDoctor = ({ index, setIndex, sidebarOpen }) => {
     return (
         <div className={`h-screen pt-[100px] text-white font-bold bg-[#81c9f9] fixed top-0 bottom-0 left-0 
@@ -64,7 +64,18 @@ const SidebarDoctor = ({ index, setIndex, sidebarOpen }) => {
                     <GrSchedules className="text-[21px]" />
                     <p className="ml-1 text-[16px]">Danh sách lịch hẹn</p>
                 </Link>
-
+                <Link
+                    to="/bacsi/history"
+                    className={`mb-4 cursor-pointer flex items-center py-3 px-4 rounded-lg w-[245px] text-left transition-all duration-200 font-medium
+                        border border-[#5fa8d3] 
+                        hover:bg-white hover:text-[#1d4e89] hover:border-[#1d4e89]
+                        shadow-sm hover:shadow-md transform hover:scale-105
+                        ${index === 4 ? 'bg-white text-[#1d4e89] border-[#1d4e89] shadow-md scale-105' : 'text-white'}`}
+                    onClick={() => setIndex(4)}
+                >
+                    <AiOutlineHistory className="text-[21px]" />
+                    <p className="ml-1 text-[16px]">Lịch sử khám</p>
+                </Link>
             </ul>
         </div>
     )

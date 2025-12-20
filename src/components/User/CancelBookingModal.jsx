@@ -21,13 +21,15 @@ const CancelBookingModal = ({ open, onClose, datLichID, onSuccess }) => {
         setLoading(true);
 
         try {
+            const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
             const res = await fetch(
-                `http://localhost:8080/api/bookings/${datLichID}/cancel`,
+                `${API_BASE_URL}/api/bookings/${datLichID}/cancel`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
+                        "ngrok-skip-browser-warning": "true",
                     },
                     body: JSON.stringify({
                         datLichID,

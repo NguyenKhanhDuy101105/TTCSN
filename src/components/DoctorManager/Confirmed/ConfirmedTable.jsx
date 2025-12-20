@@ -5,8 +5,9 @@ const STATUS_CONFIG = {
     TU_CHOI: { label: "Bác sĩ từ chối", color: "bg-red-600" },
     CHO_THANH_TOAN: { label: "Chờ thanh toán", color: "bg-cyan-500" },
     DA_XAC_NHAN: { label: "Đã xác nhận", color: "bg-green-600" },
+    DA_XAC_NHAN_CHO_THANH_TOAN: { label: "Đã xác nhận chờ thanh toán", color: "bg-green-800" },
     DANG_KHAM: { label: "Đang khám", color: "bg-blue-600" },
-    HOAN_THANH: { label: "Hoàn thành", color: "bg-gray-500" },
+    HOAN_THANH: { label: "Hoàn thành", color: "bg-green-700" },
     HUY_BOI_BENH_NHAN: { label: "Hủy bởi bệnh nhân", color: "bg-yellow-500" },
     HUY_BOI_BAC_SI: { label: "Hủy bởi bác sĩ", color: "bg-orange-600" },
     HUY_BOI_ADMIN: { label: "Hủy bởi admin", color: "bg-gray-400" },
@@ -38,7 +39,9 @@ const ConfirmedTable = ({ bookings, onCheckIn, onCompleteClick }) => {
                     ) : (
                         bookings.map((item) => {
                             const status = STATUS_CONFIG[item.trangThai];
-                            const canCheckIn = item.trangThai === "DA_XAC_NHAN";
+                            const canCheckIn =
+                                item.trangThai === "DA_XAC_NHAN" ||
+                                item.trangThai === "DA_XAC_NHAN_CHO_THANH_TOAN";
                             const canComplete = item.trangThai === "DANG_KHAM";
 
                             return (
@@ -64,9 +67,7 @@ const ConfirmedTable = ({ bookings, onCheckIn, onCompleteClick }) => {
                                                 {status.label}
                                             </span>
                                         ) : (
-                                            <span className="text-gray-400 text-xs">
-                                                Không xác định
-                                            </span>
+                                            <span className="text-gray-400 text-xs">Không xác định</span>
                                         )}
                                     </td>
 
@@ -74,12 +75,10 @@ const ConfirmedTable = ({ bookings, onCheckIn, onCompleteClick }) => {
                                         <div className="flex flex-col sm:flex-row justify-center gap-2">
                                             <button
                                                 disabled={!canCheckIn}
-                                                onClick={() =>
-                                                    canCheckIn && onCheckIn(item.id)
-                                                }
+                                                onClick={() => canCheckIn && onCheckIn(item.id)}
                                                 className={`px-2 py-1 rounded-md text-[10px] sm:text-xs
                                                     ${canCheckIn
-                                                        ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                                        ? "bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
                                                         : "bg-gray-300 text-gray-500 cursor-not-allowed"
                                                     }`}
                                             >
@@ -88,12 +87,10 @@ const ConfirmedTable = ({ bookings, onCheckIn, onCompleteClick }) => {
 
                                             <button
                                                 disabled={!canComplete}
-                                                onClick={() =>
-                                                    canComplete && onCompleteClick(item)
-                                                }
+                                                onClick={() => canComplete && onCompleteClick(item)}
                                                 className={`px-2 py-1 rounded-md text-[10px] sm:text-xs
                                                     ${canComplete
-                                                        ? "bg-green-600 hover:bg-green-700 text-white"
+                                                        ? "bg-green-600 hover:bg-green-700 text-white cursor-pointer"
                                                         : "bg-gray-300 text-gray-500 cursor-not-allowed"
                                                     }`}
                                             >

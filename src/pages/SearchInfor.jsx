@@ -20,19 +20,21 @@ const SreachInfor = () => {
         setError('');
         try {
             setLoading(true);
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('accessToken');
+            const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
             let url = '';
 
             if (searchType === 'doctor') {
-                url = `http://localhost:8080/api/doctors/search?keyword=${encodeURIComponent(term)}&page=0&size=10`;
+                url = `${API_BASE_URL}/api/doctors/search?keyword=${encodeURIComponent(term)}&page=0&size=10`;
             } else {
-                url = `http://localhost:8080/api/specialties/search?keyword=${encodeURIComponent(term)}`;
+                url = `${API_BASE_URL}/api/specialties/search?keyword=${encodeURIComponent(term)}`;
             }
 
             const response = await fetch(url, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
+                    "ngrok-skip-browser-warning": "true",
                 },
             });
 

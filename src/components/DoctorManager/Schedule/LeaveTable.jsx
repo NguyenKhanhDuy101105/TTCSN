@@ -79,7 +79,9 @@ export default function LeaveTable({ leaves, onEdit, onView, onDelete }) {
 
                                         <td className="p-3 text-center border-r border-gray-300">
                                             <span
-                                                className="px-3 py-1.5 text-white rounded-lg font-semibold text-xs sm:text-sm inline-flex min-w-[90px] justify-center"
+                                                className={`px-3 py-1.5 rounded-lg font-semibold text-xs sm:text-sm inline-flex min-w-[90px] justify-center
+                                                            ${isPending ? "text-gray-500" : "text-white"}
+                                                                                                            `}
                                                 style={{ backgroundColor: l.mauSacTrangThai }}
                                             >
                                                 {l.moTaTrangThai || "Chờ duyệt"}

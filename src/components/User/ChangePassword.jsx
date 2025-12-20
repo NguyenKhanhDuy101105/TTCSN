@@ -50,13 +50,15 @@ const ChangePassword = () => {
             }
 
             try {
+                const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
                 const response = await fetch(
-                    `http://localhost:8080/api/auth/change-password?oldPassword=${encodeURIComponent(values.oldPassword)}&newPassword=${encodeURIComponent(values.newPassword)}`,
+                    `${API_BASE_URL}/api/auth/change-password?oldPassword=${encodeURIComponent(values.oldPassword)}&newPassword=${encodeURIComponent(values.newPassword)}`,
                     {
                         method: "PUT",
                         headers: {
                             "Authorization": `Bearer ${token}`,
-                            "Accept": "*/*"
+                            "Accept": "*/*",
+                            "ngrok-skip-browser-warning": "true",
                         }
                     }
                 );
