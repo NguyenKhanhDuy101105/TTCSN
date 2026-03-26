@@ -10,7 +10,7 @@ const AdminHistoryDetail = ({ history, onClose }) => {
                     <h2 className="text-xl font-bold mb-4">Chi tiết lịch khám</h2>
                     <button
                         onClick={onClose}
-                        className="mb-4 px-3 py-1 border rounded cursor-pointer hover:bg-gray-100"
+                        className="mb-4 px-3 py-1 border border-gray-300 rounded cursor-pointer hover:bg-gray-100"
                     >
                         Đóng
                     </button>

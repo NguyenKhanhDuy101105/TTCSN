@@ -36,6 +36,7 @@ import ScheduleTimetable from "./components/Admin/LichLamViec/ScheduleTimetable.
 import PatientPage from "./components/Admin/BenhNhan/PatientPage.jsx";
 import DoctorHistoryPage from "./components/DoctorManager/HistoryAppointment/DoctorHistoryPage.jsx";
 import AdminHistoryPage from "./components/Admin/LichSuKham/AdminHistoryPage.jsx"
+import PaymentResult from "./pages/PaymentResult.jsx";
 function App() {
   return (
     <BrowserRouter>
@@ -57,7 +58,7 @@ function App() {
         <Route path="/emailverification" element={<EmailVerification />} />
         <Route path="/search" element={<SearchInfor />} />
         <Route path="/hopital" element={<HealthcareCenterCard />} />
-
+        <Route path="/payment-result" element={<PaymentResult />} />
         // small page
         <Route path="/doctor/:id" element={<Doctor />} />
         <Route path="/chuyenkhoa/:id" element={<SpecialtyDetailPage />} />

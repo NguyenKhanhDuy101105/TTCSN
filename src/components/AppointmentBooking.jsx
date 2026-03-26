@@ -16,7 +16,15 @@ const AppointmentBooking = () => {
     const { doctor, date, time, ca } = location.state || {};
     const localUser = JSON.parse(localStorage.getItem("user")) || {};
 
-
+    const GIA_KHAM_THEO_TRINH_DO = {
+        1: 150000,
+        2: 250000,
+        3: 300000,
+        4: 400000,
+        5: 500000,
+        6: 700000,
+        7: 800000,
+    };
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
         if (!token) {
@@ -127,6 +135,9 @@ const AppointmentBooking = () => {
         },
     });
 
+    const giaKham =
+        GIA_KHAM_THEO_TRINH_DO[doctor?.trinhDoID] || doctor?.giaKham || 0;
+
     return (
         <div className="bg-gray-50 min-h-screen relative">
             <HeaderSub />
@@ -154,11 +165,11 @@ const AppointmentBooking = () => {
 
                     <div className="mt-6 p-4 bg-sky-50 rounded-lg text-sky-700 border border-gray-300">
                         <p className="font-semibold">
-                            Giá khám: {formatCurrency(doctor?.giaKham || 500000)} vnđ
+                            Giá khám: {formatCurrency(giaKham || 500000)} vnđ
                         </p>
                         <p className="text-sm text-gray-600">Phí đặt lịch: Miễn phí</p>
                         <p className="font-bold mt-2 text-lg text-right">
-                            Tổng cộng: {formatCurrency(doctor?.giaKham || 500000)} vnđ
+                            Tổng cộng: {formatCurrency(giaKham || 500000)} vnđ
                         </p>
                     </div>
                 </div>

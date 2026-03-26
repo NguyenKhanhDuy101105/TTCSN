@@ -4,7 +4,7 @@ import DoctorPackage from './DoctorPackage';
 import { Link } from 'react-router-dom'
 import DoctorClinicInfo from "./DoctorClinicInfo";
 const DoctorDetail = ({ doctor, cosoyte }) => {
-    console.log(doctor);
+
     return (
         <div className="flex border border-gray-300 rounded-lg shadow-md overflow-hidden mb-5">
             <Link

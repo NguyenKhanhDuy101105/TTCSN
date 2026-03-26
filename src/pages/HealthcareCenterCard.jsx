@@ -28,7 +28,7 @@ const HealthcareCenterCard = () => {
                 <div className="flex flex-col md:flex-row">
                     <div className="md:w-1/3 flex justify-center items-center p-4 bg-gray-50">
                         <img
-                            src={data.logo || "https://via.placeholder.com/150"}
+                            src={data.anhDaiDien || "https://via.placeholder.com/150"}
                             alt={data.tenCoSo}
                             className="w-32 h-32 md:w-40 md:h-40 object-contain rounded-full border border-gray-200"
                         />

@@ -79,7 +79,6 @@ const UserPage = () => {
                             return bookingDateTime >= now;
                         })
 
-                        // 🔃 Sắp xếp
                         .sort((a, b) => {
 
                             if (a.tenTrangThai === "CHO_XAC_NHAN_BAC_SI" && b.tenTrangThai !== "CHO_XAC_NHAN_BAC_SI") {
@@ -93,7 +92,7 @@ const UserPage = () => {
                             const dateB = new Date(`${b.ngayKham}T${b.gioKham}`);
                             return dateA - dateB;
                         });
-
+                    console.log(sortedBookings)
                     setAllBookings(sortedBookings);
 
                 } else {

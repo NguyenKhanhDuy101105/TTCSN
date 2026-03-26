@@ -31,7 +31,7 @@ export default function DoctorLeaveTable({ items, onView, onConfirm, onReject })
                         {current.length === 0 ? (
                             <tr>
                                 <td colSpan="5" className="text-center py-6 text-gray-500">
-                                    Không tìm thấy dữ liệu
+                                    Chưa có đơn xin nghỉ nào
                                 </td>
                             </tr>
                         ) : (

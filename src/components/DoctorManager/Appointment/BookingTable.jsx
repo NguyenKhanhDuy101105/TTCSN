@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const BookingTable = ({ bookings, onConfirm, onReject }) => {
-    const [processingId, setProcessingId] = useState(null);
+    const [processingIds, setProcessingIds] = useState(new Set());
     console.log(bookings)
     const trangThaiMap = {
         CHO_XAC_NHAN_BAC_SI: {
@@ -21,7 +21,7 @@ const BookingTable = ({ bookings, onConfirm, onReject }) => {
         },
         DANG_KHAM: {
             label: "Đang khám",
-            color: "bg-indigo-600",
+            color: "bg-yellow-500",
             canHandle: false,
         },
         HOAN_THANH: {
@@ -42,20 +42,28 @@ const BookingTable = ({ bookings, onConfirm, onReject }) => {
     };
 
     const handleConfirm = async (id) => {
-        setProcessingId(id);
+        setProcessingIds(prev => new Set(prev).add(id));
         try {
             await onConfirm(id);
         } finally {
-            setProcessingId(null);
+            setProcessingIds(prev => {
+                const next = new Set(prev);
+                next.delete(id);
+                return next;
+            });
         }
     };
 
     const handleReject = async (id) => {
-        setProcessingId(id);
+        setProcessingIds(prev => new Set(prev).add(id));
         try {
             await onReject(id);
         } finally {
-            setProcessingId(null);
+            setProcessingIds(prev => {
+                const next = new Set(prev);
+                next.delete(id);
+                return next;
+            });
         }
     };
 
@@ -89,7 +97,7 @@ const BookingTable = ({ bookings, onConfirm, onReject }) => {
                                 colSpan="5"
                                 className="text-center p-4 text-gray-500 border border-gray-300"
                             >
-                                Hôm nay không có lịch đặt nào
+                                Lịch chờ đang
                             </td>
                         </tr>
                     ) : (
@@ -101,7 +109,7 @@ const BookingTable = ({ bookings, onConfirm, onReject }) => {
                                     canHandle: false,
                                 };
 
-                            const isProcessing = processingId === item.id;
+                            const isProcessing = processingIds.has(item.id);
                             const disableAction =
                                 !trangThai.canHandle || isProcessing;
 

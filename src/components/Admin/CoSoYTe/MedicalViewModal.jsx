@@ -2,8 +2,8 @@ import React from "react";
 
 export default function MedicalViewModal({ item, onClose, onEdit }) {
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
-            <div className="bg-white p-8 rounded-3xl shadow-2xl w-[500px] animate-[fadeIn_0.25s_ease]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50 px-4">
+            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md sm:w-[500px] max-h-[90vh] overflow-y-auto animate-[fadeIn_0.25s_ease] p-6 sm:p-8">
                 <h2 className="text-2xl font-semibold mb-6 text-gray-800 text-center">
                     Chi tiết cơ sở y tế
                 </h2>

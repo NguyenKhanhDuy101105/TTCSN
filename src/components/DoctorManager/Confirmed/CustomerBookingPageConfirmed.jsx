@@ -55,6 +55,8 @@ const DoctorBookingPageConfirmed = () => {
                 if (data.success) {
                     const mapped = data.data
                         .filter(item => item.tenTrangThai !== "Hủy bởi bệnh nhân")
+                        .filter(item => item.trangThai !== "HOAN_THANH")
+                        .filter(item => item.trangThai !== "CHO_XAC_NHAN_BAC_SI")
                         .map((item) => ({
                             id: item.datLichID,
                             tenKhachHang: item.tenBenhNhan,

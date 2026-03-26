@@ -22,7 +22,7 @@ const PatientPage = () => {
                 page: 0,
                 size: 100,
             });
-
+            console.log(res.data.content)
             setPatients(res.data.content);
         } catch (err) {
             console.error(err);

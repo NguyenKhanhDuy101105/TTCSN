@@ -7,7 +7,7 @@ const Infor = ({ user, setIsEditing }) => {
     const formatCurrency = (amount) =>
         new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount);
 
-    const formatGender = (g) => (g === 1 ? "Nam" : g === 0 ? "Nữ" : "Khác");
+    const formatGender = (g) => (g === 1 ? "Nam" : g === 0 ? "Nữ" : "Nữ");
 
     const Line = ({ label, value }) => (
         <p className="flex justify-between py-2 border-b border-gray-300 last:border-none text-sm md:text-base">

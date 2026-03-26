@@ -15,7 +15,7 @@ const DoctorInfo = ({ doctor }) => {
                         Bác sĩ {doctor?.hoTen}
                     </h2>
 
-                    <p className="text-gray-700 mb-1 text-[15px]">
+                    <p className="text-gray-700 mb-1 text-[15px] font-medium">
                         {doctor?.tenTrinhDo}
                     </p>
                 </div>

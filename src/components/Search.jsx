@@ -7,9 +7,7 @@ import pc5 from "../assets/images/search/sea5.png"
 import { Link } from 'react-router-dom'
 const Search = () => {
     const text = [
-        "Tìm phòng khám", "Tìm bác sĩ", "Tìm phòng khám",
-        "Tìm gói xét nghiệm", "Tìm gói khám tổng quát",
-        "Tìm bệnh viện", "Lý do khám"
+        "Tìm chuyên khoa", "Tìm bác sĩ",
     ];
 
     const [indexFind, setIndexFind] = useState(0);

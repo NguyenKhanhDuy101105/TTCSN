@@ -57,7 +57,7 @@ const LoginForm = ({ setShowLoginForm }) => {
                     body: JSON.stringify(dataToSend)
 
                 });
-                console.log(values)
+
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error("Đăng nhập thất bại:", errorData.message);

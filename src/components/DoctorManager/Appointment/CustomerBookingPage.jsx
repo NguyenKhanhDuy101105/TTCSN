@@ -19,49 +19,64 @@ const DoctorBookingPage = () => {
         return days;
     };
 
-
     const [selectedDate, setSelectedDate] = useState(getNext6Days()[0]);
     const [bookings, setBookings] = useState([]);
     const [rejectModalOpen, setRejectModalOpen] = useState(false);
     const [currentRejectId, setCurrentRejectId] = useState(null);
 
-    useEffect(() => {
-        if (!selectedDate) return;
-        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-        const token = localStorage.getItem("accessToken");
-        if (!token) return;
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+    const token = localStorage.getItem("accessToken");
 
-        fetch(`${API_BASE_URL}/api/bookings/doctor/appointments?ngayKham=${selectedDate}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: "application/json",
-                    "ngrok-skip-browser-warning": "true",
-                },
-            }
-        )
-            .then((res) => res.json())
-            .then((data) => {
-                if (data.success) {
-                    const mapped = data.data
-                        .filter(item => item.trangThai !== "HUY_BOI_BENH_NHAN")
-                        .map((item) => ({
-                            id: item.datLichID,
-                            tenKhachHang: item.tenBenhNhan,
-                            ngayKham: item.ngayKham,
-                            gioBatDau: item.gioKham,
-                            trangThai: item.trangThai,
-                        }));
-                    setBookings(mapped);
-                } else {
-                    setBookings([]);
+    const fetchBookings = async () => {
+        if (!token || !selectedDate) return;
+
+        try {
+            const res = await fetch(
+                `${API_BASE_URL}/api/bookings/doctor/appointments?ngayKham=${selectedDate}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                        "ngrok-skip-browser-warning": "true",
+                    },
                 }
-            })
-            .catch((err) => console.error("Lỗi lấy lịch:", err));
+            );
+
+            const data = await res.json();
+
+            if (data.success) {
+                const mapped = data.data
+                    .filter(item =>
+                        ![
+                            "HUY_BOI_BENH_NHAN",
+                            "HOAN_THANH",
+                            "DANG_KHAM",
+                            "DA_XAC_NHAN",
+                            "DA_XAC_NHAN_CHO_THANH_TOAN",
+                        ].includes(item.trangThai)
+                    )
+                    .map(item => ({
+                        id: item.datLichID,
+                        tenKhachHang: item.tenBenhNhan,
+                        ngayKham: item.ngayKham,
+                        gioBatDau: item.gioKham,
+                        trangThai: item.trangThai,
+                    }));
+
+                setBookings(mapped);
+            } else {
+                setBookings([]);
+            }
+        } catch (err) {
+            console.error("Lỗi lấy lịch:", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchBookings();
     }, [selectedDate]);
 
     const handleAction = async (id, action, reason = "") => {
-        const token = localStorage.getItem("accessToken");
         if (!token) return;
 
         const body =
@@ -82,8 +97,8 @@ const DoctorBookingPage = () => {
                 };
 
         try {
-            const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-            const res = await fetch(`${API_BASE_URL}/api/bookings/${id}/confirm`,
+            const res = await fetch(
+                `${API_BASE_URL}/api/bookings/${id}/confirm`,
                 {
                     method: "POST",
                     headers: {
@@ -97,25 +112,13 @@ const DoctorBookingPage = () => {
 
             if (!res.ok) throw new Error("Thao tác thất bại");
 
-            setBookings((prev) =>
-                prev.map((b) =>
-                    b.id === id
-                        ? {
-                            ...b,
-                            trangThai:
-                                action === "confirm"
-                                    ? "DaXacNhan"
-                                    : "DaHuy",
-                        }
-                        : b
-                )
-            );
-
             toast.success(
                 action === "confirm"
                     ? "Xác nhận lịch hẹn thành công!"
                     : "Đã từ chối lịch hẹn!"
             );
+
+            await fetchBookings();
         } catch (error) {
             console.error(error);
             toast.error(error.message || "Có lỗi xảy ra!");
@@ -132,9 +135,9 @@ const DoctorBookingPage = () => {
         setCurrentRejectId(null);
     };
 
-    const submitReject = (reason) => {
+    const submitReject = async (reason) => {
         if (!currentRejectId) return;
-        handleAction(currentRejectId, "reject", reason);
+        await handleAction(currentRejectId, "reject", reason);
         closeRejectModal();
     };
 
@@ -146,7 +149,7 @@ const DoctorBookingPage = () => {
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
                 >
-                    {getNext6Days().map((day) => (
+                    {getNext6Days().map(day => (
                         <option key={day} value={day}>
                             {day}
                         </option>

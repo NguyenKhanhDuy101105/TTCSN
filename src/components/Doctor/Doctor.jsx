@@ -4,15 +4,15 @@ import Footer from '../../components/Footer';
 import DoctorInfo from './DoctorInfor';
 import DoctorSchedule from './DoctorSchedule';
 import DoctorClinicInfo from './DoctorClinicInfo';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom'
 const Doctor = () => {
 
     const { id } = useParams();
-    // const location = useLocation();
     const navigate = useNavigate();
     const [doctor, setDoctor] = useState(null);
-    // const { cosoyte } = location.state || {};
+    const [cosoyteList, setCoSoYTeList] = useState([]);
+
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
         const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -29,6 +29,7 @@ const Doctor = () => {
                 return response.json();
             })
             .then(data => {
+                console.log(data)
                 setDoctor(data)
             })
             .catch(error => {
@@ -36,6 +37,27 @@ const Doctor = () => {
                 alert("Có lỗi xảy ra, vui lòng thử lại!");
             });
     }, [id]);
+
+    useEffect(() => {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+        const token = localStorage.getItem("accessToken");
+
+        fetch(`${API_BASE_URL}/api/facilities`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true",
+            }
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("Không thể lấy cơ sở y tế");
+                }
+                return res.json();
+            })
+            .then(data => setCoSoYTeList(data))
+            .catch(err => console.error("Lỗi lấy cơ sở y tế:", err));
+    }, []);
 
     if (!doctor) {
         return (
@@ -72,7 +94,7 @@ const Doctor = () => {
                     <span className='mx-1.5 text-blue-400'>/</span>
                     <span className='font-medium'>{doctor.hoTen}</span>
                 </p>
-                {/* Phần info */}
+
                 <DoctorInfo doctor={doctor} />
 
                 <div className='flex gap-x-5 mt-5'>
@@ -84,12 +106,13 @@ const Doctor = () => {
                     <div className='w-2/5 flex items-center'>
                         <DoctorClinicInfo
                             doctor={doctor}
+                            cosoyte={cosoyteList[0]}
                         />
                     </div>
 
                 </div>
 
-                {/* Mô tả bác sĩ */}
+
                 <div className='mt-5 mx-5 p-5 border border-gray-200 rounded-lg shadow-sm bg-white'>
                     <h3 className='font-bold text-xl mb-4 text-sky-600'>Giới thiệu về bác sĩ</h3>
                     <ul className='list-disc pl-5 space-y-2 text-gray-700 text-[15px]'>

@@ -37,7 +37,7 @@ const AdminHistoryPage = () => {
 
             if (res.data.success) {
 
-
+                console.log(res.data.data.content)
                 const filtered = res.data.data.content.filter(
                     (item) =>
                         item.trangThai === "HOAN_THANH" ||

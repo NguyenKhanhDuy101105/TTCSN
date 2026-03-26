@@ -27,6 +27,7 @@ const SpecialtyDetailPage = () => {
 
     useEffect(() => {
         const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
         fetch(`${API_BASE_URL}/api/doctors/specialty/${id}`, {
             headers: {
                 "Content-Type": "application/json",
@@ -34,7 +35,13 @@ const SpecialtyDetailPage = () => {
             }
         })
             .then(res => res.json())
-            .then(data => setDoctorList(data))
+            .then(data => {
+
+                const sortedDoctors = [...data].sort(
+                    (a, b) => b.trinhDoID - a.trinhDoID
+                );
+                setDoctorList(sortedDoctors);
+            })
             .catch(err => console.error("Lỗi lấy bác sĩ:", err));
     }, [id]);
 

@@ -6,7 +6,7 @@ const STATUS_CONFIG = {
     CHO_THANH_TOAN: { label: "Chờ thanh toán", color: "bg-cyan-500" },
     DA_XAC_NHAN: { label: "Đã xác nhận", color: "bg-green-600" },
     DA_XAC_NHAN_CHO_THANH_TOAN: { label: "Đã xác nhận chờ thanh toán", color: "bg-green-800" },
-    DANG_KHAM: { label: "Đang khám", color: "bg-blue-600" },
+    DANG_KHAM: { label: "Đang khám", color: "bg-yellow-600" },
     HOAN_THANH: { label: "Hoàn thành", color: "bg-green-700" },
     HUY_BOI_BENH_NHAN: { label: "Hủy bởi bệnh nhân", color: "bg-yellow-500" },
     HUY_BOI_BAC_SI: { label: "Hủy bởi bác sĩ", color: "bg-orange-600" },
@@ -16,6 +16,7 @@ const STATUS_CONFIG = {
 };
 
 const ConfirmedTable = ({ bookings, onCheckIn, onCompleteClick }) => {
+    console.log(bookings)
     return (
         <div className="overflow-x-auto border rounded-xl shadow border-gray-300">
             <table className="w-full min-w-[600px] border-collapse text-center">
@@ -33,7 +34,7 @@ const ConfirmedTable = ({ bookings, onCheckIn, onCompleteClick }) => {
                     {bookings.length === 0 ? (
                         <tr>
                             <td colSpan="5" className="p-4 text-gray-500 border border-gray-300">
-                                Không có lịch đã xác nhận nào
+                                Lịch hẹn đang trống
                             </td>
                         </tr>
                     ) : (

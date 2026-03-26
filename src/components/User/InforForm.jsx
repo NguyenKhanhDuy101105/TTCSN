@@ -202,13 +202,13 @@ const InforForm = ({ user, setUser, setIsEditing }) => {
 
 
             <div className="flex gap-x-3">
-                <button type="submit" className="px-4 py-2 bg-sky-500 text-white rounded-[4px]">
+                <button type="submit" className="px-4 py-2 bg-sky-500 text-white rounded-[4px] hover:bg-sky-600 cursor-pointer">
                     Cập nhật thông tin
                 </button>
                 <button
                     type="button"
                     onClick={() => setIsEditing(false)}
-                    className="px-4 py-2 bg-gray-600 text-white rounded-[4px]"
+                    className="px-4 py-2 bg-gray-600 text-white rounded-[4px] hover:bg-gray-700 cursor-pointer"
                 >
                     Hủy
                 </button>

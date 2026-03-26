@@ -4,7 +4,7 @@ const AdminHistoryList = ({ histories, onViewDetail }) => {
     if (!histories || histories.length === 0) {
         return (
             <div className="text-center p-4 border border-gray-300 rounded-xl font-semibold">
-                Không có lịch khám nào
+                Chưa có lịch khám nào hoàn thành
             </div>
         );
     }

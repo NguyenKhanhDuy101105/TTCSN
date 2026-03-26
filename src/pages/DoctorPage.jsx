@@ -51,7 +51,7 @@ const DoctorPage = () => {
                             to={`/doctor/${item.bacSiID}`}
                         >
                             <img className='size-[110px] rounded-[50%]'
-                                src={item.image} alt="" />
+                                src={item.avatarUrl} alt="" />
                             <div className=''>
                                 <h3 className='font-medium'>{item.hoTen}</h3>
                                 <p>{item.chuyenKhoa}</p>
